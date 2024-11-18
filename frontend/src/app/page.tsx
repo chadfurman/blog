@@ -1,8 +1,37 @@
-import Image from "next/image";
-import {red} from "next/dist/lib/picocolors";
+import {PostType} from "@/resources/Post";
+import {getPosts} from "@/api/getPosts";
+import Link from "next/link";
 
-export default function Home() {
+function Post(props: { post: PostType }) {
+  const {post} = props;
   return (
-    <div className="h-screen w-screen"></div>
+    <div className="p-4">
+      <h1>{post.title}</h1>
+      <p>{post.description}</p>
+    </div>
+  );
+}
+
+async function PostList() {
+  const posts = await getPosts();
+
+  const postListItems = posts.map((post) => {
+    return (
+      <li key={post.id}>
+        <Link href={`/posts/${post.slug}`}>
+          <Post post={post} />
+        </Link>
+      </li>
+    );
+  });
+
+  return <ul>{postListItems}</ul>;
+}
+
+export default async function Home() {
+  return (
+    <div className="h-screen w-screen">
+      <PostList />
+    </div>
   );
 }
