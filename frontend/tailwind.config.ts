@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss";
+import type {Config} from "tailwindcss";
 
 export default {
   content: [
@@ -11,6 +11,8 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        lowlight: "var(--lowlight)",
+        highlight: "var(--highlight)",
         transparent: 'transparent',
         current: 'currentColor',
       },

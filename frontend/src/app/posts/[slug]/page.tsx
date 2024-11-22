@@ -5,6 +5,7 @@ import {SharedQuoteComponentType} from "@/resources/SharedQuoteComponent";
 import {SharedRichTextComponentType} from "@/resources/SharedRichTextComponent";
 import {MDXRemote} from "next-mdx-remote/rsc";
 import {getPosts} from "@/api/getPosts";
+import {getMDXComponents} from "@/mdx-components";
 
 function SharedMediaBlock(props: {block: SharedMediaComponentType}) {
   return (
@@ -25,7 +26,7 @@ function SharedQuoteBlock(props: { block: SharedQuoteComponentType}) {
 async function SharedRichTextBlock(props: { block: SharedRichTextComponentType }) {
   return (
     <div>
-      <MDXRemote  source={props.block.body} />
+      <MDXRemote  source={props.block.body} components={getMDXComponents()} />
     </div>
   )
 }

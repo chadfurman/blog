@@ -1,37 +1,114 @@
 @tailwind base;
 
 @layer base {
-  h1 {
-    @apply text-2xl;
-  }
-  h2 {
-    @apply text-xl;
-  }
-  h3 {
-    @apply text-lg;
-  }
-  a {
-    @apply text-blue-600 underline;
-  }
+    h1 {
+        @apply text-2xl;
+        @apply mt-8;
+        @apply mb-4;
+
+    }
+
+    h2 {
+        @apply text-xl;
+        @apply mt-8;
+        @apply mb-4;
+    }
+
+    h3 {
+        @apply text-lg;
+        @apply font-normal;
+        @apply mt-8;
+        @apply mb-4;
+    }
+
+    h4 {
+        @apply text-lg;
+        @apply font-light;
+        @apply mt-8;
+        @apply mb-4;
+    }
+
+    h5 {
+        @apply text-lg;
+        @apply font-light;
+        @apply italic;
+        @apply mt-8;
+        @apply mb-4;
+    }
+
+    h6 {
+        @apply text-lg;
+        @apply font-light;
+        @apply italic;
+        @apply opacity-90;
+        @apply mt-8;
+        @apply mb-4;
+    }
+
+    a {
+        @apply font-extralight;
+        @apply cursor-pointer;
+        @apply decoration-dotted;
+        @apply decoration-1;
+        @apply underline-offset-4;
+        @apply underline;
+        @apply font-normal;
+    }
 }
 
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: theme('colors.zinc.950');
-  --foreground: theme('colors.zinc.50');
-
+    --background: theme('colors.gray.950');
+    --foreground: theme('colors.zinc.100');
+    --lowlight-color: theme('colors.indigo.900');
+    --highlight-color: theme('colors.indigo.200');
 }
+
 @media (prefers-color-scheme: light) {
-  :root {
-    --background: theme('colors.zinc.50');
-    --foreground: theme('colors.zinc.950');
-  }
+    :root {
+        --background: theme('colors.zinc.100');
+        --foreground: theme('colors.gray.950');
+        --lowlight-color: theme('colors.indigo.200');
+        --highlight-color: theme('colors.indigo.900');
+    }
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    padding: 0;
+    margin: 0;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+    color: var(--foreground);
+    background: var(--background);
+    font-family: var(--font-body), sans-serif;
+    font-weight: 300;
+    @apply text-base;
+    @apply leading-loose;
+    @apply tracking-wide;
+    @apply antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-header), sans-serif;
+    color: var(--highlight-color);
+    @apply font-normal;
+    @apply leading-tight;
+    @apply tracking-widest;
+}
+
+p {
+    @apply my-4;
+}
+
+a {
+}
+
+@media (min-width: 640px) {
 }
