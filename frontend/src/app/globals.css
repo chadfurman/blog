@@ -2,34 +2,49 @@
 
 @layer base {
     h1 {
+        color: var(--highlight);
+        @apply font-normal;
+        @apply leading-tight;
         @apply text-2xl;
         @apply mt-8;
         @apply mb-4;
-
+        @apply tracking-widest;
     }
 
     h2 {
+        color: var(--highlight);
+        @apply font-normal;
+        @apply leading-tight;
         @apply text-xl;
         @apply mt-8;
         @apply mb-4;
     }
 
     h3 {
-        @apply text-lg;
+        color: var(--highlight);
+        @apply font-normal;
+        @apply leading-tight;
+        @apply text-base;
         @apply font-normal;
         @apply mt-8;
         @apply mb-4;
     }
 
     h4 {
-        @apply text-lg;
+        color: var(--highlight);
+        @apply font-normal;
+        @apply leading-tight;
+        @apply text-base;
         @apply font-light;
         @apply mt-8;
         @apply mb-4;
     }
 
     h5 {
-        @apply text-lg;
+        color: var(--highlight);
+        @apply font-normal;
+        @apply leading-tight;
+        @apply text-base;
         @apply font-light;
         @apply italic;
         @apply mt-8;
@@ -37,7 +52,10 @@
     }
 
     h6 {
-        @apply text-lg;
+        color: var(--highlight);
+        @apply font-normal;
+        @apply leading-tight;
+        @apply text-base;
         @apply font-light;
         @apply italic;
         @apply opacity-90;
@@ -59,19 +77,19 @@
 @tailwind utilities;
 
 :root {
-    --background: theme('colors.zinc.300');
-    --foreground: theme('colors.gray.950');
-    --lowlight: theme('colors.zinc.50');
-    --highlight: theme('colors.indigo.950');
+    --background: 212 212 216; /* theme('colors.zinc.300'); */
+    --foreground: 3 7 18; /*theme('colors.gray.950');*/
+    --lowlight: 250 250 250; /*theme('colors.zinc.50');*/
+    --highlight: 30 27 75; /*theme('colors.indigo.950');*/
     --header-font-weight: 700;
     --body-font-weight: 500;
 }
 
 :root:has(#theme-toggle-button>input[type="checkbox"]:checked) {
-    --background: theme('colors.gray.950');
-    --foreground: theme('colors.zinc.100');
-    --lowlight: theme('colors.indigo.500');
-    --highlight: theme('colors.zinc.300');
+    --background: 3 7 18; /* theme('colors.gray.950'); */
+    --foreground: 244 244 245; /* theme('colors.zinc.100'); */
+    --lowlight: 99 102 241; /* theme('colors.indigo.500'); */
+    --highlight: 244 244 245; /* theme('colors.zinc.100'); */
     --header-font-weight: 500;
     --body-font-weight: 300;
 }
@@ -87,8 +105,8 @@ html, body {
 }
 
 body {
-    color: var(--foreground);
-    background: var(--background);
+    color: rgb(var(--foreground));
+    background: rgb(var(--background));
     font-family: var(--font-body), sans-serif;
     font-weight: 300;
     @apply text-base;
@@ -99,10 +117,6 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-header), sans-serif;
-    color: var(--highlight);
-    @apply font-normal;
-    @apply leading-tight;
-    @apply tracking-widest;
 }
 
 p {
@@ -110,16 +124,16 @@ p {
 }
 
 a {
-    color: var(--highlight);
-    text-decoration-color: var(--lowlight);
+    color: rgb(var(--highlight));
+    text-decoration-color: rgb(var(--lowlight));
     @apply transition-colors;
     @apply duration-200;
     @apply ease-in-out;
 }
 
 a:hover {
-    color: var(--highlight);
-    text-decoration-color: var(--highlight);
+    color: rgb(var(--highlight));
+    text-decoration-color: rgb(var(--highlight));
 }
 
 @media (min-width: 640px) {

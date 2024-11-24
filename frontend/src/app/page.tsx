@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {getProjects} from "@/api/getProjects";
 import {ProjectType} from "@/resources/Project";
-import ChadImage from "../../public/chad.png"
+import ChadImage from "../../public/chad-no-circle.png"
 
 function Post(props: { post: PostType }) {
   const {post} = props;
@@ -30,14 +30,22 @@ async function PostList() {
 }
 
 function Hero() {
-  const headline = <h2>Headline</h2>
-  const subhead = <h3>Subheadline</h3>
+  const headline = <h2
+    className="mt-4 mx-auto sm:mx-0 w-fit tracking-[.1em] lg:mt-8 sm:text-2xl md:text-4xl lg:text-8xl">Hi!</h2>
+  const subhead = <h3
+    className="w-fit mx-auto sm:mx-0 tracking-[.1em] mt-4 text-highlight/[.9] sm:text-xl md:text-2xl lg:text-4xl">Welcome
+    to my
+    blog</h3>
   const visual = <div className="p-20 relative"><Image alt="Chad Furman" src={ChadImage} fill
                                                        className="object-contain"/></div>
-  const cta = <p>do the thing</p>
+  const cta = <p className="text-center sm:text-left">Here, I'll talk about the stuff I'm making and what I learn along
+    the
+    way.
+    I hope you enjoy your
+    stay!</p>
   return (
     <div className="sm:h-[30rem] lg:h-[40rem] grid grid-rows-2 sm:grid-rows-1 sm:grid-cols-2  grid-flow-dense">
-      <div className="row-start-2 sm:col-start-2 sm:row-start-1">
+      <div className="row-start-2 sm:col-start-2 sm:row-start-1 sm:pl-16 sm:my-auto md:pl-32 lg:pl-48">
         {headline}
         {subhead}
         {cta}

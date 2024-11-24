@@ -9,10 +9,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        lowlight: "var(--lowlight)",
-        highlight: "var(--highlight)",
+        background: "rgb(var(--background))",
+        foreground: "rgb(var(--foreground))",
+        lowlight: "rgb(var(--lowlight))",
+        highlight: "rgb(var(--highlight))",
         transparent: 'transparent',
         current: 'currentColor',
       },
