@@ -53,7 +53,7 @@ export default function RootLayout({
       </nav>
       <LightDarkToggle/>
     </header>
-    <main className="min-h-screen mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-xl ">
+    <main className="min-h-screen mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-2xl ">
       {children}
     </main>
     <GoogleAnalytics gaId="G-HBRN8ECZ6C"/>

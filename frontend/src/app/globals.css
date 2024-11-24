@@ -76,31 +76,9 @@
     --body-font-weight: 300;
 }
 
-/*@media (prefers-color-scheme: light) {*/
-/*    :root {*/
-/*        --background: theme('colors.zinc.100');*/
-/*        --foreground: theme('colors.gray.950');*/
-/*        --lowlight: theme('colors.zinc.50');*/
-/*        --highlight: theme('colors.indigo.500');*/
-/*        --header-font-weight: 700;*/
-/*        --body-font-weight: 500;*/
-/*    }*/
-/*}*/
-
-/*@media (prefers-color-scheme: dark) {*/
-/*    :root {*/
-/*        --background: theme('colors.gray.950');*/
-/*        --foreground: theme('colors.zinc.100');*/
-/*        --lowlight: theme('colors.indigo.500');*/
-/*        --highlight: theme('colors.zinc.300');*/
-/*        --header-font-weight: 500;*/
-/*        --body-font-weight: 300;*/
-/*    }*/
-/*}*/
-
-
 *, *::before, *::after {
     box-sizing: border-box;
+    /*border: 2px solid red;*/
 }
 
 html, body {

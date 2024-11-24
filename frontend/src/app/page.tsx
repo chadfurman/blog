@@ -36,8 +36,8 @@ function Hero() {
                                                        className="object-contain"/></div>
   const cta = <p>do the thing</p>
   return (
-    <div className="min-h-32 h-screen max-h-96 grid grid-cols-2 grid-flow-dense">
-      <div className="col-start-2">
+    <div className="sm:h-[30rem] lg:h-[40rem] grid grid-rows-2 sm:grid-rows-1 sm:grid-cols-2  grid-flow-dense">
+      <div className="row-start-2 sm:col-start-2 sm:row-start-1">
         {headline}
         {subhead}
         {cta}
