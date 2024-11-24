@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {getProjects} from "@/api/getProjects";
 import {ProjectType} from "@/resources/Project";
-import ChadImage from "../../public/chad-mustache-cartoon.png"
+import ChadImage from "../../public/chad.png"
 
 function Post(props: { post: PostType }) {
   const {post} = props;
@@ -30,11 +30,11 @@ async function PostList() {
 }
 
 function Hero() {
-  const headline = "headline"
-  const subhead = "subhead"
+  const headline = <h2>Headline</h2>
+  const subhead = <h3>Subheadline</h3>
   const visual = <div className="p-20 relative"><Image alt="Chad Furman" src={ChadImage} fill
                                                        className="object-contain"/></div>
-  const cta = "cta"
+  const cta = <p>do the thing</p>
   return (
     <div className="min-h-32 h-screen max-h-96 grid grid-cols-2 grid-flow-dense">
       <div className="col-start-2">

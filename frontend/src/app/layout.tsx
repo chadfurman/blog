@@ -7,7 +7,7 @@ import LightDarkToggle from "@/app/_components/LightDarkToggle/LightDarkToggle";
 
 export const body_font = Work_Sans({
   subsets: ["latin"],
-  weight: ["100", "300", "500", "700"],
+  weight: ["100", "200", "300", "400"],
   style: ["normal", "italic"],
   variable: "--font-body",
   display: "swap",
@@ -16,7 +16,7 @@ export const body_font = Work_Sans({
 export const header_font = Roboto({
   subsets: ['latin'],
   variable: "--font-header",
-  weight: ['100', '300', '500'],
+  weight: ['100', '300', '500', '700'],
   style: ['normal', 'italic'],
   display: 'swap',
 
@@ -38,7 +38,7 @@ export default function RootLayout({
       className={`${body_font.variable} ${header_font.variable} antialiased`}
     >
     <header
-      className="lg:grid lg:grid-rows-1 lg:grid-cols-5 py-4 border-b border-dotted border-indigo-50/[.1] items-center">
+      className="lg:grid lg:grid-rows-1 lg:grid-cols-5 py-4 border-b border-dotted border-lowlight items-center">
       <div className="col-span-1">
         <h1 className="mx-auto m-0 w-fit">Chad&apos;s Website</h1>
         <h2 className="mx-auto m-0 w-fit text-xs">Mindful code and creativity</h2>

@@ -46,13 +46,12 @@
     }
 
     a {
-        @apply font-extralight;
+        @apply font-medium;
         @apply cursor-pointer;
         @apply decoration-dotted;
         @apply decoration-1;
         @apply underline-offset-4;
         @apply underline;
-        @apply font-normal;
     }
 }
 
@@ -60,20 +59,45 @@
 @tailwind utilities;
 
 :root {
-    --background: theme('colors.gray.950');
-    --foreground: theme('colors.zinc.100');
-    --lowlight-color: theme('colors.indigo.900');
-    --highlight-color: theme('colors.indigo.200');
+    --background: theme('colors.zinc.300');
+    --foreground: theme('colors.gray.950');
+    --lowlight: theme('colors.zinc.50');
+    --highlight: theme('colors.indigo.950');
+    --header-font-weight: 700;
+    --body-font-weight: 500;
 }
 
-@media (prefers-color-scheme: light) {
-    :root {
-        --background: theme('colors.zinc.100');
-        --foreground: theme('colors.gray.950');
-        --lowlight-color: theme('colors.indigo.200');
-        --highlight-color: theme('colors.indigo.900');
-    }
+:root:has(#theme-toggle-button>input[type="checkbox"]:checked) {
+    --background: theme('colors.gray.950');
+    --foreground: theme('colors.zinc.100');
+    --lowlight: theme('colors.indigo.500');
+    --highlight: theme('colors.zinc.300');
+    --header-font-weight: 500;
+    --body-font-weight: 300;
 }
+
+/*@media (prefers-color-scheme: light) {*/
+/*    :root {*/
+/*        --background: theme('colors.zinc.100');*/
+/*        --foreground: theme('colors.gray.950');*/
+/*        --lowlight: theme('colors.zinc.50');*/
+/*        --highlight: theme('colors.indigo.500');*/
+/*        --header-font-weight: 700;*/
+/*        --body-font-weight: 500;*/
+/*    }*/
+/*}*/
+
+/*@media (prefers-color-scheme: dark) {*/
+/*    :root {*/
+/*        --background: theme('colors.gray.950');*/
+/*        --foreground: theme('colors.zinc.100');*/
+/*        --lowlight: theme('colors.indigo.500');*/
+/*        --highlight: theme('colors.zinc.300');*/
+/*        --header-font-weight: 500;*/
+/*        --body-font-weight: 300;*/
+/*    }*/
+/*}*/
+
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -97,7 +121,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-header), sans-serif;
-    color: var(--highlight-color);
+    color: var(--highlight);
     @apply font-normal;
     @apply leading-tight;
     @apply tracking-widest;
@@ -108,6 +132,16 @@ p {
 }
 
 a {
+    color: var(--highlight);
+    text-decoration-color: var(--lowlight);
+    @apply transition-colors;
+    @apply duration-200;
+    @apply ease-in-out;
+}
+
+a:hover {
+    color: var(--highlight);
+    text-decoration-color: var(--highlight);
 }
 
 @media (min-width: 640px) {

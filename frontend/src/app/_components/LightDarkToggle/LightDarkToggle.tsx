@@ -1,11 +1,13 @@
+"use client"
 import "./LightDarkToggle.scss"
 // import "./LightDarkToggle.css"
 
 export default function LightDarkToggle() {
+  const useDark = window.matchMedia('(prefers-color-scheme: dark)').matches
   return (
     <div className="justify-around items-center hidden lg:flex ">
       <label id="theme-toggle-button" className="theme-toggle-button w-12">
-        <input type="checkbox" id="toggle" className="toggle"/>
+        <input type="checkbox" id="toggle" className="toggle" defaultChecked={useDark}/>
         <svg viewBox="0 0 69.667 44" xmlnsXlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
           <g transform="translate(3.5 3.5)" data-name="Component 15 – 1" id="Component_15_1">
 
