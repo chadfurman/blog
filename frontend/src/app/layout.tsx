@@ -39,11 +39,11 @@ export default function RootLayout({
     >
     <header
       className="lg:grid lg:grid-rows-1 lg:grid-cols-5 py-4 border-b border-dotted border-lowlight items-center">
-      <div className="col-span-1">
+      <div className="col-span-1 md:col-span-2">
         <h1 className="mx-auto m-0 w-fit">Chad&apos;s Website</h1>
-        <h2 className="mx-auto m-0 w-fit text-xs">Mindful code and creativity</h2>
+        <h2 className="mx-auto m-0 w-fit text-sm tracking-[0.35em]">Mindful code and creativity</h2>
       </div>
-      <nav className="col-span-3 flex flex-row justify-around items-center lg:mt-0 mt-4">
+      <nav className="col-span-3 md:col-span-2 flex flex-row justify-around items-center lg:mt-0 mt-4">
         <Link href="/">Home</Link>
         <Link href="/about">About</Link>
         <Link href="/projects">Projects</Link>
@@ -53,7 +53,7 @@ export default function RootLayout({
       </nav>
       <LightDarkToggle/>
     </header>
-    <main className="min-h-screen mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-2xl ">
+    <main className="min-h-screen mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-xl ">
       {children}
     </main>
     <GoogleAnalytics gaId="G-HBRN8ECZ6C"/>

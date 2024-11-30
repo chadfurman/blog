@@ -1,7 +1,8 @@
 import {z} from "zod";
 import {BlockDTO} from "@/resources/Block";
+import {ProjectType} from "@/resources/Project";
 
-export const PostDTO  = z.object({
+export const PostDTO = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
@@ -16,7 +17,9 @@ export const PostDTO  = z.object({
   category: z.any().optional(),
   tags: z.any().optional(),
   comments: z.any().optional(),
-  blocks: z.array(BlockDTO).optional()
+  blocks: z.array(BlockDTO).optional(),
 })
-export type PostType = z.infer<typeof PostDTO>;
+export type PostType = z.infer<typeof PostDTO> & {
+  project?: ProjectType
+};
 

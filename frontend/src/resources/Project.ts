@@ -1,7 +1,8 @@
 import {z} from "zod";
 import {FileDTO} from "@/resources/File";
+import {PostDTO} from "@/resources/Post";
 
-export const ProjectDTO  = z.object({
+export const ProjectDTO = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
@@ -12,7 +13,8 @@ export const ProjectDTO  = z.object({
   updatedAt: z.string(),
 
   // relationships
-  cover: FileDTO
+  cover: FileDTO,
+  articles: z.array(PostDTO).optional()
 })
 export type ProjectType = z.infer<typeof ProjectDTO>;
 
