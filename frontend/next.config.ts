@@ -3,6 +3,7 @@ import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: 'export',
   transpilePackages: ['next-mdx-remote'],
   images: {
     remotePatterns: [
