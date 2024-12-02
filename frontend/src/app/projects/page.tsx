@@ -7,13 +7,13 @@ function Project(props: { project: ProjectType }) {
   const {project} = props;
   return (
     <li>
-      <NeumorphismContainer>
-        <Link href={`/projects/${project.slug}`}>
+      <Link href={`/projects/${project.slug}`}>
+        <NeumorphismContainer>
           <h2>{project.title}</h2>
           <p>{project.description}</p>
           <p className="link-styles">View Project &gt;&gt;</p>
-        </Link>
-      </NeumorphismContainer>
+        </NeumorphismContainer>
+      </Link>
     </li>
   )
 }

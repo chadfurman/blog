@@ -32,13 +32,13 @@ export default async function Page({params}: PageProps) {
         {project.articles?.map((article: PostType) => {
           return (
             <li key={article.id}>
-              <NeumorphismContainer>
-                <Link href={`/posts/${article.slug}`}>
+              <Link href={`/posts/${article.slug}`}>
+                <NeumorphismContainer>
                   <h3>{article.title}</h3>
                   <p>{article.description}</p>
                   <p className="link-styles">View Post &gt;&gt;</p>
-                </Link>
-              </NeumorphismContainer>
+                </NeumorphismContainer>
+              </Link>
             </li>
           );
         })}

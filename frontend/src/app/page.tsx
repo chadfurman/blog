@@ -49,14 +49,14 @@ function FeaturedProject(props: { project: ProjectType }) {
                                                         className="max-w-full"/>) : null;
   const cta = <p className="link-styles">View Project &gt;&gt;</p>
   return (
-    <NeumorphismCard className="p-4 min-w-72">
-      <Link href={`/projects/${props.project.slug}`}>
+    <Link href={`/projects/${props.project.slug}`}>
+      <NeumorphismCard className="p-4 min-w-72">
         {title}
         {description}
         {visual}
         {cta}
-      </Link>
-    </NeumorphismCard>
+      </NeumorphismCard>
+    </Link>
   );
 }
 

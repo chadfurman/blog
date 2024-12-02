@@ -7,13 +7,13 @@ function Post(props: { post: PostType }) {
   const {post} = props;
   return (
     <li>
-      <NeumorphismContainer>
-        <Link href={`/posts/${post.slug}`}>
+      <Link href={`/posts/${post.slug}`}>
+        <NeumorphismContainer>
           <h2>{post.title}</h2>
           <p>{post.description}</p>
           <p className="link-styles">View Post &gt;&gt;</p>
-        </Link>
-      </NeumorphismContainer>
+        </NeumorphismContainer>
+      </Link>
     </li>
   )
 }
