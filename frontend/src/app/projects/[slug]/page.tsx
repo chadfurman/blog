@@ -1,8 +1,11 @@
 import {BlockType} from "@/resources/Block";
 import {SharedRichTextComponentType} from "@/resources/SharedRichTextComponent";
 import {MDXRemote} from "next-mdx-remote/rsc";
-import {getPosts} from "@/api/getPosts";
+import {getProjects} from "@/api/getProjects";
 import {getMDXComponents} from "@/mdx-components";
+import Link from "next/link";
+import {PostType} from "@/resources/Post";
+import NeumorphismContainer from "@/app/_components/NeumorphismContainer";
 
 function SharedMediaBlock() {
   return (
@@ -28,7 +31,7 @@ async function SharedRichTextBlock(props: { block: SharedRichTextComponentType }
   )
 }
 
-function PostBlock(props: { block: BlockType }) {
+function ProjectBlock(props: { block: BlockType }) {
   switch (props.block.__component) {
     case "shared.media":
       return <SharedMediaBlock/>;
@@ -42,9 +45,9 @@ function PostBlock(props: { block: BlockType }) {
 }
 
 export async function generateStaticParams() {
-  const posts = await getPosts();
-  return posts.map(post => ({
-    slug: post.slug
+  const projects = await getProjects();
+  return projects.map(project => ({
+    slug: project.slug
   }));
 }
 
@@ -55,18 +58,34 @@ interface PageProps {
 
 export default async function Page({params}: PageProps) {
   const slug = (await params).slug;
-  const post = (await getPosts({
+  const project = (await getProjects({
     filters: {slug: slug},
-    populate: "blocks",
+    populate: ["articles"],
   }))[0];
-  const blocks = post.blocks?.map((block: BlockType) => {
-    return <PostBlock key={block.id} block={block}/>;
-  });
+  // const blocks = project.blocks?.map((block: BlockType) => {
+  //   return <ProjectBlock key={block.id} block={block}/>;
+  // });
   return (
     <div className="p-4">
-      <h1>{post.title}</h1>
-      <p>{post.description}</p>
-      {blocks}
+      <h1>{project.title}</h1>
+      <p>{project.description}</p>
+      <hr/>
+      <h2>Posts</h2>
+      <ul>
+        {project.articles?.map((article: PostType) => {
+          return (
+            <li key={article.id}>
+              <NeumorphismContainer>
+                <Link href={`/posts/${article.slug}`}>
+                  <h3>{article.title}</h3>
+                  <p>{article.description}</p>
+                  <p className="link-styles">View Post &gt;&gt;</p>
+                </Link>
+              </NeumorphismContainer>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

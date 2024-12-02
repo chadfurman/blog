@@ -5,28 +5,18 @@ import Image from "next/image";
 import {getProjects} from "@/api/getProjects";
 import {ProjectType} from "@/resources/Project";
 import ChadImage from "../../public/chad-no-circle.png"
+import NeumorphismCard from "@/app/_components/NeumorphismContainer";
 
 function Post(props: { post: PostType }) {
   const {post} = props;
+  const cta = <p className="link-styles">View Post &gt;&gt;</p>
   return (
-    <div className="p-4">
-      <h1>{post.title}</h1>
+    <NeumorphismCard className="p-4 min-w-72">
+      <h2>{post.title}</h2>
       <p>{post.description}</p>
-    </div>
+      {cta}
+    </NeumorphismCard>
   );
-}
-
-async function PostList() {
-  const posts = await getPosts();
-
-  const postListItems = posts.map((post) => {
-    return (
-      <li key={post.id}>
-      </li>
-    );
-  });
-
-  return <ul>{postListItems}</ul>;
 }
 
 function Hero() {
@@ -52,53 +42,55 @@ function Hero() {
 }
 
 function FeaturedProject(props: { project: ProjectType }) {
-  const title = <h3>props.project.title</h3>
-  const description = <p>props.project.description</p>
-  const visual = <Image src={props.project.cover.url} width={props.project.cover.width}
-                        height={props.project.cover.height} alt={props.project.title} className="max-w-full"/>
-  const cta = <Link href={`/projects/${props.project.slug}`}>View Project</Link>
+  const title = <h2>{props.project.title}</h2>
+  const description = <p>{props.project.description}</p>
+  const visual = props.project?.cover ? (<Image src={props.project.cover.url} width={props.project.cover.width}
+                                                height={props.project.cover.height} alt={props.project.title}
+                                                className="max-w-full"/>) : null;
+  const cta = <p className="link-styles">View Project &gt;&gt;</p>
   return (
-    <div className="w-1/3">
-      {title}
-      {description}
-      {visual}
-      {cta}
-    </div>
+    <NeumorphismCard className="p-4 min-w-72">
+      <Link href={`/projects/${props.project.slug}`}>
+        {title}
+        {description}
+        {visual}
+        {cta}
+      </Link>
+    </NeumorphismCard>
   );
 }
 
 async function FeaturedProjects() {
   const header = <h2>What I&apos;m Building</h2>
   const projects = (await getProjects({})).map((project: ProjectType) =>
-    <li key={project.id}><FeaturedProject project={project}/></li>
+    <li key={project.id} className="snap-center"><FeaturedProject project={project}/></li>
   )
 
-  return (
-    <>
-      {header}
-      <ul className="overflow-x-scroll flex  flex-">{projects}</ul>
-    </>
-  );
+  return <HorizontalScrollList header={header}>{projects}</HorizontalScrollList>;
 }
 
 async function BlogHighlights() {
   const header = <h2>Blog Highlights</h2>
   const posts = (await getPosts({pagination: {limit: 10}})).map((post: PostType) => {
     return (
-      <li key={post.id}>
+      <li key={post.id} className="snap-center">
         <Link href={`/posts/${post.slug}`}>
           <Post post={post}/>
         </Link>
       </li>
     );
   });
-  return (
-    <>
-      {header}
-      <ul>{posts}</ul>
-    </>
+  return <HorizontalScrollList header={header}>{posts}</HorizontalScrollList>;
+}
 
-  );
+function HorizontalScrollList(props: { header: React.ReactNode, children: React.ReactNode }) {
+  const header = props.header;
+  return (<>
+    {header}
+    <ul
+      className="grid grid-rows-1 grid-flow-col gap-8 overflow-x-scroll scroll-mx-4 snap-x snap-mandatory p-8">{props.children}</ul>
+  </>)
+
 }
 
 function AboutMe() {
@@ -117,7 +109,6 @@ export default async function Home() {
       <BlogHighlights/>
       <AboutMe/>
       <NewsletterSignup/>
-      <PostList/>
     </div>
   );
 }

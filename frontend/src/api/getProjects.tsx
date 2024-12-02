@@ -14,8 +14,8 @@ export async function getProjects(params?: StrapiGetParamsType): Promise<Project
   let parsedResults: ProjectType[] = [];
   if (results) {
     parsedResults = results.map((project: StrapiSingleResponseType) => {
-        return ProjectDTO.parse(project);
-      });
+      return ProjectDTO.parse(project);
+    });
   }
   return parsedResults || [];
 }

@@ -1,13 +1,35 @@
 "use client"
 import "./LightDarkToggle.scss"
-// import "./LightDarkToggle.css"
+import {useCallback, useState} from "react";
 
-export default function LightDarkToggle() {
-  const useDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+export function LightDarkToggle() {
+  const [shouldUseDarkMode, setShouldUseDarkMode] = useState<boolean | undefined>(false);
+  if (window) {
+    const preferredTheme = window.localStorage.getItem('preferredTheme');
+    const systemThemePrefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)')?.matches
+    if ((preferredTheme === 'dark' || (!preferredTheme && systemThemePrefersDarkMode)) && !shouldUseDarkMode) {
+      // user's environment says we prefer dark mode
+      setShouldUseDarkMode(true);
+    }
+    if ((preferredTheme === 'light' || (!preferredTheme && !systemThemePrefersDarkMode)) && shouldUseDarkMode) {
+      // user's environment says we prefer light mode
+      setShouldUseDarkMode(false);
+    }
+  }
+
+  const toggleTheme = useCallback(() => {
+    const useDarkMode = !shouldUseDarkMode;
+    setShouldUseDarkMode(useDarkMode);
+    window.localStorage.setItem('preferredTheme', useDarkMode ? 'dark' : 'light');
+  }, [shouldUseDarkMode]);
+
+
   return (
     <div className="justify-around items-center hidden lg:flex ">
       <label id="theme-toggle-button" className="theme-toggle-button w-12">
-        <input type="checkbox" id="toggle" className="toggle" defaultChecked={useDark}/>
+        <input type="checkbox" id="toggle" className="toggle" defaultChecked={shouldUseDarkMode}
+               onChange={toggleTheme}/>
         <svg viewBox="0 0 69.667 44" xmlnsXlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
           <g transform="translate(3.5 3.5)" data-name="Component 15 – 1" id="Component_15_1">
 
@@ -88,3 +110,5 @@ export default function LightDarkToggle() {
       </label>
     </div>)
 }
+
+export default LightDarkToggle;

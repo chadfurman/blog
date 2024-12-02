@@ -10,19 +10,20 @@ export function getMDXComponents(): MDXComponents {
   return {
     // Allows customizing built-in components, e.g. to add styling.
     a: (props) => (
-      <Link href={props.href} target="_blank">{props.children}</Link>
+      <Link href={props.href ?? "/"} target="_blank">{props.children}</Link>
     ),
     img: (props) => (
       <Image
         sizes="100vw"
-        width={16*40}
-        height={9*40}
-        style={{ width: '100%', height: 'auto' }}
+        width={16 * 40}
+        height={9 * 40}
+        style={{width: '100%', height: 'auto'}}
         {...(props as ImageProps)}
       />
     ),
   }
 }
+
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...getMDXComponents(),

@@ -10,7 +10,7 @@ export const StrapiGetParams = z.object({
   }).optional(),
   filters: z.object({}).optional(),
   sort: z.string().optional(),
-  populate: z.string().optional(),
+  populate: z.any().optional(),
   fields: z.string().optional(),
   locale: z.string().optional()
 })

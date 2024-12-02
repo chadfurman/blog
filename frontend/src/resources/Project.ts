@@ -13,7 +13,7 @@ export const ProjectDTO = z.object({
   updatedAt: z.string(),
 
   // relationships
-  cover: FileDTO,
+  cover: FileDTO.optional(),
   articles: z.array(PostDTO).optional()
 })
 export type ProjectType = z.infer<typeof ProjectDTO>;

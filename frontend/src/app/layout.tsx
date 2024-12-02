@@ -3,9 +3,10 @@ import {Roboto, Work_Sans} from 'next/font/google'
 import {GoogleAnalytics} from '@next/third-parties/google'
 import "./globals.css";
 import Link from "next/link";
-import LightDarkToggle from "@/app/_components/LightDarkToggle/LightDarkToggle";
+import DynamicLightDarkToggle from "@/app/_components/LightDarkToggle/DynamicLightDarkToggle";
 
-export const body_font = Work_Sans({
+
+const body_font = Work_Sans({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400"],
   style: ["normal", "italic"],
@@ -13,7 +14,7 @@ export const body_font = Work_Sans({
   display: "swap",
 })
 
-export const header_font = Roboto({
+const header_font = Roboto({
   subsets: ['latin'],
   variable: "--font-header",
   weight: ['100', '300', '500', '700'],
@@ -40,18 +41,20 @@ export default function RootLayout({
     <header
       className="lg:grid lg:grid-rows-1 lg:grid-cols-5 py-4 border-b border-dotted border-lowlight items-center">
       <div className="col-span-1 md:col-span-2">
-        <h1 className="mx-auto m-0 w-fit">Chad&apos;s Website</h1>
-        <h2 className="mx-auto m-0 w-fit text-sm tracking-[0.35em]">Mindful code and creativity</h2>
+        <Link href="/">
+          <h1 className="mx-auto m-0 w-fit hover:text-lowlight">Chad&apos;s Website</h1>
+          <h2 className="mx-auto m-0 w-fit text-sm tracking-[0.35em]">Mindful code and creativity</h2>
+        </Link>
       </div>
-      <nav className="col-span-3 md:col-span-2 flex flex-row justify-around items-center lg:mt-0 mt-4">
+      <nav className="primary-nav col-span-3 md:col-span-2 flex flex-row justify-around items-center lg:mt-0 mt-4">
         <Link href="/">Home</Link>
-        <Link href="/about">About</Link>
+        {/*<Link href="/about">About</Link>*/}
         <Link href="/projects">Projects</Link>
         <Link href="/posts">Blog</Link>
-        <Link href="/contact">Contact</Link>
+        {/*<Link href="/contact">Contact</Link>*/}
 
       </nav>
-      <LightDarkToggle/>
+      <DynamicLightDarkToggle/>
     </header>
     <main className="min-h-screen mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-xl ">
       {children}
