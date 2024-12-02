@@ -1,11 +1,11 @@
 import {PostType} from "@/resources/Post";
 import {getPosts} from "@/api/getPosts";
 import Link from "next/link";
-import Image from "next/image";
 import {getProjects} from "@/api/getProjects";
 import {ProjectType} from "@/resources/Project";
 import ChadImage from "../../public/chad-no-circle.png"
 import NeumorphismCard from "@/app/_components/NeumorphismContainer";
+import ExportedImage from "next-image-export-optimizer";
 
 function Post(props: { post: PostType }) {
   const {post} = props;
@@ -26,8 +26,8 @@ function Hero() {
     className="w-fit mx-auto sm:mx-0 tracking-[.1em] my-1 text-highlight/[.9] sm:text-xl md:text-2xl lg:text-4xl">Welcome,
     traveler
   </h3>
-  const visual = <div className="p-20 relative"><Image alt="Chad Furman" src={ChadImage} fill
-                                                       className="object-contain"/></div>
+  const visual = <div className="p-20 relative"><ExportedImage alt="Chad Furman" src={ChadImage} fill
+                                                               className="object-contain"/></div>
   const cta = <p className="text-center sm:text-left leading-4">This is a place where I talk about my projects.</p>
   return (
     <div className="sm:h-[30rem] lg:h-[40rem] grid grid-cols-2  grid-flow-dense">
@@ -44,9 +44,9 @@ function Hero() {
 function FeaturedProject(props: { project: ProjectType }) {
   const title = <h2>{props.project.title}</h2>
   const description = <p>{props.project.description}</p>
-  const visual = props.project?.cover ? (<Image src={props.project.cover.url} width={props.project.cover.width}
-                                                height={props.project.cover.height} alt={props.project.title}
-                                                className="max-w-full"/>) : null;
+  const visual = props.project?.cover ? (<ExportedImage src={props.project.cover.url} width={props.project.cover.width}
+                                                        height={props.project.cover.height} alt={props.project.title}
+                                                        className="max-w-full"/>) : null;
   const cta = <p className="link-styles">View Project &gt;&gt;</p>
   return (
     <NeumorphismCard className="p-4 min-w-72">
@@ -88,7 +88,7 @@ function HorizontalScrollList(props: { header: React.ReactNode, children: React.
   return (<>
     {header}
     <ul
-      className="grid grid-rows-1 grid-flow-col gap-8 overflow-x-scroll scroll-mx-4 snap-x snap-mandatory p-8">{props.children}</ul>
+      className="grid grid-rows-1 grid-flow-col gap-8 overflow-x-auto overflow-y-hidden overscroll-x-auto scroll-mx-4 snap-x snap-mandatory p-8">{props.children}</ul>
   </>)
 
 }

@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import ChadShocked from "../../public/shocked-chad.png"
+import ExportedImage from "next-image-export-optimizer";
 
 function Hero() {
   const headline = <h2
@@ -8,8 +8,9 @@ function Hero() {
   const subhead = <h3
     className="w-fit mx-auto sm:mx-0 tracking-[.1em] my-1 text-highlight/[.9] sm:text-xl md:text-2xl lg:text-4xl">Oh no!
   </h3>
-  const visual = <div className="py-20 mx-14 relative"><Image alt="Chad is shocked by the 404" src={ChadShocked} fill
-                                                              className="object-contain"/></div>
+  const visual = <div className="py-20 mx-14 relative"><ExportedImage alt="Chad is shocked by the 404" src={ChadShocked}
+                                                                      fill
+                                                                      className="object-contain"/></div>
   const cta = <p className="text-center sm:text-left leading-4 link-styles"><Link href="/">Return Home</Link></p>
   return (
     <div className="sm:h-[30rem] lg:h-[40rem] grid grid-cols-2  grid-flow-dense">

@@ -1,5 +1,5 @@
 import type {MDXComponents} from 'mdx/types'
-import Image, {ImageProps} from 'next/image'
+import ExportedImage, {ExportedImageProps} from 'next-image-export-optimizer'
 import Link from "next/link";
 
 // This file allows you to provide custom React components
@@ -13,12 +13,12 @@ export function getMDXComponents(): MDXComponents {
       <Link href={props.href ?? "/"} target="_blank">{props.children}</Link>
     ),
     img: (props) => (
-      <Image
+      <ExportedImage
         sizes="100vw"
         width={16 * 40}
         height={9 * 40}
         style={{width: '100%', height: 'auto'}}
-        {...(props as ImageProps)}
+        {...(props as ExportedImageProps)}
       />
     ),
   }
