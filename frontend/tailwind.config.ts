@@ -21,6 +21,8 @@ export default {
   safelist: [
     'list-disc',
     'pl-8',
+    'mx-auto',
+    'w-fit'
   ],
   plugins: [],
 } satisfies Config;

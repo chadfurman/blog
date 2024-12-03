@@ -10,7 +10,6 @@ module.exports = new Promise(async (resolve) => {
           // grab all the matches except the first and push them into the images array
           matches.slice(1).forEach(match => images.push(match));
         }
-        console.log({images})
       }
     })
   })

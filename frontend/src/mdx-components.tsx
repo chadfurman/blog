@@ -13,15 +13,25 @@ export function getMDXComponents(): MDXComponents {
       <Link href={props.href ?? "/"} target="_blank">{props.children}</Link>
     ),
     ul: (props) => <ul className="list-disc pl-8">{props.children}</ul>,
-    img: (props) => (
-      <ExportedImage
+    img: (props) => {
+      const image = <ExportedImage
         sizes="100vw"
         width={16 * 40}
         height={9 * 40}
         style={{width: '100%', height: 'auto'}}
         {...(props as ExportedImageProps)}
       />
-    ),
+      if (props.title !== undefined) {
+        return (
+          <figure>
+            {image}
+            <figcaption className="mx-auto w-fit">{props.title}</figcaption>
+          </figure>
+        );
+      } else {
+        return image
+      }
+    }
   }
 }
 
