@@ -12,6 +12,7 @@ export function getMDXComponents(): MDXComponents {
     a: (props) => (
       <Link href={props.href ?? "/"} target="_blank">{props.children}</Link>
     ),
+    ul: (props) => <ul className="list-disc pl-8">{props.children}</ul>,
     img: (props) => (
       <ExportedImage
         sizes="100vw"

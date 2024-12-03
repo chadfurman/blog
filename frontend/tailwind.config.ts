@@ -18,5 +18,9 @@ export default {
       },
     },
   },
+  safelist: [
+    'list-disc',
+    'pl-8',
+  ],
   plugins: [],
 } satisfies Config;

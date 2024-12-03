@@ -1,4 +1,5 @@
 import {BlockType} from "@/resources/Block";
+import remarkGfm from 'remark-gfm'
 import {SharedRichTextComponentType} from "@/resources/SharedRichTextComponent";
 import {MDXRemote} from "next-mdx-remote/rsc";
 import {getPosts} from "@/api/getPosts";
@@ -23,7 +24,8 @@ function SharedQuoteBlock() {
 async function SharedRichTextBlock(props: { block: SharedRichTextComponentType }) {
   return (
     <div>
-      <MDXRemote source={props.block.body} components={getMDXComponents()}/>
+      <MDXRemote options={{mdxOptions: {remarkPlugins: [remarkGfm]}}} source={props.block.body}
+                 components={getMDXComponents()}/>
     </div>
   )
 }
