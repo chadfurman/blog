@@ -5,13 +5,15 @@ module.exports = new Promise(async (resolve) => {
   results.forEach(result => {
     result.blocks.forEach(block => {
       if (block.__component === "shared.rich-text") {
-        const matches = block.body.match(/!\[.*?\]\((.*?)\)/) // match all markdown images
-        if (matches) {
-          // grab all the matches except the first and push them into the images array
-          matches.slice(1).forEach(match => images.push(match));
+        const matches = block.body.matchAll(/!\[.*?\]\(([^ ]*).*?\)/g) // match all markdown images
+        console.log({matches})
+        for (const match of matches) {
+          console.log({match})
+          images.push(match[1])
         }
       }
     })
   })
+  console.log({images})
   return resolve(images)
 })
