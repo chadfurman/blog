@@ -1,0 +1,60 @@
+{
+  "authors": [
+    {
+      "id": 1,
+      "name": "David Doe",
+      "email": "daviddoe@strapi.io"
+    },
+    {
+      "id": 2,
+      "name": "Sarah Baker",
+      "email": "sarahbaker@strapi.io"
+    },
+    {
+      "id": 3,
+      "name": "Chad Furman",
+      "email": "chad@chadfurman.com"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "news",
+      "slug": "news"
+    },
+    {
+      "id": 2,
+      "name": "tech",
+      "slug": "tech"
+    },
+    {
+      "id": 3,
+      "name": "food",
+      "slug": "food"
+    },
+    {
+      "id": 4,
+      "name": "nature",
+      "slug": "nature"
+    },
+    {
+      "id": 5,
+      "name": "story",
+      "slug": "story"
+    },
+    {
+      "id": 6,
+      "name": "Stock Signals",
+      "slug": "stock-signals"
+    }
+  ],
+  "tags": [],
+  "projects": [
+    {
+      "id": 2,
+      "title": "Stock Signals",
+      "slug": "stock-signals",
+      "description": "Generating buying and selling signals using multifactor analysis.   candlesticks, technical indicators, fundamentals, and alternative data."
+    }
+  ]
+}

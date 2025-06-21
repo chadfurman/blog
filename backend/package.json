@@ -9,15 +9,21 @@
     "develop": "strapi develop",
     "seed:example": "node ./scripts/seed.js",
     "start": "strapi start",
-    "strapi": "strapi"
+    "strapi": "strapi",
+    "import-posts": "node scripts/import-posts.js",
+    "export-posts": "node scripts/export-posts.js",
+    "manage-tags": "node scripts/manage-tags.js"
   },
   "dependencies": {
     "@strapi/plugin-cloud": "5.4.0",
     "@strapi/plugin-documentation": "^5.4.0",
     "@strapi/plugin-users-permissions": "5.4.0",
     "@strapi/strapi": "5.4.0",
+    "axios": "^1.10.0",
     "better-sqlite3": "11.3.0",
+    "date-fns": "^4.1.0",
     "fs-extra": "^10.0.0",
+    "gray-matter": "^4.0.3",
     "mime-types": "^2.1.27",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -36,5 +42,8 @@
   },
   "strapi": {
     "uuid": "38c94fea-20f5-44bc-a772-71f748bf73ee"
+  },
+  "volta": {
+    "node": "22.16.0"
   }
 }
