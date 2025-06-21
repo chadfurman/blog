@@ -127,6 +127,25 @@ p {
     @apply my-4;
 }
 
+blockquote {
+    @apply my-6;
+    @apply pl-4;
+    @apply border-l-4;
+    @apply border-lowlight;
+    @apply italic;
+    color: rgba(var(--foreground), 0.8);
+    font-style: italic;
+}
+
+ul, ol {
+    @apply my-4;
+    @apply pl-6;
+}
+
+li {
+    @apply my-2;
+}
+
 .link-styles {
     @apply font-medium;
     @apply cursor-pointer;
@@ -167,4 +186,304 @@ hr {
     @apply border-dotted;
     @apply border-lowlight;
     @apply my-8;
+}
+
+/* Code blocks and syntax highlighting */
+code {
+    @apply font-mono;
+    @apply text-sm;
+    @apply px-1;
+    @apply py-0.5;
+    @apply rounded;
+    background-color: rgba(var(--lowlight), 0.1);
+    color: rgb(var(--highlight));
+    font-weight: 500;
+}
+
+pre {
+    @apply overflow-x-auto;
+    @apply rounded-lg;
+    @apply p-4;
+    @apply my-6;
+    @apply text-sm;
+    @apply leading-relaxed;
+    background-color: rgba(var(--foreground), 0.05);
+    border: 1px solid rgba(var(--lowlight), 0.2);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+pre code {
+    @apply p-0;
+    @apply bg-transparent;
+    @apply text-inherit;
+    @apply rounded-none;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+/* Prism.js syntax highlighting theme - Enhanced for C/C++ macros */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: #7c7c7c;
+    font-style: italic;
+}
+
+.token.punctuation {
+    color: #c5c8c6;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+    color: #e06c75;
+}
+
+.token.boolean,
+.token.number {
+    color: #d19a66;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+    color: #98c379;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+    color: #56b6c2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+    color: #61afef;
+}
+
+.token.keyword {
+    color: #c678dd;
+    font-weight: 600;
+}
+
+.token.regex,
+.token.important {
+    color: #be5046;
+}
+
+.token.important,
+.token.bold {
+    font-weight: bold;
+}
+
+.token.italic {
+    font-style: italic;
+}
+
+.token.entity {
+    cursor: help;
+}
+
+/* Enhanced C/C++ preprocessor and macro highlighting */
+.token.macro,
+.token.directive {
+    color: #e5c07b !important;
+    font-weight: 500;
+    text-shadow: 0 0 2px rgba(229, 192, 123, 0.3);
+}
+
+.token.directive-hash {
+    color: #e5c07b !important;
+    font-weight: 500;
+}
+
+/* Specific macro keywords */
+.language-c .token.directive.keyword,
+.language-cpp .token.directive.keyword {
+    color: #ff7b72 !important;
+    font-weight: 500;
+}
+
+/* #define, #if, #ifdef, etc. */
+.language-c .token.keyword.directive,
+.language-cpp .token.keyword.directive {
+    color: #ff7b72 !important;
+    font-weight: 500;
+}
+
+/* Macro parameters and content */
+.language-c .token.macro-name,
+.language-cpp .token.macro-name {
+    color: #ffa657 !important;
+    font-weight: 500;
+}
+
+/* Backslash line continuations in macros */
+.language-c .token.punctuation.important,
+.language-cpp .token.punctuation.important {
+    color: #ff7b72;
+    font-weight: bold;
+}
+
+/* Rust specific highlighting */
+.language-rust .token.lifetime,
+.language-rust .token.attribute {
+    color: #f39c12;
+}
+
+.language-rust .token.macro {
+    color: #e74c3c;
+    font-weight: 600;
+}
+
+/* Light theme syntax highlighting adjustments */
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) {
+    /* Light theme code adjustments */
+}
+
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) pre {
+    background-color: rgba(var(--background), 0.05);
+    border-color: rgba(var(--lowlight), 0.3);
+}
+
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) code {
+    background-color: rgba(var(--lowlight), 0.15);
+}
+
+/* Light theme token colors - all with !important for proper overrides */
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.comment,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.prolog,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.doctype,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.cdata {
+    color: #6a737d !important;
+}
+
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.punctuation {
+    color: #24292e !important;
+}
+
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.property,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.tag,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.constant,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.symbol {
+    color: #d73a49 !important;
+}
+
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.boolean,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.number {
+    color: #0969da !important;
+}
+
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.string,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.char {
+    color: #0a3069 !important;
+}
+
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.keyword {
+    color: #cf222e !important;
+    font-weight: 600;
+}
+
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.function,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.class-name {
+    color: #8250df !important;
+}
+
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.operator,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.entity,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.url,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-css .token.string,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .style .token.string,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.variable {
+    color: #1f2328 !important;
+}
+
+/* Light theme macro highlighting - much darker for better readability */
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.macro,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.directive {
+    color: #8b3500 !important;
+    font-weight: 500;
+    text-shadow: none;
+}
+
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-c .token.directive.keyword,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-cpp .token.directive.keyword,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-c .token.keyword.directive,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-cpp .token.keyword.directive {
+    color: #d73a49 !important;
+    font-weight: 500;
+}
+
+/* Light theme macro-name fix - override the bright orange */
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-c .token.macro-name,
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-cpp .token.macro-name {
+    color: #7c3500 !important;
+    font-weight: 500;
+}
+
+/* Light theme directive-hash fix - override the bright yellow */
+:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.directive-hash {
+    color: #8b3500 !important;
+    font-weight: 500;
+}
+
+/* Language label styling */
+pre[class*="language-"]::before {
+    content: attr(class);
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(var(--lowlight), 0.8);
+    color: rgb(var(--background));
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-bottom-left-radius: 0.375rem;
+    border-top-right-radius: 0.5rem;
+}
+
+pre[class*="language-"] {
+    position: relative;
+}
+
+/* Specific language labels */
+pre.language-c::before { content: "C"; }
+pre.language-cpp::before { content: "C++"; }
+pre.language-rust::before { content: "Rust"; }
+pre.language-javascript::before { content: "JavaScript"; }
+pre.language-typescript::before { content: "TypeScript"; }
+pre.language-bash::before { content: "Bash"; }
+pre.language-yaml::before { content: "YAML"; }
+pre.language-json::before { content: "JSON"; }
+
+/* Improve scrollbar styling */
+pre::-webkit-scrollbar {
+    height: 8px;
+}
+
+pre::-webkit-scrollbar-track {
+    background: rgba(var(--background), 0.3);
+    border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-thumb {
+    background: rgba(var(--lowlight), 0.5);
+    border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--lowlight), 0.7);
 }

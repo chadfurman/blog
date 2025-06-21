@@ -16,9 +16,10 @@
     "next": "15.0.3",
     "next-image-export-optimizer": "^1.18.0",
     "next-mdx-remote": "^5.0.0",
+    "prismjs": "^1.30.0",
     "qs": "^6.13.1",
-    "react": "18",
-    "react-dom": "18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "remark-gfm": "^4.0.0",
     "styled-components": "^5.3.11",
     "zod": "^3.23.8"

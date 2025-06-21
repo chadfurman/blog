@@ -156,3 +156,113 @@ published: true
 2. Run `npm run import-posts` to sync to Strapi CMS
 3. Frontend automatically fetches from Strapi API
 4. Use `npm run export-posts` to backup Strapi content to markdown
+
+## Claude Code Learnings
+
+### Authentication & Permissions Issues (Dec 2025)
+**Problem**: Scripts failing with 401/403 errors when accessing Strapi API
+**Root Cause**: Users-permissions plugin requires public access for API endpoints
+**Solution**: 
+- Enable public access in Strapi admin: Settings → Users & Permissions → Roles → Public → Tag/Article permissions
+- Scripts use admin authentication but API endpoints need public permissions for create/read operations
+- For local development, enabling public access is acceptable
+
+### API Validation Issues (Dec 2025)
+**Problem**: Import-posts script failing with ValidationError on `createdAt`/`updatedAt` fields
+**Root Cause**: Strapi v5 automatically manages timestamp fields and rejects API attempts to set them
+**Solution**: 
+- Remove `createdAt`/`updatedAt` from API payloads - Strapi manages these automatically
+- Keep timestamp logic for markdown file management but don't send to API
+- Use `documentId` instead of `id` for updates in Strapi v5
+
+### Tag Normalization & Duplicates (Dec 2025)
+**Problem**: Inconsistent tag naming between markdown and Strapi causing import failures
+**Enhancement**: Added comprehensive tag management to `manage-tags` script:
+- **Automatic normalization**: "Technical Analysis" → "technical-analysis"
+- **Duplicate detection**: Find and remove duplicate tags keeping oldest instance
+- **Markdown synchronization**: Update markdown files with normalized tag names
+- **Validation**: Check all required tags exist before import
+
+### Build Pipeline Dependencies (Dec 2025)
+**Problem**: Frontend build failing due to missing posts/data in Strapi
+**Root Cause**: Static generation requires all content to be available at build time
+**Solution**: Ensure proper workflow sequence:
+1. Export posts from Strapi (backup)
+2. Manage tags (normalize and create missing)
+3. Import posts to Strapi (with all tags available)
+4. Build frontend (can now fetch complete data)
+
+### Environment Configuration
+**Required Setup**:
+- `.env` file in `backend/` with `ADMIN_EMAIL` and `ADMIN_PASSWORD` for script authentication
+- Strapi must be running (`npm run develop`) before running import/export scripts
+- Public permissions enabled for Tag and Article content types
+
+### Script Enhancements Made
+1. **Enhanced `manage-tags.js`**:
+   - Added duplicate tag detection and removal
+   - Added markdown file tag normalization
+   - Improved error handling and user prompts
+   - Uses public API for better reliability
+
+2. **Fixed `import-posts.js`**:
+   - Removed invalid timestamp fields from API calls
+   - Added proper Strapi v5 `documentId` support for updates
+   - Enhanced debugging output
+   - Improved authentication with admin login
+
+3. **Authentication Flow**:
+   - Scripts authenticate via `/admin/login` endpoint
+   - Use admin token for authenticated operations
+   - Fall back gracefully when auth fails
+
+### Recommended Workflow
+For smooth content management:
+```bash
+# From backend directory:
+npm run export-posts    # Backup current Strapi content
+npm run manage-tags     # Normalize tags and remove duplicates
+npm run import-posts    # Import markdown files to Strapi
+
+# From frontend directory:
+npm run build          # Build static site with updated content
+```
+
+### Syntax Highlighting Implementation (Dec 2025)
+**Problem**: Code blocks with poor readability, especially C macros and preprocessor directives
+**Solution**: Implemented Prism.js with custom theme optimized for technical content
+**Key Features**:
+- **Enhanced C/C++ macro highlighting**: Distinct colors for `#define`, `#if`, preprocessor directives
+- **Dual theme support**: Dark mode (One Dark Pro inspired) and light mode (GitHub inspired)
+- **Language-specific optimizations**: C, C++, Rust, JavaScript, TypeScript, Bash, YAML, JSON
+- **Infinite loop prevention**: Fixed MutationObserver causing build hangs
+- **Accessibility**: Proper contrast ratios and readable colors in both themes
+
+**Technical Implementation**:
+- Prism.js core with language components
+- Custom CSS with `!important` flags for theme overrides
+- PrismLoader component for client-side highlighting
+- Comprehensive color scheme with fallbacks
+- Language labels on code blocks
+- Custom scrollbar styling for long code blocks
+
+**Color Optimizations**:
+- **Dark theme**: Bright, glowing colors for macros with text shadows
+- **Light theme**: Deep, contrasting colors (`#8b3500`, `#7c3500`) for readability
+- **Problem solved**: Removed harsh orange `#ffa657` that clashed with light backgrounds
+
+### Interactive Management Tool (Dec 2025)
+**Created**: `manage.js` - Interactive CLI tool for complete workflow management
+**Features**:
+- **One-command workflow**: Complete export→tags→import→build process
+- **Interactive menu**: User-friendly interface for all operations  
+- **Automatic Strapi management**: Start/check server status
+- **Status monitoring**: Project health and build state
+- **Error handling**: Graceful failure recovery with user prompts
+- **Flexible execution**: Interactive mode (`-i`) or direct workflow execution
+
+**Usage**:
+```bash
+./manage.js -i          # Interactive mode with menu
+./manage.js             # Run default workflow directly
+```

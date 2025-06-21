@@ -1,13 +1,18 @@
 ---
-title: "The TA-Lib Conversion: Part 1 - A New Foundation in Rust"
-description: "Converting TA-Lib's 150+ technical indicators from C to Rust using code generation"
-slug: "start-of-rust-conversion"
-author: "Chad Furman"
-category: "tech"
-tags: ["Rust", "TA-Lib", "Code Generation", "Technical Analysis", "Programming"]
-published: "true"
-autoCreatedAt: "2025-06-21T21:00:27.358Z"
-autoUpdatedAt: "2025-06-21T21:00:27.358Z"
+title: 'The TA-Lib Conversion: Part 1 - A New Foundation in Rust'
+description: "Converting TA-Lib technical indicators from C to Rust"
+slug: start-of-rust-conversion
+author: Chad Furman
+category: tech
+tags:
+  - rust
+  - ta-lib
+  - code-generation
+  - technical-analysis
+  - programming
+published: 'true'
+autoCreatedAt: '2025-06-21T21:00:27.358Z'
+autoUpdatedAt: '2025-06-21T21:00:27.358Z'
 ---
 
 

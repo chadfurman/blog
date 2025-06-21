@@ -3,15 +3,59 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 const { format } = require('date-fns');
+require('dotenv').config();
 
 // Configuration
 const STRAPI_API_URL = process.env.STRAPI_API_URL || 'http://localhost:1337/api';
 const POSTS_DIR = path.join(__dirname, '../../posts');
 const DEFAULT_AUTHOR = 'Chad';
 
+// Authentication
+let authToken = null;
+
+async function authenticateWithStrapi() {
+  try {
+    const authUrl = `${STRAPI_API_URL.replace('/api', '')}/admin/login`;
+    console.log(`🔐 Attempting authentication at: ${authUrl}`);
+    console.log(`🔐 Using email: ${process.env.ADMIN_EMAIL}`);
+    
+    const response = await axios.post(authUrl, {
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD
+    });
+    
+    if (response.data && response.data.data && response.data.data.token) {
+      authToken = response.data.data.token;
+      console.log('🔐 Successfully authenticated with Strapi');
+      return true;
+    } else {
+      console.error('❌ No token in response:', response.data);
+    }
+  } catch (error) {
+    console.error('❌ Failed to authenticate with Strapi:', error.message);
+    if (error.response) {
+      console.error('❌ Response status:', error.response.status);
+      console.error('❌ Response data:', error.response.data);
+    }
+    return false;
+  }
+  return false;
+}
+
+function getAuthHeaders() {
+  return authToken ? { Authorization: `Bearer ${authToken}` } : {};
+}
+
 async function importPosts() {
   try {
     console.log('🚀 Starting import of markdown posts to Strapi...');
+
+    // Authenticate with Strapi first
+    const authenticated = await authenticateWithStrapi();
+    if (!authenticated) {
+      console.error('❌ Authentication failed. Cannot proceed.');
+      process.exit(1);
+    }
 
     // Check if posts directory exists
     if (!fs.existsSync(POSTS_DIR)) {
@@ -50,11 +94,12 @@ async function importPosts() {
 
 async function fetchReferenceData() {
   try {
+    const headers = getAuthHeaders();
     const [authorsRes, categoriesRes, tagsRes, projectsRes] = await Promise.all([
-      axios.get(`${STRAPI_API_URL}/authors`),
-      axios.get(`${STRAPI_API_URL}/categories`),
-      axios.get(`${STRAPI_API_URL}/tags`),
-      axios.get(`${STRAPI_API_URL}/projects`)
+      axios.get(`${STRAPI_API_URL}/authors`, { headers }),
+      axios.get(`${STRAPI_API_URL}/categories`, { headers }),
+      axios.get(`${STRAPI_API_URL}/tags`, { headers }),
+      axios.get(`${STRAPI_API_URL}/projects`, { headers })
     ]);
 
     return {
@@ -85,27 +130,21 @@ async function importPost(filepath, referenceData) {
     slug: frontmatter.slug || generateSlug(frontmatter.title || path.basename(filename, '.md')),
   };
 
-  // Handle dates with auto-generation
-  if (frontmatter.createdAt) {
-    articleData.createdAt = new Date(frontmatter.createdAt).toISOString();
-  } else if (frontmatter.autoCreatedAt) {
-    articleData.createdAt = new Date(frontmatter.autoCreatedAt).toISOString();
-  } else {
-    articleData.createdAt = now.toISOString();
+  // Note: createdAt and updatedAt are automatically managed by Strapi and cannot be set via API
+  // We keep the timestamp logic for markdown file management but don't send to Strapi
+  
+  // Handle auto-generation for markdown files (but don't send to Strapi)
+  if (!frontmatter.createdAt && !frontmatter.autoCreatedAt) {
     // Update the markdown file with autoCreatedAt
     await updateMarkdownWithAutoDate(filepath, 'autoCreatedAt', now.toISOString());
   }
 
-  if (frontmatter.updatedAt) {
-    articleData.updatedAt = new Date(frontmatter.updatedAt).toISOString();
-  } else if (frontmatter.autoUpdatedAt) {
-    articleData.updatedAt = new Date(frontmatter.autoUpdatedAt).toISOString();
-  } else {
-    articleData.updatedAt = now.toISOString();
+  if (!frontmatter.updatedAt && !frontmatter.autoUpdatedAt) {
     // Update the markdown file with autoUpdatedAt
     await updateMarkdownWithAutoDate(filepath, 'autoUpdatedAt', now.toISOString());
   }
 
+  // publishedAt can be set if the content should be published at a specific time
   if (frontmatter.publishedAt) {
     articleData.publishedAt = new Date(frontmatter.publishedAt).toISOString();
   }
@@ -179,7 +218,10 @@ async function importPost(filepath, referenceData) {
   
   if (existingArticle) {
     console.log(`🔄 Updating existing article: ${articleData.title}`);
-    await updateArticle(existingArticle.id, articleData, shouldPublish);
+    // Use documentId for Strapi v5
+    const articleId = existingArticle.documentId || existingArticle.id;
+    console.log(`🔍 Using article ID: ${articleId} (documentId: ${existingArticle.documentId}, id: ${existingArticle.id})`);
+    await updateArticle(articleId, articleData, shouldPublish);
   } else {
     console.log(`📝 Creating new article: ${articleData.title}`);
     await createArticle(articleData, shouldPublish);

@@ -4,6 +4,7 @@ import {GoogleAnalytics} from '@next/third-parties/google'
 import "./globals.css";
 import Link from "next/link";
 import DynamicLightDarkToggle from "@/app/_components/LightDarkToggle/DynamicLightDarkToggle";
+import PrismLoader from "@/app/_components/PrismLoader/PrismLoader";
 
 
 const body_font = Work_Sans({
@@ -59,6 +60,7 @@ export default function RootLayout({
     <main className="min-h-screen mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-xl ">
       {children}
     </main>
+    <PrismLoader />
     <GoogleAnalytics gaId="G-HBRN8ECZ6C"/>
     </body>
     </html>

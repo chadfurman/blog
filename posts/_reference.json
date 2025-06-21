@@ -48,7 +48,36 @@
       "slug": "stock-signals"
     }
   ],
-  "tags": [],
+  "tags": [
+    {
+      "id": 2,
+      "tag": "technical-analysis"
+    },
+    {
+      "id": 4,
+      "tag": "rsi"
+    },
+    {
+      "id": 6,
+      "tag": "stock-signals"
+    },
+    {
+      "id": 8,
+      "tag": "rust"
+    },
+    {
+      "id": 10,
+      "tag": "ta-lib"
+    },
+    {
+      "id": 12,
+      "tag": "code-generation"
+    },
+    {
+      "id": 16,
+      "tag": "programming"
+    }
+  ],
   "projects": [
     {
       "id": 2,

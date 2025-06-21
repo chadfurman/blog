@@ -8,6 +8,7 @@ updatedAt: "2024-12-03T00:49:13.123Z"
 publishedAt: "2024-12-03T00:49:13.141Z"
 author: "Chad Furman"
 category: "stock-signals"
+tags: ["rsi", "stock-signals", "technical-analysis"]
 cover: "/uploads/Artboard_1_7208893937.png"
 project: "stock-signals"
 ---
