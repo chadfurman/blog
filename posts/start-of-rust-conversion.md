@@ -48,7 +48,7 @@ Our solution? A sophisticated macro system that transforms syntax at the preproc
 #if defined(_RUST)
     #define FOR_EACH_OUTPUT(startVal, endVal, idxVar, outIdxVar) \
     outIdxVar = 0; \
-    for idxVar in (startVal as usize)..=(endVal as usize) {
+    for idxVar in startVal..=endVal {
     #define FOR_EACH_OUTPUT_END(outIdxVar) outIdxVar += 1; }
 #else
     #define FOR_EACH_OUTPUT(startVal, endVal, idxVar, outIdxVar) \
@@ -57,7 +57,7 @@ Our solution? A sophisticated macro system that transforms syntax at the preproc
 #endif
 ```
 
-This macro system successfully converts ~65% of TA-Lib's loop patterns automatically.
+Since our function parameters are already `usize`, the Rust range syntax `startVal..=endVal` works perfectly without explicit casting. This macro system successfully converts ~65% of TA-Lib's loop patterns automatically.
 
 **Challenge 2: Variable Declaration Syntax**
 C and Rust declare variables completely differently. Our macro solution:
@@ -83,23 +83,44 @@ Single precision functions take f32 inputs but must write to f64 output arrays. 
 
 **Challenge 4: Function Signature Generation**
 Generating proper Rust function signatures required sophisticated logic in gen_rust.c:
-- Automatic parameter name conversion to snake_case
-- Proper Rust reference types (`&[f64]`, `&mut [f64]`, `&mut i32`)
+- Maintaining API compatibility with camelCase parameter names
+- Proper Rust reference types (`&[f64]`, `&mut [f64]`, `&mut usize`)
 - Handling both single and double precision variants
 - Adding `pub` keywords for external visibility
+- Using `usize` for index parameters to match Rust idioms
 
-The result? Clean, idiomatic Rust signatures:
+The result? Clean, API-compatible Rust signatures:
 ```rust
-pub fn mult(start_idx: i32,
-            end_idx: i32, 
-            in_real0: &[f64],
-            in_real1: &[f64],
-            out_beg_idx: &mut i32,
-            out_nb_element: &mut i32,
-            out_real: &mut [f64]) -> RetCode {
+pub fn mult(
+    startIdx: usize,
+    endIdx: usize,
+    inReal0: &[f64],
+    inReal1: &[f64],
+    outBegIdx: &mut usize,
+    outNBElement: &mut usize,
+    outReal: &mut [f64],
+) -> RetCode {
     // Implementation generated from C source
 }
 ```
+
+**Challenge 5: The usize Type Safety Advantage**
+Our transition to `usize` for index parameters revealed an interesting optimization opportunity in the generated Rust code. The compiler warnings highlight Rust's type safety benefits:
+
+```
+warning: comparison is useless due to type limits
+  --> src/ta_func/mult.rs:65:12
+   |
+65 |         if startIdx < 0 {
+   |            ^^^^^^^^^^^^
+```
+
+Since `usize` is unsigned, these comparisons against `0` are unnecessary—the type system guarantees they can never be negative. Our tests confirmed the behavior:
+- **Normal case**: `mult(0, 4, ...)` → `Success` ✓
+- **usize::MAX case**: `mult(usize::MAX, 4, ...)` → `OutOfRangeEndIndex` (caught by `endIdx < startIdx`)
+- **Backwards range**: `mult(4, 0, ...)` → `OutOfRangeEndIndex` ✓
+
+The validation still works perfectly because `endIdx < startIdx` catches problematic cases, but the `< 0` comparisons are dead code. This showcases a key advantage of Rust: the type system eliminates entire classes of validation checks that are necessary in C. We can optimize our generated code by removing these redundant checks, making the Rust version both safer and more efficient than the original C.
 
 #### **The Build Process Revolution**
 
@@ -129,8 +150,8 @@ fn test_mult_double_precision() {
     let in_real0 = [1.0, 2.0, 3.0, 4.0, 5.0];
     let in_real1 = [2.0, 3.0, 4.0, 5.0, 6.0];
     let mut out_real = [0.0; 5];
-    let mut out_beg_idx = 0i32;
-    let mut out_nb_element = 0i32;
+    let mut out_beg_idx = 0usize;
+    let mut out_nb_element = 0usize;
     
     let result = Core::mult(0, 4, &in_real0, &in_real1, 
                            &mut out_beg_idx, &mut out_nb_element, 
