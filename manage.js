@@ -138,6 +138,95 @@ async function buildFrontend() {
   await runCommand('npm run build', frontendPath, 'Building frontend with optimized images');
 }
 
+async function checkGitStatus() {
+  return new Promise((resolve) => {
+    exec('git status --porcelain', (error, stdout) => {
+      if (error) {
+        resolve({ hasChanges: false, changes: [] });
+      } else {
+        const changes = stdout.trim().split('\n').filter(line => line.trim());
+        resolve({ hasChanges: changes.length > 0, changes });
+      }
+    });
+  });
+}
+
+async function generateCommitMessage() {
+  // Check what files changed to create a smart commit message
+  return new Promise((resolve) => {
+    exec('git diff --name-only HEAD', (error, stdout) => {
+      if (error) {
+        resolve('rebuild');
+        return;
+      }
+      
+      const changes = stdout.trim().split('\n').filter(line => line.trim());
+      const hasOut = changes.some(file => file.includes('frontend/out/'));
+      const hasPosts = changes.some(file => file.includes('posts/'));
+      const hasMarkdown = changes.some(file => file.endsWith('.md'));
+      
+      if (hasOut && hasPosts) {
+        resolve('rebuild: updated posts and generated static site');
+      } else if (hasOut) {
+        resolve('rebuild: regenerated static site');
+      } else if (hasMarkdown || hasPosts) {
+        resolve('rebuild: updated blog content');
+      } else {
+        resolve('rebuild: updated website content');
+      }
+    });
+  });
+}
+
+async function gitAddCommitPush() {
+  log('\n📋 Checking git status...', colors.yellow);
+  const { hasChanges, changes } = await checkGitStatus();
+  
+  if (!hasChanges) {
+    log('✅ No changes to commit', colors.green);
+    return;
+  }
+  
+  log(`📝 Found ${changes.length} changed files`, colors.blue);
+  changes.slice(0, 5).forEach(change => {
+    log(`   ${change}`, colors.dim);
+  });
+  if (changes.length > 5) {
+    log(`   ... and ${changes.length - 5} more files`, colors.dim);
+  }
+  
+  const commitMessage = await generateCommitMessage();
+  log(`💬 Generated commit message: "${commitMessage}"`, colors.cyan);
+  
+  try {
+    await runCommand('git add .', process.cwd(), 'Adding all changes to git');
+    await runCommand(`git commit -m "${commitMessage}"`, process.cwd(), 'Committing changes');
+    await runCommand('git push', process.cwd(), 'Pushing to remote repository');
+    log('🚀 Successfully deployed to git!', colors.green);
+  } catch (error) {
+    log(`❌ Git operations failed: ${error.message}`, colors.red);
+    throw error;
+  }
+}
+
+async function runFullDeployWorkflow() {
+  log('\n🚀 Running full deploy workflow: export → manage tags → import → build → commit → push', colors.bright);
+  
+  try {
+    await startStrapi();
+    await exportPosts();
+    await manageTags();
+    await importPosts();
+    await buildFrontend();
+    await gitAddCommitPush();
+    log('\n🎉 Full deployment completed successfully!', colors.green);
+    log('🌐 Your changes are now live!', colors.cyan);
+  } catch (error) {
+    log(`\n❌ Deployment failed: ${error.message}`, colors.red);
+    process.exit(1);
+  }
+}
+
 async function runDefaultWorkflow() {
   log('\n🔄 Running default workflow: export → manage tags → import → build', colors.bright);
   
@@ -156,20 +245,22 @@ async function runDefaultWorkflow() {
 
 async function showMenu() {
   console.clear();
-  log('╭─────────────────────────────────────────────────╮', colors.cyan);
-  log('│              🏗️  Website Management             │', colors.cyan);
-  log('├─────────────────────────────────────────────────┤', colors.cyan);
+  log('╭───────────────────────────────────────────────────────╮', colors.cyan);
+  log('│                🏗️  Website Management                 │', colors.cyan);
+  log('├───────────────────────────────────────────────────────┤', colors.cyan);
   log('│  1. 🚀 Run Default Workflow (export→tags→import→build)', colors.white);
-  log('│  2. 📤 Export posts (Strapi → markdown)', colors.white);
-  log('│  3. 🏷️  Manage tags (normalize & remove duplicates)', colors.white);
-  log('│  4. 📥 Import posts (markdown → Strapi)', colors.white);
-  log('│  5. 🔨 Build frontend (Next.js static export)', colors.white);
-  log('│  6. ⚡ Start/Check Strapi server', colors.white);
-  log('│  7. 📊 Show project status', colors.white);
-  log('│  8. ❌ Exit', colors.white);
-  log('╰─────────────────────────────────────────────────╯', colors.cyan);
+  log('│  2. 🌐 Full Deploy (workflow + commit + push)', colors.yellow);
+  log('│  3. 📤 Export posts (Strapi → markdown)', colors.white);
+  log('│  4. 🏷️  Manage tags (normalize & remove duplicates)', colors.white);
+  log('│  5. 📥 Import posts (markdown → Strapi)', colors.white);
+  log('│  6. 🔨 Build frontend (Next.js static export)', colors.white);
+  log('│  7. 📋 Git add + commit + push', colors.white);
+  log('│  8. ⚡ Start/Check Strapi server', colors.white);
+  log('│  9. 📊 Show project status', colors.white);
+  log('│ 10. ❌ Exit', colors.white);
+  log('╰───────────────────────────────────────────────────────╯', colors.cyan);
   
-  const choice = await prompt('\nEnter your choice (1-8): ');
+  const choice = await prompt('\nEnter your choice (1-10): ');
   return choice.trim();
 }
 
@@ -209,34 +300,40 @@ async function interactiveMode() {
           await runDefaultWorkflow();
           break;
         case '2':
-          await startStrapi();
-          await exportPosts();
+          await runFullDeployWorkflow();
           break;
         case '3':
           await startStrapi();
-          await manageTags();
+          await exportPosts();
           break;
         case '4':
           await startStrapi();
-          await importPosts();
+          await manageTags();
           break;
         case '5':
-          await buildFrontend();
+          await startStrapi();
+          await importPosts();
           break;
         case '6':
-          await startStrapi();
+          await buildFrontend();
           break;
         case '7':
-          await showStatus();
+          await gitAddCommitPush();
           break;
         case '8':
+          await startStrapi();
+          break;
+        case '9':
+          await showStatus();
+          break;
+        case '10':
           log('\n👋 Goodbye!', colors.green);
           process.exit(0);
         default:
-          log('❌ Invalid choice. Please enter 1-8.', colors.red);
+          log('❌ Invalid choice. Please enter 1-10.', colors.red);
       }
       
-      if (choice !== '7') {
+      if (choice !== '9') {
         const continueChoice = await prompt('\n⏸️  Press Enter to continue or "q" to quit: ');
         if (continueChoice.toLowerCase() === 'q') {
           break;
@@ -254,14 +351,48 @@ async function interactiveMode() {
   rl.close();
 }
 
+function showHelp() {
+  log('🏗️  Website Management Tool', colors.bright);
+  log('═══════════════════════════', colors.bright);
+  log('');
+  log('Usage:', colors.cyan);
+  log('  ./manage.js [options]', colors.white);
+  log('');
+  log('Options:', colors.cyan);
+  log('  -i, --interactive    Interactive mode with menu', colors.white);
+  log('  -d, --deploy         Full deploy workflow (export→tags→import→build→commit→push)', colors.yellow);
+  log('  -h, --help           Show this help message', colors.white);
+  log('');
+  log('Default behavior (no flags):', colors.cyan);
+  log('  Runs interactive mode', colors.white);
+  log('');
+  log('Examples:', colors.cyan);
+  log('  ./manage.js -i       # Interactive menu', colors.dim);
+  log('  ./manage.js -d       # Full deploy workflow', colors.dim);
+  log('  ./manage.js          # Interactive mode (default)', colors.dim);
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const isInteractive = args.includes('-i') || args.includes('--interactive');
+  const isDeploy = args.includes('-d') || args.includes('--deploy');
+  const isHelp = args.includes('-h') || args.includes('--help');
+  
+  if (isHelp) {
+    showHelp();
+    return;
+  }
   
   log('🏗️  Website Management Tool', colors.bright);
   log('═══════════════════════════', colors.bright);
   
-  if (isInteractive || args.length === 0) {
+  if (isInteractive) {
+    await interactiveMode();
+  } else if (isDeploy) {
+    // Run full deploy workflow
+    await runFullDeployWorkflow();
+    rl.close();
+  } else if (args.length === 0) {
     await interactiveMode();
   } else {
     // Run default workflow
