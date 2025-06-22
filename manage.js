@@ -135,7 +135,18 @@ async function importPosts() {
 
 async function clearStrapiCache() {
   const backendPath = path.join(process.cwd(), 'backend');
-  await runCommand('rm -rf .cache/dist && rm -rf dist', backendPath, 'Clearing Strapi cache and build files');
+  await runCommand('rm -rf .cache && rm -rf dist', backendPath, 'Clearing Strapi cache and build files');
+}
+
+async function clearFrontendBuild() {
+  const frontendPath = path.join(process.cwd(), 'frontend');
+  await runCommand('rm -rf out && rm -rf .next', frontendPath, 'Clearing frontend build and Next.js cache');
+}
+
+async function clearAllCaches() {
+  log('\n🧹 Clearing all caches and build files...', colors.yellow);
+  await clearStrapiCache();
+  await clearFrontendBuild();
 }
 
 async function buildFrontend() {
@@ -215,13 +226,13 @@ async function gitAddCommitPush() {
 }
 
 async function runFullDeployWorkflow() {
-  log('\n🚀 Running full deploy workflow: manage tags → import → clear cache → build → commit → push', colors.bright);
+  log('\n🚀 Running full deploy workflow: manage tags → import → clear caches → build → commit → push', colors.bright);
   
   try {
     await startStrapi();
     await manageTags();
     await importPosts();
-    await clearStrapiCache();
+    await clearAllCaches();
     await buildFrontend();
     await gitAddCommitPush();
     log('\n🎉 Full deployment completed successfully!', colors.green);
@@ -233,13 +244,13 @@ async function runFullDeployWorkflow() {
 }
 
 async function runDefaultWorkflow() {
-  log('\n🔄 Running default workflow: manage tags → import → clear cache → build', colors.bright);
+  log('\n🔄 Running default workflow: manage tags → import → clear caches → build', colors.bright);
   
   try {
     await startStrapi();
     await manageTags();
     await importPosts();
-    await clearStrapiCache();
+    await clearAllCaches();
     await buildFrontend();
     log('\n🎉 Default workflow completed successfully!', colors.green);
   } catch (error) {
@@ -253,12 +264,12 @@ async function showMenu() {
   log('╭───────────────────────────────────────────────────────╮', colors.cyan);
   log('│                🏗️  Website Management                 │', colors.cyan);
   log('├───────────────────────────────────────────────────────┤', colors.cyan);
-  log('│  1. 🚀 Run Default Workflow (tags→import→cache→build)', colors.white);
-  log('│  2. 🌐 Full Deploy (tags→import→cache→build→commit→push)', colors.yellow);
+  log('│  1. 🚀 Run Default Workflow (tags→import→caches→build)', colors.white);
+  log('│  2. 🌐 Full Deploy (tags→import→caches→build→commit→push)', colors.yellow);
   log('│  3. 📤 Export posts (Strapi → markdown)', colors.white);
   log('│  4. 🏷️  Manage tags (normalize & remove duplicates)', colors.white);
   log('│  5. 📥 Import posts (markdown → Strapi)', colors.white);
-  log('│  6. 🧹 Clear Strapi cache', colors.white);
+  log('│  6. 🧹 Clear all caches (Strapi + Frontend)', colors.white);
   log('│  7. 🔨 Build frontend (Next.js static export)', colors.white);
   log('│  8. 📋 Git add + commit + push', colors.white);
   log('│  9. ⚡ Start/Check Strapi server', colors.white);
@@ -321,7 +332,7 @@ async function interactiveMode() {
           await importPosts();
           break;
         case '6':
-          await clearStrapiCache();
+          await clearAllCaches();
           break;
         case '7':
           await buildFrontend();
