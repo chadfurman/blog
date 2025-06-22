@@ -228,11 +228,10 @@ async function runFullDeployWorkflow() {
 }
 
 async function runDefaultWorkflow() {
-  log('\n🔄 Running default workflow: export → manage tags → import → build', colors.bright);
+  log('\n🔄 Running default workflow: manage tags → import → build', colors.bright);
   
   try {
     await startStrapi();
-    await exportPosts();
     await manageTags();
     await importPosts();
     await buildFrontend();
@@ -248,7 +247,7 @@ async function showMenu() {
   log('╭───────────────────────────────────────────────────────╮', colors.cyan);
   log('│                🏗️  Website Management                 │', colors.cyan);
   log('├───────────────────────────────────────────────────────┤', colors.cyan);
-  log('│  1. 🚀 Run Default Workflow (export→tags→import→build)', colors.white);
+  log('│  1. 🚀 Run Default Workflow (tags→import→build)', colors.white);
   log('│  2. 🌐 Full Deploy (workflow + commit + push)', colors.yellow);
   log('│  3. 📤 Export posts (Strapi → markdown)', colors.white);
   log('│  4. 🏷️  Manage tags (normalize & remove duplicates)', colors.white);
