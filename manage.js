@@ -133,6 +133,11 @@ async function importPosts() {
   await runCommand('npm run import-posts', backendPath, 'Importing posts from markdown to Strapi');
 }
 
+async function clearStrapiCache() {
+  const backendPath = path.join(process.cwd(), 'backend');
+  await runCommand('rm -rf .cache/dist && rm -rf dist', backendPath, 'Clearing Strapi cache and build files');
+}
+
 async function buildFrontend() {
   const frontendPath = path.join(process.cwd(), 'frontend');
   await runCommand('npm run build', frontendPath, 'Building frontend with optimized images');
@@ -210,12 +215,13 @@ async function gitAddCommitPush() {
 }
 
 async function runFullDeployWorkflow() {
-  log('\n🚀 Running full deploy workflow: manage tags → import → build → commit → push', colors.bright);
+  log('\n🚀 Running full deploy workflow: manage tags → import → clear cache → build → commit → push', colors.bright);
   
   try {
     await startStrapi();
     await manageTags();
     await importPosts();
+    await clearStrapiCache();
     await buildFrontend();
     await gitAddCommitPush();
     log('\n🎉 Full deployment completed successfully!', colors.green);
@@ -227,12 +233,13 @@ async function runFullDeployWorkflow() {
 }
 
 async function runDefaultWorkflow() {
-  log('\n🔄 Running default workflow: manage tags → import → build', colors.bright);
+  log('\n🔄 Running default workflow: manage tags → import → clear cache → build', colors.bright);
   
   try {
     await startStrapi();
     await manageTags();
     await importPosts();
+    await clearStrapiCache();
     await buildFrontend();
     log('\n🎉 Default workflow completed successfully!', colors.green);
   } catch (error) {
@@ -246,19 +253,20 @@ async function showMenu() {
   log('╭───────────────────────────────────────────────────────╮', colors.cyan);
   log('│                🏗️  Website Management                 │', colors.cyan);
   log('├───────────────────────────────────────────────────────┤', colors.cyan);
-  log('│  1. 🚀 Run Default Workflow (tags→import→build)', colors.white);
-  log('│  2. 🌐 Full Deploy (tags→import→build→commit→push)', colors.yellow);
+  log('│  1. 🚀 Run Default Workflow (tags→import→cache→build)', colors.white);
+  log('│  2. 🌐 Full Deploy (tags→import→cache→build→commit→push)', colors.yellow);
   log('│  3. 📤 Export posts (Strapi → markdown)', colors.white);
   log('│  4. 🏷️  Manage tags (normalize & remove duplicates)', colors.white);
   log('│  5. 📥 Import posts (markdown → Strapi)', colors.white);
-  log('│  6. 🔨 Build frontend (Next.js static export)', colors.white);
-  log('│  7. 📋 Git add + commit + push', colors.white);
-  log('│  8. ⚡ Start/Check Strapi server', colors.white);
-  log('│  9. 📊 Show project status', colors.white);
-  log('│ 10. ❌ Exit', colors.white);
+  log('│  6. 🧹 Clear Strapi cache', colors.white);
+  log('│  7. 🔨 Build frontend (Next.js static export)', colors.white);
+  log('│  8. 📋 Git add + commit + push', colors.white);
+  log('│  9. ⚡ Start/Check Strapi server', colors.white);
+  log('│ 10. 📊 Show project status', colors.white);
+  log('│ 11. ❌ Exit', colors.white);
   log('╰───────────────────────────────────────────────────────╯', colors.cyan);
   
-  const choice = await prompt('\nEnter your choice (1-10): ');
+  const choice = await prompt('\nEnter your choice (1-11): ');
   return choice.trim();
 }
 
@@ -313,22 +321,25 @@ async function interactiveMode() {
           await importPosts();
           break;
         case '6':
-          await buildFrontend();
+          await clearStrapiCache();
           break;
         case '7':
-          await gitAddCommitPush();
+          await buildFrontend();
           break;
         case '8':
-          await startStrapi();
+          await gitAddCommitPush();
           break;
         case '9':
-          await showStatus();
+          await startStrapi();
           break;
         case '10':
+          await showStatus();
+          break;
+        case '11':
           log('\n👋 Goodbye!', colors.green);
           process.exit(0);
         default:
-          log('❌ Invalid choice. Please enter 1-10.', colors.red);
+          log('❌ Invalid choice. Please enter 1-11.', colors.red);
       }
       
       if (choice !== '9') {
