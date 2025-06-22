@@ -210,11 +210,10 @@ async function gitAddCommitPush() {
 }
 
 async function runFullDeployWorkflow() {
-  log('\n🚀 Running full deploy workflow: export → manage tags → import → build → commit → push', colors.bright);
+  log('\n🚀 Running full deploy workflow: manage tags → import → build → commit → push', colors.bright);
   
   try {
     await startStrapi();
-    await exportPosts();
     await manageTags();
     await importPosts();
     await buildFrontend();
@@ -248,7 +247,7 @@ async function showMenu() {
   log('│                🏗️  Website Management                 │', colors.cyan);
   log('├───────────────────────────────────────────────────────┤', colors.cyan);
   log('│  1. 🚀 Run Default Workflow (tags→import→build)', colors.white);
-  log('│  2. 🌐 Full Deploy (workflow + commit + push)', colors.yellow);
+  log('│  2. 🌐 Full Deploy (tags→import→build→commit→push)', colors.yellow);
   log('│  3. 📤 Export posts (Strapi → markdown)', colors.white);
   log('│  4. 🏷️  Manage tags (normalize & remove duplicates)', colors.white);
   log('│  5. 📥 Import posts (markdown → Strapi)', colors.white);
