@@ -6,6 +6,9 @@ import {ProjectType} from "@/resources/Project";
 import ChadImage from "../../public/chad-no-circle.png"
 import NeumorphismCard from "@/app/_components/NeumorphismContainer";
 import ExportedImage from "next-image-export-optimizer";
+import {services} from "@/data/services";
+import ServiceCard from "@/app/_components/ServiceCard";
+import CTASection from "@/app/_components/CTASection";
 
 function Post(props: { post: PostType }) {
   const {post} = props;
@@ -21,14 +24,18 @@ function Post(props: { post: PostType }) {
 
 function Hero() {
   const headline = <h2
-    className="my-2 mx-auto sm:mx-0 w-fit tracking-[.1em] lg:mt-8 sm:text-2xl md:text-4xl lg:text-8xl">Hi!</h2>
+    className="my-2 mx-auto sm:mx-0 w-fit tracking-[.1em] lg:mt-8 sm:text-2xl md:text-4xl lg:text-8xl">Hi! I&apos;m Chad.</h2>
   const subhead = <h3
-    className="w-fit mx-auto sm:mx-0 tracking-[.1em] my-1 text-highlight/[.9] sm:text-xl md:text-2xl lg:text-4xl">Welcome,
-    traveler
+    className="w-fit mx-auto sm:mx-0 tracking-[.1em] my-1 text-highlight/[.9] sm:text-xl md:text-2xl lg:text-4xl">I help small businesses grow online.
   </h3>
   const visual = <div className="p-20 relative"><ExportedImage alt="Chad Furman" src={ChadImage} fill
                                                                className="object-contain"/></div>
-  const cta = <p className="text-center sm:text-left leading-4">This is a place where I talk about my projects.</p>
+  const cta = <p className="text-center sm:text-left leading-6">
+    Fast, secure WordPress sites. Smart email marketing. E-commerce that converts.
+    I handle the tech so you can focus on your business.
+    <br/>
+    <Link href="/services" className="link-styles">See My Services &gt;&gt;</Link>
+  </p>
   return (
     <div className="sm:h-[30rem] lg:h-[40rem] grid grid-cols-2  grid-flow-dense">
       <div className="my-auto col-start-2 sm:pl-16 md:pl-32 lg:pl-48">
@@ -38,6 +45,19 @@ function Hero() {
       </div>
       {visual}
     </div>
+  );
+}
+
+function ServiceHighlights() {
+  return (
+    <section>
+      <h2>What I Do</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-8">
+        {services.map((service) => (
+          <ServiceCard key={service.id} service={service} variant="summary"/>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -61,7 +81,7 @@ function FeaturedProject(props: { project: ProjectType }) {
 }
 
 async function FeaturedProjects() {
-  const header = <h2>What I&apos;m Building</h2>
+  const header = <h2>What I&apos;ve Built</h2>
   const projects = (await getProjects({})).map((project: ProjectType) =>
     <li key={project.id} className="snap-center"><FeaturedProject project={project}/></li>
   )
@@ -93,22 +113,19 @@ function HorizontalScrollList(props: { header: React.ReactNode, children: React.
 
 }
 
-function AboutMe() {
-  return null;
-}
-
-function NewsletterSignup() {
-  return null;
-}
-
 export default async function Home() {
   return (
     <div className="">
       <Hero/>
+      <ServiceHighlights/>
       <FeaturedProjects/>
       <BlogHighlights/>
-      <AboutMe/>
-      <NewsletterSignup/>
+      <CTASection
+        headline="Ready to grow your business?"
+        description="Let's talk about what you need — whether it's a new WordPress site, better SEO, or email marketing that actually converts."
+        linkText="Contact Me"
+        linkHref="/contact"
+      />
     </div>
   );
 }

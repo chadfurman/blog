@@ -26,7 +26,7 @@ const header_font = Roboto({
 
 export const metadata: Metadata = {
   title: "Chad Furman",
-  description: "Mindful code and creativity.  Blog posts on various topics that interest me",
+  description: "WordPress hosting, SEO, e-commerce, and Klaviyo marketing automation for small businesses and online stores.",
 };
 
 export default function RootLayout({
@@ -44,15 +44,15 @@ export default function RootLayout({
       <div className="col-span-1 md:col-span-2">
         <Link href="/">
           <h1 className="mx-auto m-0 w-fit hover:text-lowlight">Chad&apos;s Website</h1>
-          <h2 className="mx-auto m-0 w-fit text-sm tracking-[0.35em]">Mindful code and creativity</h2>
+          <h2 className="mx-auto m-0 w-fit text-sm tracking-[0.35em]">WordPress &amp; E-Commerce Solutions</h2>
         </Link>
       </div>
       <nav className="primary-nav col-span-3 md:col-span-2 flex flex-row justify-around items-center lg:mt-0 mt-4">
         <Link href="/">Home</Link>
-        {/*<Link href="/about">About</Link>*/}
+        <Link href="/services">Services</Link>
         <Link href="/projects">Projects</Link>
         <Link href="/posts">Blog</Link>
-        {/*<Link href="/contact">Contact</Link>*/}
+        <Link href="/contact">Contact</Link>
 
       </nav>
       <DynamicLightDarkToggle/>
