@@ -61,24 +61,17 @@ export default function ContactForm() {
 
   if (submitted) {
     return (
-      <>
-        <CardStatic className="p-8 sm:p-12 text-center my-12">
-          <h2 className="!mt-0">Thank you!</h2>
-          <p>
-            I&apos;ve received your message and will get back to you within 1-2
-            business days.
-          </p>
-        </CardStatic>
-        <p className="text-center text-sm text-muted mt-4 mb-12">
-          Prefer email? Reach me directly at{" "}
-          <a href="mailto:chad@chadfurman.com" className="link-styles">chad@chadfurman.com</a>
+      <CardStatic className="p-8 sm:p-12 text-center my-12">
+        <h2 className="!mt-0">Thank you!</h2>
+        <p>
+          I&apos;ve received your message and will get back to you within 1-2
+          business days.
         </p>
-      </>
+      </CardStatic>
     );
   }
 
   return (
-    <>
     <CardStatic className="p-8 sm:p-12 my-12 max-w-2xl mx-auto">
       <h2 className="!mt-0 text-center">Get in Touch</h2>
       <p className="text-center text-muted">
@@ -154,10 +147,5 @@ export default function ContactForm() {
         </div>
       </form>
     </CardStatic>
-    <p className="text-center text-sm text-muted mt-4 mb-12">
-      Prefer email? Reach me directly at{" "}
-      <a href="mailto:chad@chadfurman.com" className="link-styles">chad@chadfurman.com</a>
-    </p>
-    </>
   );
 }

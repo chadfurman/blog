@@ -15,25 +15,31 @@ import {
 function StepIndicator({
   current,
   total,
+  onStepClick,
 }: {
   current: number;
   total: number;
+  onStepClick: (step: number) => void;
 }) {
   return (
     <div className="flex items-center justify-center gap-2 mb-8">
       {Array.from({ length: total }, (_, i) => (
         <div key={i} className="flex items-center gap-2">
-          <div
+          <button
+            type="button"
+            onClick={() => i + 1 < current && onStepClick(i + 1)}
+            disabled={i + 1 >= current}
             className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
               i + 1 === current
                 ? "bg-primary text-white"
                 : i + 1 < current
-                  ? "bg-primary/20 text-primary"
+                  ? "bg-primary/20 text-primary cursor-pointer hover:bg-primary/30"
                   : "bg-foreground/10 text-muted"
-            }`}
+            } ${i + 1 >= current ? "" : ""}`.trim()}
+            aria-label={i + 1 < current ? `Go back to step ${i + 1}` : `Step ${i + 1}`}
           >
             {i + 1}
-          </div>
+          </button>
           {i < total - 1 && (
             <div
               className={`w-8 h-0.5 ${
@@ -183,7 +189,7 @@ export default function QuoteExplorer() {
 
   return (
     <CardStatic className="p-6 sm:p-8 max-w-2xl mx-auto">
-      <StepIndicator current={step} total={totalSteps} />
+      <StepIndicator current={step} total={totalSteps} onStepClick={(s) => setStep(s)} />
 
       <div className="min-h-[280px]">
         {/* Step 1: What can I help with? */}
