@@ -395,8 +395,8 @@ export default function QuoteExplorer() {
                   className="mt-1 accent-primary"
                 />
                 <span>
-                  Get a 10% discount on your first year + occasional design,
-                  performance, and marketing tips
+                  Subscribe to my newsletter for design, performance, and
+                  marketing tips (and get 10% off your first year)
                 </span>
               </label>
 
