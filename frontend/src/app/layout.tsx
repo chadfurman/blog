@@ -28,6 +28,13 @@ const header_font = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "Chad Furman",
   description: "WordPress hosting, SEO, e-commerce, and Klaviyo marketing automation for small businesses and online stores.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
