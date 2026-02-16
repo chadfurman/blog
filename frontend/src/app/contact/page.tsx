@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div>
+    <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
       <Suspense fallback={<div className="text-center my-12">Loading...</div>}>
         <ContactForm />
       </Suspense>

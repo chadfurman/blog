@@ -65,7 +65,7 @@ export default async function Page({params}: PageProps) {
     return <PostBlock key={block.id} block={block}/>;
   });
   return (
-    <div className="p-4">
+    <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
       <h1>{post.title}</h1>
       <p>{post.description}</p>
       {blocks}

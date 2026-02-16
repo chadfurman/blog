@@ -4,7 +4,7 @@
     h1 {
         color: var(--highlight);
         @apply font-normal;
-        @apply leading-3;
+        @apply leading-tight;
         @apply text-2xl;
         @apply mt-8;
         @apply mb-4;
@@ -14,7 +14,7 @@
     h2 {
         color: var(--highlight);
         @apply font-normal;
-        @apply leading-3;
+        @apply leading-tight;
         @apply text-xl;
         @apply mt-8;
         @apply mb-4;
@@ -23,7 +23,7 @@
     h3 {
         color: var(--highlight);
         @apply font-normal;
-        @apply leading-3;
+        @apply leading-tight;
         @apply text-base;
         @apply font-normal;
         @apply mt-8;
@@ -33,7 +33,7 @@
     h4 {
         color: var(--highlight);
         @apply font-normal;
-        @apply leading-3;
+        @apply leading-tight;
         @apply text-base;
         @apply font-light;
         @apply mt-8;
@@ -43,7 +43,7 @@
     h5 {
         color: var(--highlight);
         @apply font-normal;
-        @apply leading-3;
+        @apply leading-tight;
         @apply text-base;
         @apply font-light;
         @apply italic;
@@ -54,7 +54,7 @@
     h6 {
         color: var(--highlight);
         @apply font-normal;
-        @apply leading-3;
+        @apply leading-tight;
         @apply text-base;
         @apply font-light;
         @apply italic;
@@ -68,39 +68,23 @@
 @tailwind utilities;
 
 :root {
-    --background: 3 7 18; /* theme('colors.gray.950'); */
-    --foreground: 244 244 245; /* theme('colors.zinc.100'); */
-    --lowlight: 99 102 241; /* theme('colors.indigo.500'); */
-    --highlight: 244 244 245; /* theme('colors.zinc.100'); */
-    --header-font-weight: 500;
-    --body-font-weight: 300;
-    --inset-box-shadow-highlight: 0 0 0;
-    --inset-box-shadow-lowlight: 255 255 255;
-    --outset-box-shadow-highlght: 255 255 255;
-    --outset-box-shadow-lowlight: 0 0 0;
-}
-
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) {
-    --background: 212 212 216; /* theme('colors.zinc.300'); */
-    --foreground: 3 7 18; /*theme('colors.gray.950');*/
-    /*--lowlight: 250 250 250; !*theme('colors.zinc.50');*!*/
-    --lowlight: 120 114 204; /*theme('colors.zinc.50');*/
-    /*177, 175, 204*/
-    --highlight: 30 27 75; /*theme('colors.indigo.950');*/
+    --background: 255 255 255;       /* #FFFFFF - white */
+    --background-alt: 248 250 252;   /* #F8FAFC - slate-50 */
+    --background-warm: 240 247 255;  /* #F0F7FF - soft blue wash */
+    --foreground: 30 41 59;          /* slate-800 */
+    --primary: 37 99 235;            /* blue-600 */
+    --accent: 13 148 136;            /* #0D9488 - teal-600 */
+    --muted: 100 116 139;            /* slate-500 */
+    --highlight: 15 23 42;           /* slate-900 */
     --header-font-weight: 700;
-    --body-font-weight: 500;
-    --inset-box-shadow-highlight: 0 0 0;
-    --inset-box-shadow-lowlight: 255 255 255;
-    --outset-box-shadow-highlght: 0 0 0;
-    --outset-box-shadow-lowlight: 0 0 0;
+    --body-font-weight: 400;
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --card-shadow-hover: 0 8px 25px rgba(0,0,0,0.12);
+    --footer-bg: 15 23 42;          /* slate-900 */
 }
 
 *, *::before, *::after {
     box-sizing: border-box;
-    /*border: 2px solid red;*/
-    @apply duration-200;
-    @apply ease-in-out;
-    transition-property: text-decoration-color;
 }
 
 html, body {
@@ -112,7 +96,7 @@ body {
     color: rgb(var(--foreground));
     background: rgb(var(--background));
     font-family: var(--font-body), sans-serif;
-    font-weight: 300;
+    font-weight: 400;
     @apply text-base;
     @apply tracking-wide;
     @apply leading-7;
@@ -131,7 +115,7 @@ blockquote {
     @apply my-6;
     @apply pl-4;
     @apply border-l-4;
-    @apply border-lowlight;
+    @apply border-primary/30;
     @apply italic;
     color: rgba(var(--foreground), 0.8);
     font-style: italic;
@@ -154,15 +138,23 @@ li {
     @apply underline-offset-4;
     @apply underline;
     color: rgb(var(--highlight));
-    /*text-decoration-color: rgb(var(--lowlight));*/
+    /*text-decoration-color: rgb(var(--primary));*/
     @apply transition-colors;
     @apply ease-in-out;
     @apply cursor-pointer;
 }
 
 .link-styles:hover, .link-styles:focus {
-    color: rgb(var(--lowlight));
-    text-decoration-color: rgb(var(--lowlight));
+    color: rgb(var(--primary));
+    text-decoration-color: rgb(var(--primary));
+}
+
+.card-interactive {
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 200ms ease-in-out, transform 200ms ease-in-out, border-color 200ms ease-in-out;
+}
+.card-interactive:hover {
+    box-shadow: var(--card-shadow-hover);
 }
 
 p {
@@ -177,14 +169,14 @@ p {
     }
 
     /*a:hover, a:focus {*/
-    /*    color: rgb(var(--lowlight));*/
-    /*    text-decoration-color: rgb(var(--lowlight));*/
+    /*    color: rgb(var(--primary));*/
+    /*    text-decoration-color: rgb(var(--primary));*/
     /*}*/
 }
 
 hr {
     @apply border-dotted;
-    @apply border-lowlight;
+    @apply border-primary/20;
     @apply my-8;
 }
 
@@ -195,7 +187,7 @@ code {
     @apply px-1;
     @apply py-0.5;
     @apply rounded;
-    background-color: rgba(var(--lowlight), 0.1);
+    background-color: rgba(var(--primary), 0.15);
     color: rgb(var(--highlight));
     font-weight: 500;
 }
@@ -207,8 +199,8 @@ pre {
     @apply my-6;
     @apply text-sm;
     @apply leading-relaxed;
-    background-color: rgba(var(--foreground), 0.05);
-    border: 1px solid rgba(var(--lowlight), 0.2);
+    background-color: rgba(var(--foreground), 0.03);
+    border: 1px solid rgba(var(--primary), 0.3);
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -222,17 +214,17 @@ pre code {
     line-height: 1.6;
 }
 
-/* Prism.js syntax highlighting theme - Enhanced for C/C++ macros */
+/* Prism.js syntax highlighting theme - Light theme (GitHub-inspired) */
 .token.comment,
 .token.prolog,
 .token.doctype,
 .token.cdata {
-    color: #7c7c7c;
+    color: #6a737d;
     font-style: italic;
 }
 
 .token.punctuation {
-    color: #c5c8c6;
+    color: #24292e;
 }
 
 .token.property,
@@ -240,12 +232,12 @@ pre code {
 .token.constant,
 .token.symbol,
 .token.deleted {
-    color: #e06c75;
+    color: #d73a49;
 }
 
 .token.boolean,
 .token.number {
-    color: #d19a66;
+    color: #0969da;
 }
 
 .token.selector,
@@ -254,7 +246,7 @@ pre code {
 .token.char,
 .token.builtin,
 .token.inserted {
-    color: #98c379;
+    color: #0a3069;
 }
 
 .token.operator,
@@ -263,24 +255,24 @@ pre code {
 .language-css .token.string,
 .style .token.string,
 .token.variable {
-    color: #56b6c2;
+    color: #1f2328;
 }
 
 .token.atrule,
 .token.attr-value,
 .token.function,
 .token.class-name {
-    color: #61afef;
+    color: #8250df;
 }
 
 .token.keyword {
-    color: #c678dd;
+    color: #cf222e;
     font-weight: 600;
 }
 
 .token.regex,
 .token.important {
-    color: #be5046;
+    color: #d73a49;
 }
 
 .token.important,
@@ -299,145 +291,54 @@ pre code {
 /* Enhanced C/C++ preprocessor and macro highlighting */
 .token.macro,
 .token.directive {
-    color: #e5c07b !important;
+    color: #8b3500;
     font-weight: 500;
-    text-shadow: 0 0 2px rgba(229, 192, 123, 0.3);
 }
 
 .token.directive-hash {
-    color: #e5c07b !important;
+    color: #8b3500;
     font-weight: 500;
 }
 
 /* Specific macro keywords */
 .language-c .token.directive.keyword,
 .language-cpp .token.directive.keyword {
-    color: #ff7b72 !important;
+    color: #d73a49;
     font-weight: 500;
 }
 
 /* #define, #if, #ifdef, etc. */
 .language-c .token.keyword.directive,
 .language-cpp .token.keyword.directive {
-    color: #ff7b72 !important;
+    color: #d73a49;
     font-weight: 500;
 }
 
 /* Macro parameters and content */
 .language-c .token.macro-name,
 .language-cpp .token.macro-name {
-    color: #ffa657 !important;
+    color: #7c3500;
     font-weight: 500;
 }
 
 /* Backslash line continuations in macros */
 .language-c .token.punctuation.important,
 .language-cpp .token.punctuation.important {
-    color: #ff7b72;
+    color: #d73a49;
     font-weight: bold;
 }
 
 /* Rust specific highlighting */
 .language-rust .token.lifetime,
 .language-rust .token.attribute {
-    color: #f39c12;
+    color: #8b3500;
 }
 
 .language-rust .token.macro {
-    color: #e74c3c;
+    color: #d73a49;
     font-weight: 600;
 }
 
-/* Light theme syntax highlighting adjustments */
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) {
-    /* Light theme code adjustments */
-}
-
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) pre {
-    background-color: rgba(var(--background), 0.05);
-    border-color: rgba(var(--lowlight), 0.3);
-}
-
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) code {
-    background-color: rgba(var(--lowlight), 0.15);
-}
-
-/* Light theme token colors - all with !important for proper overrides */
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.comment,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.prolog,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.doctype,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.cdata {
-    color: #6a737d !important;
-}
-
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.punctuation {
-    color: #24292e !important;
-}
-
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.property,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.tag,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.constant,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.symbol {
-    color: #d73a49 !important;
-}
-
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.boolean,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.number {
-    color: #0969da !important;
-}
-
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.string,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.char {
-    color: #0a3069 !important;
-}
-
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.keyword {
-    color: #cf222e !important;
-    font-weight: 600;
-}
-
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.function,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.class-name {
-    color: #8250df !important;
-}
-
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.operator,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.entity,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.url,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-css .token.string,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .style .token.string,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.variable {
-    color: #1f2328 !important;
-}
-
-/* Light theme macro highlighting - much darker for better readability */
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.macro,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.directive {
-    color: #8b3500 !important;
-    font-weight: 500;
-    text-shadow: none;
-}
-
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-c .token.directive.keyword,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-cpp .token.directive.keyword,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-c .token.keyword.directive,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-cpp .token.keyword.directive {
-    color: #d73a49 !important;
-    font-weight: 500;
-}
-
-/* Light theme macro-name fix - override the bright orange */
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-c .token.macro-name,
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .language-cpp .token.macro-name {
-    color: #7c3500 !important;
-    font-weight: 500;
-}
-
-/* Light theme directive-hash fix - override the bright yellow */
-:root:has(#theme-toggle-button>input[type="checkbox"]:not(:checked)) .token.directive-hash {
-    color: #8b3500 !important;
-    font-weight: 500;
-}
 
 /* Language label styling */
 pre[class*="language-"]::before {
@@ -445,7 +346,7 @@ pre[class*="language-"]::before {
     position: absolute;
     top: 0;
     right: 0;
-    background: rgba(var(--lowlight), 0.8);
+    background: rgba(var(--primary), 0.8);
     color: rgb(var(--background));
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
@@ -480,12 +381,12 @@ pre::-webkit-scrollbar-track {
 }
 
 pre::-webkit-scrollbar-thumb {
-    background: rgba(var(--lowlight), 0.5);
+    background: rgba(var(--primary), 0.5);
     border-radius: 4px;
 }
 
 pre::-webkit-scrollbar-thumb:hover {
-    background: rgba(var(--lowlight), 0.7);
+    background: rgba(var(--primary), 0.7);
 }
 
 /* Form element styles */
@@ -501,9 +402,10 @@ textarea {
     @apply leading-7;
     @apply tracking-wide;
     @apply my-2;
-    background: rgba(var(--foreground), 0.05);
+    background: rgba(var(--foreground), 0.08);
     color: rgb(var(--foreground));
-    border: 1px solid rgba(var(--lowlight), 0.3);
+    border: 1px solid rgba(var(--primary), 0.4);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
     font-family: var(--font-body), sans-serif;
     font-weight: var(--body-font-weight);
     outline: none;
@@ -514,8 +416,8 @@ input[type="text"]:focus,
 input[type="email"]:focus,
 select:focus,
 textarea:focus {
-    border-color: rgb(var(--lowlight));
-    box-shadow: 0 0 0 2px rgba(var(--lowlight), 0.15);
+    border-color: rgb(var(--primary));
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.06), 0 0 0 3px rgba(var(--primary), 0.15);
 }
 
 input[type="text"]::placeholder,
@@ -551,7 +453,7 @@ button[type="submit"] {
     @apply tracking-wide;
     @apply cursor-pointer;
     @apply mt-4;
-    background: rgb(var(--lowlight));
+    background: rgb(var(--primary));
     color: rgb(var(--background));
     border: 1px solid transparent;
     transition: opacity 0.2s ease-in-out;

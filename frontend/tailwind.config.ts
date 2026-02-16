@@ -10,9 +10,14 @@ export default {
     extend: {
       colors: {
         background: "rgb(var(--background))",
+        "background-alt": "rgb(var(--background-alt))",
+        "background-warm": "rgb(var(--background-warm))",
         foreground: "rgb(var(--foreground))",
-        lowlight: "rgb(var(--lowlight))",
+        primary: "rgb(var(--primary))",
+        accent: "rgb(var(--accent))",
+        muted: "rgb(var(--muted))",
         highlight: "rgb(var(--highlight))",
+        "footer-bg": "rgb(var(--footer-bg))",
         transparent: 'transparent',
         current: 'currentColor',
       },

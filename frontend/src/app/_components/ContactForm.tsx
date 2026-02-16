@@ -2,12 +2,38 @@
 
 import { useState, FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
-import NeumorphismCard from "@/app/_components/NeumorphismContainer";
+import { CardStatic } from "@/app/_components/Card";
 import { services } from "@/data/services";
+
+const NEEDS_LABELS: Record<string, string> = {
+  "new-website": "a new website",
+  "sell-online": "selling online",
+  "fix-site": "fixing/improving an existing site",
+  "grow-sales": "growing sales & marketing",
+  "existing-site": "help with an existing site",
+  "online-store": "an online store",
+};
 
 export default function ContactForm() {
   const searchParams = useSearchParams();
-  const preselected = searchParams.get("service") || "";
+  const preselectedService = searchParams.get("service") || "";
+  const preselectedServices = searchParams.get("services") || "";
+  const preselectedNeeds = searchParams.get("needs") || "";
+
+  const serviceIds = preselectedServices
+    ? preselectedServices.split(",")
+    : preselectedService
+      ? [preselectedService]
+      : [];
+  const needIds = preselectedNeeds ? preselectedNeeds.split(",") : [];
+
+  const quizContext =
+    needIds.length > 0
+      ? needIds
+          .map((n) => NEEDS_LABELS[n])
+          .filter(Boolean)
+          .join(", ")
+      : "";
 
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -35,22 +61,35 @@ export default function ContactForm() {
 
   if (submitted) {
     return (
-      <NeumorphismCard className="p-8 sm:p-12 text-center my-12">
-        <h2 className="!mt-0">Thank you!</h2>
-        <p>
-          I&apos;ve received your message and will get back to you within 1-2
-          business days.
+      <>
+        <CardStatic className="p-8 sm:p-12 text-center my-12">
+          <h2 className="!mt-0">Thank you!</h2>
+          <p>
+            I&apos;ve received your message and will get back to you within 1-2
+            business days.
+          </p>
+        </CardStatic>
+        <p className="text-center text-sm text-muted mt-4 mb-12">
+          Prefer email? Reach me directly at{" "}
+          <a href="mailto:chad@chadfurman.com" className="link-styles">chad@chadfurman.com</a>
         </p>
-      </NeumorphismCard>
+      </>
     );
   }
 
   return (
-    <NeumorphismCard className="p-8 sm:p-12 my-12 max-w-2xl mx-auto">
+    <>
+    <CardStatic className="p-8 sm:p-12 my-12 max-w-2xl mx-auto">
       <h2 className="!mt-0 text-center">Get in Touch</h2>
-      <p className="text-center">
-        Tell me about your project and I&apos;ll follow up with a plan.
+      <p className="text-center text-muted">
+        Fill out the form below and I&apos;ll get back to you within one business day.
       </p>
+
+      {quizContext && (
+        <p className="text-sm text-center text-muted italic mt-2">
+          Based on your quiz: you&apos;re looking for {quizContext}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="mt-8 text-left">
         <input
@@ -58,9 +97,7 @@ export default function ContactForm() {
           name="access_key"
           value={process.env.NEXT_PUBLIC_WEB3FORMS_KEY || ""}
         />
-        {/* Web3Forms bot check */}
         <input type="checkbox" name="botcheck" className="hidden" />
-        {/* Honeypot — hidden from humans, bots fill it and get rejected */}
         <input
           type="text"
           name="b_website"
@@ -91,7 +128,7 @@ export default function ContactForm() {
 
         <label className="block mb-4">
           <span className="text-sm font-medium">Service Interest</span>
-          <select name="service" defaultValue={preselected}>
+          <select name="service" defaultValue={serviceIds[0] || ""}>
             <option value="">Select a service (optional)</option>
             {services.map((s) => (
               <option key={s.id} value={s.id}>
@@ -116,6 +153,11 @@ export default function ContactForm() {
           </button>
         </div>
       </form>
-    </NeumorphismCard>
+    </CardStatic>
+    <p className="text-center text-sm text-muted mt-4 mb-12">
+      Prefer email? Reach me directly at{" "}
+      <a href="mailto:chad@chadfurman.com" className="link-styles">chad@chadfurman.com</a>
+    </p>
+    </>
   );
 }

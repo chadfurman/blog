@@ -1,65 +1,86 @@
 import Link from "next/link";
-import NeumorphismCard from "@/app/_components/NeumorphismContainer";
-import { ServiceTier } from "@/data/services";
+import ExportedImage from "next-image-export-optimizer";
+import Card from "@/app/_components/Card";
+import { Service } from "@/data/services";
 
 interface ServiceCardProps {
-  service: ServiceTier;
+  service: Service;
   variant: "summary" | "full";
 }
 
-function SummaryCard({ service }: { service: ServiceTier }) {
+function SummaryCard({ service }: { service: Service }) {
   return (
-    <Link href={`/services#${service.id}`}>
-      <NeumorphismCard className="p-6 h-full flex flex-col justify-between">
+    <Link href={`/services/${service.slug}`}>
+      <Card className="p-6 h-full flex flex-col justify-between">
         <div>
+          {service.icon && (
+            <div className="flex justify-center mb-4">
+              <ExportedImage
+                src={service.icon}
+                alt={service.name}
+                width={80}
+                height={80}
+                className="object-contain"
+              />
+            </div>
+          )}
           <h3 className="!mt-0 !mb-2">{service.name}</h3>
-          <p className="text-sm opacity-80">{service.tagline}</p>
+          <p className="text-sm text-muted">{service.tagline}</p>
         </div>
         <div className="mt-4">
-          <p className="text-sm !mb-1">
-            <span className="font-medium">Setup:</span> {service.setup}
-          </p>
-          <p className="text-sm !mb-2">
-            <span className="font-medium">Monthly:</span> {service.monthly}
-          </p>
+          <p className="text-sm font-medium !mb-1 text-accent">{service.startingAt}</p>
+          {service.setupFrom && (
+            <p className="text-sm text-muted !mb-2">{service.setupFrom}</p>
+          )}
           <p className="link-styles text-sm">Learn More &gt;&gt;</p>
         </div>
-      </NeumorphismCard>
+      </Card>
     </Link>
   );
 }
 
-function FullCard({ service }: { service: ServiceTier }) {
+function FullCard({ service }: { service: Service }) {
   return (
-    <NeumorphismCard id={service.id} className="p-8 text-left scroll-mt-24">
-      <h3 className="!mt-0 !mb-2 text-center">{service.name}</h3>
-      <p className="text-center opacity-80">{service.tagline}</p>
-      <div className="grid grid-cols-2 gap-4 my-6 text-center">
-        <div>
-          <p className="text-sm opacity-70 !mb-1">Setup</p>
-          <p className="font-medium !mt-0">{service.setup}</p>
+    <Link href={`/services/${service.slug}`} className="cursor-pointer">
+      <Card className="p-8 h-full flex flex-col" style={{ textAlign: "left" }}>
+        {service.icon && (
+          <div className="flex justify-center mb-4">
+            <ExportedImage
+              src={service.icon}
+              alt={service.name}
+              width={96}
+              height={96}
+              className="object-contain"
+            />
+          </div>
+        )}
+        <h3 className="!mt-0 !mb-2 text-center">{service.name}</h3>
+        <p className="text-center text-muted">{service.tagline}</p>
+        <div className="my-4 text-center">
+          <p className="font-medium !mb-1 text-accent">{service.startingAt}</p>
+          {service.setupFrom && (
+            <p className="text-sm text-muted !mt-0">{service.setupFrom}</p>
+          )}
         </div>
-        <div>
-          <p className="text-sm opacity-70 !mb-1">Monthly</p>
-          <p className="font-medium !mt-0">{service.monthly}</p>
+        <ul className="list-disc pl-6 my-4 flex-1">
+          {service.features.map((feature) => (
+            <li key={feature} className="text-sm my-1">
+              {feature}
+            </li>
+          ))}
+        </ul>
+        {service.callouts && service.callouts.length > 0 && (
+          <div className="my-4 text-sm text-muted italic text-center">
+            {service.callouts.map((callout) => (
+              <p key={callout} className="!my-1">{callout}</p>
+            ))}
+          </div>
+        )}
+        <div className="text-center mt-4">
+          <span className="link-styles">Learn More &gt;&gt;</span>
         </div>
-      </div>
-      <ul className="list-disc pl-6 my-4">
-        {service.features.map((feature) => (
-          <li key={feature} className="text-sm my-1">
-            {feature}
-          </li>
-        ))}
-      </ul>
-      <div className="text-center mt-6">
-        <Link
-          href={`/contact?service=${service.id}`}
-          className="link-styles"
-        >
-          Get Started &gt;&gt;
-        </Link>
-      </div>
-    </NeumorphismCard>
+      </Card>
+    </Link>
   );
 }
 

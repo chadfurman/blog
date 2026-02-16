@@ -6,6 +6,7 @@
   "scripts": {
     "build": "strapi build",
     "deploy": "strapi deploy",
+    "dev": "strapi develop",
     "develop": "strapi develop",
     "seed:example": "node ./scripts/seed.js",
     "start": "strapi start",
@@ -38,7 +39,7 @@
     "typescript": "^5"
   },
   "engines": {
-    "node": ">=18.0.0 <=22.x.x",
+    "node": ">=23.x.x",
     "npm": ">=6.0.0"
   },
   "strapi": {

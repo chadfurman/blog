@@ -1,7 +1,7 @@
 import {getProjects} from "@/api/getProjects";
 import Link from "next/link";
 import {PostType} from "@/resources/Post";
-import NeumorphismContainer from "@/app/_components/NeumorphismContainer";
+import Card from "@/app/_components/Card";
 
 export async function generateStaticParams() {
   const projects = await getProjects();
@@ -23,7 +23,7 @@ export default async function Page({params}: PageProps) {
   }))[0];
 
   return (
-    <div className="p-4">
+    <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
       <h1>{project.title}</h1>
       <p>{project.description}</p>
       <hr/>
@@ -33,11 +33,11 @@ export default async function Page({params}: PageProps) {
           return (
             <li key={article.id}>
               <Link href={`/posts/${article.slug}`}>
-                <NeumorphismContainer>
+                <Card>
                   <h3>{article.title}</h3>
                   <p>{article.description}</p>
                   <p className="link-styles">View Post &gt;&gt;</p>
-                </NeumorphismContainer>
+                </Card>
               </Link>
             </li>
           );
