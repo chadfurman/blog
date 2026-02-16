@@ -82,9 +82,12 @@ export default function ServicesPage() {
         <div className="bg-background-alt">
           <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto py-12">
             <h2 className="text-center">Compare Services</h2>
-            <p className="text-center text-muted max-w-lg mx-auto !mb-8">
+            <p className="text-center text-muted max-w-lg mx-auto !mb-6">
               A quick look at what&apos;s included across each service.
             </p>
+            <div className="mb-6">
+              <BillingToggle />
+            </div>
             <ComparisonTable />
           </div>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { CardStatic } from "@/app/_components/Card";
 import { services, getPrice } from "@/data/services";
 import { useBilling } from "@/app/_components/BillingToggle";
@@ -24,14 +25,14 @@ interface Row {
 const serviceKeys = ["wordpress-care", "ecommerce", "marketing", "starter-site"] as const;
 
 const rows: Row[] = [
-  { feature: "Managed Hosting", values: { "wordpress-care": true, ecommerce: true, marketing: false, "starter-site": false } },
-  { feature: "Security & Backups", values: { "wordpress-care": true, ecommerce: true, marketing: false, "starter-site": false } },
-  { feature: "Plugin & Theme Updates", values: { "wordpress-care": true, ecommerce: true, marketing: false, "starter-site": false } },
+  { feature: "Managed Hosting", values: { "wordpress-care": true, ecommerce: true, marketing: false, "starter-site": true } },
+  { feature: "Security & Backups", values: { "wordpress-care": true, ecommerce: true, marketing: false, "starter-site": true } },
+  { feature: "Plugin & Theme Updates", values: { "wordpress-care": true, ecommerce: true, marketing: false, "starter-site": true } },
   { feature: "E-Commerce Management", values: { "wordpress-care": false, ecommerce: true, marketing: false, "starter-site": false } },
   { feature: "SEO Optimization", values: { "wordpress-care": false, ecommerce: false, marketing: true, "starter-site": false } },
   { feature: "Email Marketing", values: { "wordpress-care": false, ecommerce: false, marketing: true, "starter-site": false } },
   { feature: "Site Build", values: { "wordpress-care": false, ecommerce: false, marketing: false, "starter-site": true } },
-  { feature: "Monthly Reporting", values: { "wordpress-care": true, ecommerce: true, marketing: true, "starter-site": false } },
+  { feature: "Monthly Reporting", values: { "wordpress-care": true, ecommerce: true, marketing: true, "starter-site": true } },
 ];
 
 function CellDisplay({ value }: { value: CellValue }) {
@@ -53,7 +54,9 @@ function DesktopTable() {
               const svc = services.find((s) => s.id === key)!;
               return (
                 <th key={key} className="text-center py-3 px-4 font-medium">
-                  {svc.name}
+                  <Link href={`/services/${svc.slug}`} className="text-primary hover:underline">
+                    {svc.name}
+                  </Link>
                 </th>
               );
             })}
@@ -96,7 +99,11 @@ function MobileCards() {
         const svc = services.find((s) => s.id === key)!;
         return (
           <CardStatic key={key} className="p-5 text-left">
-            <h3 className="!mt-0 !mb-1 text-center">{svc.name}</h3>
+            <h3 className="!mt-0 !mb-1 text-center">
+              <Link href={`/services/${svc.slug}`} className="text-primary hover:underline">
+                {svc.name}
+              </Link>
+            </h3>
             <p className="text-accent font-medium text-center !mt-0 !mb-4">
               {getPrice(svc, period)}
             </p>
