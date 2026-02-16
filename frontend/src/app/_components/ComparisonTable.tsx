@@ -1,4 +1,8 @@
+"use client";
+
 import { CardStatic } from "@/app/_components/Card";
+import { services, getPrice } from "@/data/services";
+import { useBilling } from "@/app/_components/BillingToggle";
 
 const Check = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgb(var(--primary))" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="inline-block">
@@ -14,28 +18,20 @@ type CellValue = boolean | string;
 
 interface Row {
   feature: string;
-  wpCare: CellValue;
-  ecommerce: CellValue;
-  marketing: CellValue;
-  starterSite: CellValue;
+  values: Record<string, CellValue>;
 }
 
-const rows: Row[] = [
-  { feature: "Managed Hosting", wpCare: true, ecommerce: true, marketing: false, starterSite: false },
-  { feature: "Security & Backups", wpCare: true, ecommerce: true, marketing: false, starterSite: false },
-  { feature: "Plugin & Theme Updates", wpCare: true, ecommerce: true, marketing: false, starterSite: false },
-  { feature: "E-Commerce Management", wpCare: false, ecommerce: true, marketing: false, starterSite: false },
-  { feature: "SEO Optimization", wpCare: false, ecommerce: false, marketing: true, starterSite: false },
-  { feature: "Email Marketing", wpCare: false, ecommerce: false, marketing: true, starterSite: false },
-  { feature: "Site Build", wpCare: false, ecommerce: false, marketing: false, starterSite: true },
-  { feature: "Monthly Reporting", wpCare: true, ecommerce: true, marketing: true, starterSite: false },
-];
+const serviceKeys = ["wordpress-care", "ecommerce", "marketing", "starter-site"] as const;
 
-const services = [
-  { key: "wpCare" as const, name: "WordPress Care", price: "$99/mo" },
-  { key: "ecommerce" as const, name: "E-Commerce", price: "$249/mo" },
-  { key: "marketing" as const, name: "Marketing", price: "$500/mo" },
-  { key: "starterSite" as const, name: "Starter Site", price: "$500" },
+const rows: Row[] = [
+  { feature: "Managed Hosting", values: { "wordpress-care": true, ecommerce: true, marketing: false, "starter-site": false } },
+  { feature: "Security & Backups", values: { "wordpress-care": true, ecommerce: true, marketing: false, "starter-site": false } },
+  { feature: "Plugin & Theme Updates", values: { "wordpress-care": true, ecommerce: true, marketing: false, "starter-site": false } },
+  { feature: "E-Commerce Management", values: { "wordpress-care": false, ecommerce: true, marketing: false, "starter-site": false } },
+  { feature: "SEO Optimization", values: { "wordpress-care": false, ecommerce: false, marketing: true, "starter-site": false } },
+  { feature: "Email Marketing", values: { "wordpress-care": false, ecommerce: false, marketing: true, "starter-site": false } },
+  { feature: "Site Build", values: { "wordpress-care": false, ecommerce: false, marketing: false, "starter-site": true } },
+  { feature: "Monthly Reporting", values: { "wordpress-care": true, ecommerce: true, marketing: true, "starter-site": false } },
 ];
 
 function CellDisplay({ value }: { value: CellValue }) {
@@ -45,37 +41,45 @@ function CellDisplay({ value }: { value: CellValue }) {
 }
 
 function DesktopTable() {
+  const { period } = useBilling();
+
   return (
     <div className="hidden md:block overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-foreground/10">
             <th className="text-left py-3 pr-4 font-medium text-muted">Feature</th>
-            {services.map((svc) => (
-              <th key={svc.key} className="text-center py-3 px-4 font-medium">
-                {svc.name}
-              </th>
-            ))}
+            {serviceKeys.map((key) => {
+              const svc = services.find((s) => s.id === key)!;
+              return (
+                <th key={key} className="text-center py-3 px-4 font-medium">
+                  {svc.name}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>
           {rows.map((row, i) => (
             <tr key={row.feature} className={i % 2 === 0 ? "bg-background-alt/50" : ""}>
               <td className="py-3 pr-4">{row.feature}</td>
-              {services.map((svc) => (
-                <td key={svc.key} className="text-center py-3 px-4">
-                  <CellDisplay value={row[svc.key]} />
+              {serviceKeys.map((key) => (
+                <td key={key} className="text-center py-3 px-4">
+                  <CellDisplay value={row.values[key]} />
                 </td>
               ))}
             </tr>
           ))}
           <tr className="border-t border-foreground/10 font-medium">
             <td className="py-3 pr-4 text-muted">Starting Price</td>
-            {services.map((svc) => (
-              <td key={svc.key} className="text-center py-3 px-4 text-accent">
-                {svc.price}
-              </td>
-            ))}
+            {serviceKeys.map((key) => {
+              const svc = services.find((s) => s.id === key)!;
+              return (
+                <td key={key} className="text-center py-3 px-4 text-accent">
+                  {getPrice(svc, period)}
+                </td>
+              );
+            })}
           </tr>
         </tbody>
       </table>
@@ -84,22 +88,29 @@ function DesktopTable() {
 }
 
 function MobileCards() {
+  const { period } = useBilling();
+
   return (
     <div className="md:hidden grid grid-cols-1 gap-4">
-      {services.map((svc) => (
-        <CardStatic key={svc.key} className="p-5 text-left">
-          <h3 className="!mt-0 !mb-1 text-center">{svc.name}</h3>
-          <p className="text-accent font-medium text-center !mt-0 !mb-4">{svc.price}</p>
-          <ul className="space-y-2">
-            {rows.map((row) => (
-              <li key={row.feature} className="flex items-center gap-2 text-sm">
-                {row[svc.key] ? <Check /> : <Dash />}
-                <span className={row[svc.key] ? "" : "text-muted/60"}>{row.feature}</span>
-              </li>
-            ))}
-          </ul>
-        </CardStatic>
-      ))}
+      {serviceKeys.map((key) => {
+        const svc = services.find((s) => s.id === key)!;
+        return (
+          <CardStatic key={key} className="p-5 text-left">
+            <h3 className="!mt-0 !mb-1 text-center">{svc.name}</h3>
+            <p className="text-accent font-medium text-center !mt-0 !mb-4">
+              {getPrice(svc, period)}
+            </p>
+            <ul className="space-y-2">
+              {rows.map((row) => (
+                <li key={row.feature} className="flex items-center gap-2 text-sm">
+                  {row.values[key] ? <Check /> : <Dash />}
+                  <span className={row.values[key] ? "" : "text-muted/60"}>{row.feature}</span>
+                </li>
+              ))}
+            </ul>
+          </CardStatic>
+        );
+      })}
     </div>
   );
 }

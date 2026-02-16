@@ -5,6 +5,7 @@ import { services } from "@/data/services";
 import ServiceCard from "@/app/_components/ServiceCard";
 import CTASection from "@/app/_components/CTASection";
 import QuoteExplorer from "@/app/_components/QuoteExplorer";
+import { BillingProvider } from "@/app/_components/BillingToggle";
 
 function Hero() {
   return (
@@ -71,37 +72,39 @@ function ServiceHighlights() {
 
 export default async function Home() {
   return (
-    <div>
-      {/* Hero - white background */}
-      <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
-        <Hero />
-      </div>
-
-      {/* Quote Explorer - warm background */}
-      <div className="bg-background-warm">
+    <BillingProvider>
+      <div>
+        {/* Hero - white background */}
         <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
-          <QuoteSection />
+          <Hero />
+        </div>
+
+        {/* Quote Explorer - warm background */}
+        <div className="bg-background-warm">
+          <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
+            <QuoteSection />
+          </div>
+        </div>
+
+        {/* Service Highlights - alt background */}
+        <div className="bg-background-alt">
+          <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
+            <ServiceHighlights />
+          </div>
+        </div>
+
+        {/* CTA - warm background */}
+        <div className="bg-background-warm">
+          <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
+            <CTASection
+              headline="Ready to grow your business?"
+              description="Let's talk about what you need — whether it's a new WordPress site, better SEO, or email marketing that actually converts."
+              linkText="Contact Me"
+              linkHref="/contact"
+            />
+          </div>
         </div>
       </div>
-
-      {/* Service Highlights - alt background */}
-      <div className="bg-background-alt">
-        <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
-          <ServiceHighlights />
-        </div>
-      </div>
-
-      {/* CTA - warm background */}
-      <div className="bg-background-warm">
-        <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
-          <CTASection
-            headline="Ready to grow your business?"
-            description="Let's talk about what you need — whether it's a new WordPress site, better SEO, or email marketing that actually converts."
-            linkText="Contact Me"
-            linkHref="/contact"
-          />
-        </div>
-      </div>
-    </div>
+    </BillingProvider>
   );
 }

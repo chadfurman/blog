@@ -11,6 +11,8 @@ import {
   GoalId,
   QuoteRecommendation,
 } from "@/data/quoteLogic";
+import { getPrice, getSetup } from "@/data/services";
+import { useBilling } from "@/app/_components/BillingToggle";
 
 function StepIndicator({
   current,
@@ -185,6 +187,7 @@ export default function QuoteExplorer() {
     setSubmitting(false);
   }
 
+  const { period } = useBilling();
   const goalDetail = goal && goal !== "other" ? GOAL_DETAILS[goal] : null;
 
   return (
@@ -310,25 +313,21 @@ export default function QuoteExplorer() {
             </h3>
 
             <div className="p-4 rounded-lg border border-primary/20 bg-primary/5 mb-6">
-              <div className="flex justify-between items-start flex-wrap gap-2">
-                <div>
-                  <h4 className="!mt-0 !mb-1 font-semibold">
-                    {recommendation.service.name}
-                  </h4>
-                  <p className="text-sm text-muted !my-0">
-                    {recommendation.reason}
+              <h4 className="!mt-0 !mb-1 font-semibold text-center">
+                {recommendation.service.name}
+              </h4>
+              <p className="text-sm text-muted !my-0 text-center">
+                {recommendation.reason}
+              </p>
+              <div className="text-center mt-3">
+                <p className="text-lg font-semibold text-accent !my-0">
+                  {getPrice(recommendation.service, period)}
+                </p>
+                {getSetup(recommendation.service, period) && (
+                  <p className="text-xs text-muted !my-0">
+                    {getSetup(recommendation.service, period)}
                   </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium !my-0">
-                    {recommendation.service.startingAt}
-                  </p>
-                  {recommendation.service.setupFrom && (
-                    <p className="text-xs text-muted !my-0">
-                      {recommendation.service.setupFrom}
-                    </p>
-                  )}
-                </div>
+                )}
               </div>
             </div>
 

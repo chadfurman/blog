@@ -1,15 +1,65 @@
+export type BillingPeriod = "annual" | "monthly";
+
+export interface ServicePricing {
+  annual: number;
+  monthly: number;
+  /** One-time pricing (e.g. Starter Site) */
+  oneTime?: { annual: number; monthly: number };
+  setupAnnual?: number;
+  setupMonthly?: number;
+  /** For display: e.g. "/mo" or " one-time" */
+  unit: string;
+}
+
 export interface Service {
   id: string;
   slug: string;
   name: string;
   tagline: string;
   description: string;
+  pricing: ServicePricing;
   startingAt: string;
   setupFrom?: string;
   icon?: string;
   features: string[];
   callouts?: string[];
   faq: { q: string; a: string }[];
+}
+
+export function getPrice(service: Service, period: BillingPeriod): string {
+  const p = service.pricing;
+  if (p.oneTime) {
+    const price = period === "annual" ? p.oneTime.annual : p.oneTime.monthly;
+    return `$${price.toLocaleString()}`;
+  }
+  const price = period === "annual" ? p.annual : p.monthly;
+  return `$${price.toLocaleString()}${p.unit}`;
+}
+
+export function getSetup(service: Service, period: BillingPeriod): string | null {
+  const p = service.pricing;
+  if (p.setupAnnual == null && p.setupMonthly == null) return null;
+  if (period === "annual") {
+    return p.setupAnnual === 0
+      ? "Onboarding included"
+      : p.setupAnnual != null
+        ? `$${p.setupAnnual.toLocaleString()} setup`
+        : null;
+  }
+  return p.setupMonthly != null
+    ? `$${p.setupMonthly.toLocaleString()} setup`
+    : null;
+}
+
+export function getSavings(service: Service): string {
+  const p = service.pricing;
+  if (p.oneTime) {
+    const saved = p.oneTime.monthly - p.oneTime.annual;
+    return `Save $${saved.toLocaleString()}`;
+  }
+  const savedPerMonth = p.monthly - p.annual;
+  const savedPerYear = savedPerMonth * 12;
+  return `Save $${savedPerYear.toLocaleString()}/yr`;
 }
 
 export const services: Service[] = [
@@ -21,6 +71,7 @@ export const services: Service[] = [
     icon: "/icon-wordpress-care.png",
     description:
       "Your website is your storefront \u2014 it needs to be fast, secure, and always online. WordPress Care includes managed hosting on enterprise infrastructure, daily backups, security monitoring, hack-fix guarantee, and premium support tokens for site changes and updates.",
+    pricing: { annual: 99, monthly: 149, setupAnnual: 0, setupMonthly: 300, unit: "/mo" },
     startingAt: "From $99/mo (annual)",
     setupFrom: "$300 onboarding \u2014 waived for annual plans",
     features: [
@@ -73,6 +124,7 @@ export const services: Service[] = [
     icon: "/icon-ecommerce.png",
     description:
       "Whether you\u2019re launching your first online store or optimizing an existing one, I build e-commerce experiences that turn browsers into buyers. From WooCommerce to Shopify, I handle catalog setup, payment integration, shipping configuration, and ongoing store management.",
+    pricing: { annual: 249, monthly: 374, setupAnnual: 1500, setupMonthly: 1500, unit: "/mo" },
     startingAt: "Store Care from $249/mo",
     setupFrom: "Store setup from $1,500",
     features: [
@@ -120,6 +172,7 @@ export const services: Service[] = [
     icon: "/icon-growth.png",
     description:
       "Customers don\u2019t find you by accident. Marketing combines SEO and Klaviyo email marketing to drive traffic, nurture leads, and turn one-time buyers into repeat customers \u2014 with clear revenue attribution so you know exactly what\u2019s working.",
+    pricing: { annual: 500, monthly: 1000, setupAnnual: 1500, setupMonthly: 3000, unit: "/mo" },
     startingAt: "From $500/mo (annual) or $250/mo + rev share",
     setupFrom: "Setup from $1,500",
     features: [
@@ -172,6 +225,7 @@ export const services: Service[] = [
     icon: "/icon-starter-site.svg",
     description:
       "You need a website that looks professional, loads fast, and works on every device \u2014 without the agency price tag. Starter Site gets you a polished WordPress site with up to 5 pages, SEO-ready structure, and a contact form, launched within 2 weeks.",
+    pricing: { annual: 0, monthly: 0, oneTime: { annual: 300, monthly: 500 }, unit: "" },
     startingAt: "$500 one-time ($300 with annual care plan)",
     setupFrom: "WordPress Care required from $99/mo",
     features: [

@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import ExportedImage from "next-image-export-optimizer";
 import Card from "@/app/_components/Card";
-import { Service } from "@/data/services";
+import { Service, getPrice, getSetup } from "@/data/services";
+import { useBilling } from "@/app/_components/BillingToggle";
 
 interface ServiceCardProps {
   service: Service;
@@ -9,6 +12,10 @@ interface ServiceCardProps {
 }
 
 function SummaryCard({ service }: { service: Service }) {
+  const { period } = useBilling();
+  const price = getPrice(service, period);
+  const setup = getSetup(service, period);
+
   return (
     <Link href={`/services/${service.slug}`}>
       <Card className="p-6 h-full flex flex-col justify-between">
@@ -28,9 +35,9 @@ function SummaryCard({ service }: { service: Service }) {
           <p className="text-sm text-muted">{service.tagline}</p>
         </div>
         <div className="mt-4">
-          <p className="text-sm font-medium !mb-1 text-accent">{service.startingAt}</p>
-          {service.setupFrom && (
-            <p className="text-sm text-muted !mb-2">{service.setupFrom}</p>
+          <p className="text-sm font-medium !mb-1 text-accent">{price}</p>
+          {setup && (
+            <p className="text-sm text-muted !mb-2">{setup}</p>
           )}
           <p className="link-styles text-sm">Learn More &gt;&gt;</p>
         </div>
@@ -40,6 +47,10 @@ function SummaryCard({ service }: { service: Service }) {
 }
 
 function FullCard({ service }: { service: Service }) {
+  const { period } = useBilling();
+  const price = getPrice(service, period);
+  const setup = getSetup(service, period);
+
   return (
     <Link href={`/services/${service.slug}`} className="cursor-pointer">
       <Card className="p-8 h-full flex flex-col" style={{ textAlign: "left" }}>
@@ -57,9 +68,9 @@ function FullCard({ service }: { service: Service }) {
         <h3 className="!mt-0 !mb-2 text-center">{service.name}</h3>
         <p className="text-center text-muted">{service.tagline}</p>
         <div className="my-4 text-center">
-          <p className="font-medium !mb-1 text-accent">{service.startingAt}</p>
-          {service.setupFrom && (
-            <p className="text-sm text-muted !mt-0">{service.setupFrom}</p>
+          <p className="font-medium !mb-1 text-accent">{price}</p>
+          {setup && (
+            <p className="text-sm text-muted !mt-0">{setup}</p>
           )}
         </div>
         <ul className="list-disc pl-6 my-4 flex-1">
