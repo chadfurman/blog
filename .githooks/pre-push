@@ -1,21 +1,24 @@
 #!/bin/sh
-# Pre-push hook: rebuild frontend/out/ before pushing
-# This ensures the static export is always fresh when deploying via Vercel
+# Pre-push hook: rebuild frontend/out/ and auto-commit before pushing
+# Ensures the static export is always fresh when deploying via Vercel
 
 echo "Pre-push: rebuilding frontend..."
 cd frontend && npm run build
-if [ $? -ne 0 ]; then
+BUILD_EXIT=$?
+cd ..
+
+if [ $BUILD_EXIT -ne 0 ]; then
   echo "Build failed — push aborted."
   exit 1
 fi
-cd ..
 
-# Check if out/ has changes that need to be committed
-if ! git diff --quiet frontend/out/; then
+# Auto-commit any changes to out/
+if ! git diff --quiet frontend/out/ 2>/dev/null; then
+  echo "Build output changed — auto-committing..."
+  git add frontend/out/
+  git commit --no-verify -m "Rebuild frontend output"
   echo ""
-  echo "⚠ frontend/out/ has uncommitted changes after rebuild."
-  echo "  Please commit the updated build output and push again."
-  echo ""
+  echo "Build output committed. Run 'git push' again to include it."
   exit 1
 fi
 
