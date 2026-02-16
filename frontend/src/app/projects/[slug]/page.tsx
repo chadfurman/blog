@@ -2,9 +2,13 @@ import {getProjects} from "@/api/getProjects";
 import Link from "next/link";
 import {PostType} from "@/resources/Post";
 import Card from "@/app/_components/Card";
+import {notFound} from "next/navigation";
 
 export async function generateStaticParams() {
   const projects = await getProjects();
+  if (projects.length === 0) {
+    return [{ slug: "_placeholder" }];
+  }
   return projects.map(project => ({
     slug: project.slug
   }));
@@ -17,10 +21,15 @@ interface PageProps {
 
 export default async function Page({params}: PageProps) {
   const slug = (await params).slug;
-  const project = (await getProjects({
+  const projects = await getProjects({
     filters: {slug: slug},
     populate: ["articles"],
-  }))[0];
+  });
+  const project = projects[0];
+
+  if (!project) {
+    notFound();
+  }
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">

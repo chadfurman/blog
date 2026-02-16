@@ -4,6 +4,7 @@ import {SharedRichTextComponentType} from "@/resources/SharedRichTextComponent";
 import {MDXRemote} from "next-mdx-remote/rsc";
 import {getPosts} from "@/api/getPosts";
 import {getMDXComponents} from "@/mdx-components";
+import {notFound} from "next/navigation";
 
 function SharedMediaBlock() {
   return (
@@ -45,6 +46,9 @@ function PostBlock(props: { block: BlockType }) {
 
 export async function generateStaticParams() {
   const posts = await getPosts();
+  if (posts.length === 0) {
+    return [{ slug: "_placeholder" }];
+  }
   return posts.map(post => ({
     slug: post.slug
   }));
@@ -57,10 +61,16 @@ interface PageProps {
 
 export default async function Page({params}: PageProps) {
   const slug = (await params).slug;
-  const post = (await getPosts({
+  const posts = await getPosts({
     filters: {slug: slug},
     populate: "blocks",
-  }))[0];
+  });
+  const post = posts[0];
+
+  if (!post) {
+    notFound();
+  }
+
   const blocks = post.blocks?.map((block: BlockType) => {
     return <PostBlock key={block.id} block={block}/>;
   });
