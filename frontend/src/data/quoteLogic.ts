@@ -87,7 +87,7 @@ export function getRecommendation(
 ): QuoteRecommendation {
   const wordpressCare = services.find((s) => s.id === "wordpress-care")!;
   const ecommerce = services.find((s) => s.id === "ecommerce")!;
-  const growth = services.find((s) => s.id === "growth")!;
+  const marketing = services.find((s) => s.id === "marketing")!;
   const starterSite = services.find((s) => s.id === "starter-site")!;
 
   if (goal === "new-website") {
@@ -135,7 +135,7 @@ export function getRecommendation(
 
   if (goal === "grow-sales") {
     return {
-      service: growth,
+      service: marketing,
       reason:
         detail === "seo"
           ? "SEO audit and ongoing optimization to get found on Google"

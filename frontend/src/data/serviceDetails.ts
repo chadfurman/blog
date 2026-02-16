@@ -73,9 +73,9 @@ export const serviceDetails: ServiceDetail[] = [
     ],
   },
   {
-    slug: "growth",
+    slug: "marketing",
     heroDescription:
-      "Customers don\u2019t find you by accident. Growth combines SEO and Klaviyo email marketing to drive traffic, nurture leads, and turn one-time buyers into repeat customers \u2014 with clear attribution so you know exactly what\u2019s working.",
+      "Customers don\u2019t find you by accident. Marketing combines SEO and Klaviyo email marketing to drive traffic, nurture leads, and turn one-time buyers into repeat customers \u2014 with clear revenue attribution so you know exactly what\u2019s working.",
     processSteps: [
       {
         title: "Audit",

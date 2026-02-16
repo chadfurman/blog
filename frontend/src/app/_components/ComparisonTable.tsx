@@ -16,25 +16,25 @@ interface Row {
   feature: string;
   wpCare: CellValue;
   ecommerce: CellValue;
-  growth: CellValue;
+  marketing: CellValue;
   starterSite: CellValue;
 }
 
 const rows: Row[] = [
-  { feature: "Managed Hosting", wpCare: true, ecommerce: true, growth: false, starterSite: false },
-  { feature: "Security & Backups", wpCare: true, ecommerce: true, growth: false, starterSite: false },
-  { feature: "Plugin & Theme Updates", wpCare: true, ecommerce: true, growth: false, starterSite: false },
-  { feature: "E-Commerce Management", wpCare: false, ecommerce: true, growth: false, starterSite: false },
-  { feature: "SEO Optimization", wpCare: false, ecommerce: false, growth: true, starterSite: false },
-  { feature: "Email Marketing", wpCare: false, ecommerce: false, growth: true, starterSite: false },
-  { feature: "Site Build", wpCare: false, ecommerce: false, growth: false, starterSite: true },
-  { feature: "Monthly Reporting", wpCare: true, ecommerce: true, growth: true, starterSite: false },
+  { feature: "Managed Hosting", wpCare: true, ecommerce: true, marketing: false, starterSite: false },
+  { feature: "Security & Backups", wpCare: true, ecommerce: true, marketing: false, starterSite: false },
+  { feature: "Plugin & Theme Updates", wpCare: true, ecommerce: true, marketing: false, starterSite: false },
+  { feature: "E-Commerce Management", wpCare: false, ecommerce: true, marketing: false, starterSite: false },
+  { feature: "SEO Optimization", wpCare: false, ecommerce: false, marketing: true, starterSite: false },
+  { feature: "Email Marketing", wpCare: false, ecommerce: false, marketing: true, starterSite: false },
+  { feature: "Site Build", wpCare: false, ecommerce: false, marketing: false, starterSite: true },
+  { feature: "Monthly Reporting", wpCare: true, ecommerce: true, marketing: true, starterSite: false },
 ];
 
 const services = [
   { key: "wpCare" as const, name: "WordPress Care", price: "$99/mo" },
   { key: "ecommerce" as const, name: "E-Commerce", price: "$249/mo" },
-  { key: "growth" as const, name: "Growth", price: "$249/mo" },
+  { key: "marketing" as const, name: "Marketing", price: "$500/mo" },
   { key: "starterSite" as const, name: "Starter Site", price: "$500" },
 ];
 
