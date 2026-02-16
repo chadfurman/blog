@@ -1,8 +1,8 @@
 # Service Tier Architecture — Working Document
 
 > **Date:** 2026-02-16
-> **Status:** In Progress — Capturing all decisions, research, and open questions
-> **Purpose:** Preserve everything between context windows. This is the single source of truth for tier/pricing discussions.
+> **Status:** Decisions finalized (Feb 16 evening session). Ready for implementation.
+> **Purpose:** Single source of truth for tier/pricing across all services.
 > **Related docs:**
 > - `docs/plans/2026-02-16-competitive-pricing-research.md` — Full market research
 > - `docs/plans/2026-02-16-services-redesign-design.md` — Page design/layout brainstorm
@@ -15,13 +15,15 @@
 1. [Core Business Constraints](#1-core-business-constraints)
 2. [Pricing Model](#2-pricing-model)
 3. [WordPress Care Tiers](#3-wordpress-care-tiers)
-4. [Marketing Tiers (formerly "Growth")](#4-marketing-tiers-formerly-growth)
+4. [Marketing (formerly "Growth")](#4-marketing-formerly-growth)
 5. [E-Commerce](#5-e-commerce)
 6. [Starter Site](#6-starter-site)
 7. [Cross-Cutting Concepts](#7-cross-cutting-concepts)
 8. [Shipping & Tax Research Summary](#8-shipping--tax-research-summary)
-9. [Open Questions & Chad's Notes](#9-open-questions--chads-notes)
+9. [Remaining Open Questions](#9-remaining-open-questions)
 10. [Competitive Research Highlights](#10-competitive-research-highlights)
+11. [Image Strategy](#11-image-strategy)
+12. [Summary of All Decisions](#12-summary-of-all-decisions)
 
 ---
 
@@ -49,16 +51,18 @@ All pricing is quoted as annual (monthly equivalent). Monthly billing carries a 
 | Annual rate | Base price (e.g., $99/mo billed $1,188/yr) |
 | Monthly rate | Base * 1.5 (e.g., $149/mo) |
 
-### Onboarding
+### Onboarding / Setup Fees
 
-| Plan type | Onboarding fee |
-|---|---|
-| Annual | Waived ($0) |
-| Monthly | $300 |
+Setup fees vary by service. They are NOT waived — setup work is substantial and front-loaded.
 
-**Open question:** Is $300 onboarding enough for monthly marketing customers? The setup work (Klaviyo config, initial flows, SEO audit) is substantial. See notes in Section 9.
+| Service | Monthly clients | Annual clients |
+|---|---|---|
+| WordPress Care | $300 | Waived |
+| Marketing | $3,000 | $1,500 |
+| E-Commerce | Quote per project (from $1,500) | Quote per project (from $1,500) |
+| Starter Site | N/A (one-time project) | N/A |
 
-### Toggle Display
+### Toggle Display (Service Pages)
 
 - Default position: Annual (selected)
 - Show dollar savings, not percentage ("Save $600/yr" > "Save 33%")
@@ -75,7 +79,7 @@ Everything below comes from BigScoots managed hosting. We white-label it — **n
 - Managed WordPress hosting
 - SSL certificate
 - CDN (Cloudflare Enterprise) — **includes image compression** (Cloudflare Polish/Mirage)
-- Staging environment (all tiers, not just higher ones)
+- Staging environment (all tiers)
 - Daily backups with one-click restore
 - Free site migration
 - Daily malware scans
@@ -84,28 +88,30 @@ Everything below comes from BigScoots managed hosting. We white-label it — **n
 - 99.99% uptime SLA
 - 24/7 support portal for clients
 
-**Note:** Image compression comes bundled with Cloudflare, not as a separate add-on. This simplifies the feature matrix.
-
 ### Tier Pricing
 
 | | Essential | Professional (Rec.) | Business |
 |---|---|---|---|
 | **Annual** | $99/mo ($1,188/yr) | $149/mo ($1,788/yr) | $249/mo ($2,988/yr) |
 | **Monthly** | $149/mo | $224/mo | $374/mo |
+| **Onboarding** | $300 (monthly) / Waived (annual) | $300 (monthly) / Waived (annual) | $300 (monthly) / Waived (annual) |
 
-### Support Model
+### Support Model ✅ DECIDED
 
-**Chad's preference:** Simplify. Don't bill per conversation — that's too nitty-gritty. Instead:
+**Premium Support Tokens** — establishes implicit boundaries without being punitive. Not rigorously enforced, but sets expectations.
 
 | | Essential | Professional | Business |
 |---|---|---|---|
-| BigScoots Portal | 24/7 | 24/7 | 24/7 |
+| 24/7 support portal | Unlimited | Unlimited | Unlimited |
+| Premium support tokens | 2/mo | 4/mo | 8/mo |
+| Token scope | < 30 min tasks | < 30 min tasks | < 30 min tasks |
 | Email support | — | Yes | Yes |
-| Text/call support | — | — | Yes |
+| Text/call | — | — | Yes |
+| Additional tokens | $50 each | $45 each | $40 each |
 
-**Old "support tokens" concept:** 2/4/8 tokens per month at ~15-30 min each. **Under review.** Chad noted "support tokens feels high" (at $50/token = $300/hr for 10-min tasks). May be too expensive for clients or too complex to explain.
+"Unlimited 24/7 support portal access for hosting issues. Premium support tokens for site changes, content updates, and custom requests (< 30 min each). Anything beyond token scope billed at $300/hr ($150/hr for annual clients)."
 
-**Alternative under consideration:** Just include "24/7 support portal" for all tiers, add "email support" on Professional, add "email, text, or call" on Business. Keep it simple. Bill hourly ($300/hr or $150/hr with annual plan) for anything beyond what BigScoots handles.
+Simple credit tracking system (spreadsheet/Notion per client to start, no software until 10+ clients).
 
 ### Other Features by Tier
 
@@ -116,22 +122,11 @@ Everything below comes from BigScoots managed hosting. We white-label it — **n
 | Monthly performance report | Yes | Yes | Yes |
 | Speed optimization | Basic | Advanced | Priority |
 | Core Web Vitals monitoring | — | Yes | Yes |
-| Strategy review | — | Quarterly check-in? | Monthly check-in? |
+| Strategy check-in | — | — | Monthly (30 min) |
 
-**Open question:** "Strategy Review" vs "Quarterly Check-in" — what's the right naming/scope? See Section 9.
+### Hosting-Only Tier ✅ DECIDED: DROPPED
 
-### Hosting-Only Option
-
-Chad is considering a **hosting-only tier** (no maintenance):
-
-| | Hosting Only |
-|---|---|
-| Annual | ~$40/mo ($480/yr) |
-| Monthly | ~$75/mo |
-
-This would be for clients who want managed hosting but handle their own updates/maintenance. It's essentially reselling BigScoots at a markup.
-
-**Consideration:** BigScoots costs ~$30-40/mo. At $40/mo annual we're barely marking up. At $75/mo monthly, the margin is better. Need to decide if this tier is worth the complexity.
+Not worth the complexity. Clients who want hosting get WordPress Care. Thin margins on reselling BigScoots alone don't justify a separate product.
 
 ### Hourly Math
 
@@ -141,133 +136,100 @@ This would be for clients who want managed hosting but handle their own updates/
 
 ---
 
-## 4. Marketing Tiers (formerly "Growth")
+## 4. Marketing (formerly "Growth") ✅ RENAMED
 
-**Renamed from "Growth"** to avoid collision with WP Care tier naming. The service was called "Growth" in the current site; consider renaming to "Marketing" or "Growth Marketing."
+**Renamed from "Growth" to "Marketing"** to avoid collision with WP Care tier naming and to be clearer about what the service is.
 
-### Tier Pricing
+### Single Package (No Tiers) ✅ DECIDED
 
-| | Grow | Accelerate (Rec.) | Scale |
-|---|---|---|---|
-| **Annual** | $249/mo ($2,988/yr) | $449/mo ($5,388/yr) | $749/mo ($8,988/yr) |
-| **Monthly** | $374/mo | $674/mo | $1,124/mo |
+Simplified from three tiers (Grow/Accelerate/Scale) to **one Marketing package**. Scope differences are handled in the setup/scoping conversation, not on the pricing page.
 
-**Chad's note:** "monthly costs seem low on marketing? But maybe okay?" — Under review. The concern is that at $249/mo with AI doing most of the ongoing work (~1hr/mo real manual time), the math works at $150-187/hr. But if it requires more manual attention, the rate drops fast.
+**Requires a care or maintenance plan** (WordPress Care or Store Care). Marketing is always an add-on — it needs site access for SEO, plugin integration, etc.
 
-### SEO (All Tiers)
+### Pricing ✅ DECIDED
 
-| | Grow | Accelerate | Scale |
-|---|---|---|---|
-| Initial SEO audit | Yes | Yes | Yes |
-| On-page optimization | AI-assisted | AI-assisted | AI-assisted |
-| Google Search Console | Monitored | Monitored + action | Monitored + action |
-| Content recommendations | Monthly | Bi-weekly | Weekly |
-| Local SEO setup | — | Yes | Yes |
+| | Flat | Performance |
+|---|---|---|
+| **Annual** | $500/mo ($6,000/yr) | $250/mo + rev share ($3,000/yr + share) |
+| **Monthly** | $1,000/mo | $500/mo + rev share |
+| **Setup (annual)** | $1,500 | $1,500 |
+| **Setup (monthly)** | $3,000 | $3,000 |
 
-**Note:** SEO page optimization is "easy-ish after initial setup" per Chad. Initial audit is manual (~2-3hrs), ongoing is heavily AI-assisted.
+**Performance pricing is the default pitch:**
 
-### Klaviyo Email
+> "All Marketing plans include performance-based pricing by default — my success is tied to yours. Prefer a flat rate? We can do that too."
 
-| | Grow | Accelerate | Scale |
-|---|---|---|---|
-| Klaviyo integration config (~1hr) | Yes | Yes | Yes |
-| Email flows configured | 3 flows | 5 flows | All 7 flows |
-| Campaigns/month | 1 | 2 | 4 (max 1/week) |
-| A/B testing | — | Yes | Yes |
-| List segmentation | Basic | Advanced | Advanced |
+**Revenue share:** 5-10% of attributed marketing revenue above a baseline threshold. Attribution via Klaviyo (email) and Google Analytics (SEO).
 
-**The 7 core flows:**
+### What's Included
 
-| # | Flow | Grow | Accelerate | Scale |
-|---|---|---|---|---|
-| 1 | Welcome series | Yes | Yes | Yes |
-| 2 | Cart abandonment | Yes | Yes | Yes |
-| 3 | Post-purchase | Yes | Yes | Yes |
-| 4 | Browse abandonment | — | Yes | Yes |
-| 5 | Win-back | — | Yes | Yes |
-| 6 | Cross-sell | — | — | Yes |
-| 7 | VIP/Loyalty (TBD) | — | — | Yes |
+- Full SEO audit & ongoing optimization
+- Google Search Console monitoring & action
+- Klaviyo integration, flows, and campaigns
+- Done-for-you content (AI-assisted, Chad reviews)
+- List hygiene & deliverability monitoring
+- Revenue attribution reporting
+- Monthly 30-min strategy check-in
+- Additional Klaviyo flows: $150 each (add-on)
+
+**Scope determined during setup:** Number of flows, depth of SEO work, campaign frequency, local SEO — all scoped in the discovery call and reflected in setup cost. A simple client might be $1,500 setup. A complex one could be $4,000+.
+
+### Klaviyo Flows
+
+The 7 core flows (allocated during setup based on client needs):
+
+1. Welcome series
+2. Cart abandonment
+3. Post-purchase
+4. Browse abandonment
+5. Win-back
+6. Cross-sell
+7. VIP/Loyalty (TBD)
 
 **Flow setup economics:**
 - First flow: manual to establish style/voice (~2hrs)
 - Subsequent flows: leverage template (~30min each)
 - Klaviyo integration config: ~1hr
-- Total setup time: Grow ~4hrs, Accelerate ~5.5hrs, Scale ~6.5hrs
-- Plus Klaviyo integration: +1hr
 
-**A la carte flows:** Chad wants to allow buying individual flows outside of a tier. Price TBD — probably $300-600 per flow ($300/hr * 1-2hrs).
+**A la carte flows:** $150 each, available as add-on to existing Marketing plans only. Not sold standalone.
 
-**Klaviyo subscription pricing:** NOT included in our price. Client pays Klaviyo directly. Klaviyo has a free tier for small lists. We should make this clear on the service page.
+### Content Ownership ✅ DECIDED
 
-**Email list maintenance:** Chad mentioned this as a potential service. Scope TBD — could include list cleaning, re-engagement campaigns, unsubscribe management, deliverability monitoring.
-
-### Social Media
-
-**Chad's decision: A la carte AND as a tier feature.** Both setup and automated posting.
-
-| | Grow | Accelerate | Scale |
-|---|---|---|---|
-| Social profile setup | — | Yes | Yes |
-| Automated posting | — | — | Yes (AI-assisted) |
-
-**Open questions about social:**
-- What does "social" include? Posts? Images? Content creation?
-- Part of a separate plan? Add-on to Marketing?
-- Post frequency? Image creation?
-- Which platforms? (Facebook, Instagram, LinkedIn, X, TikTok?)
-- AI-generated content vs human-reviewed content?
+**"Done-for-you" positioning.** AI generates first drafts, Chad reviews/approves, system sends. Clients don't care how the sausage is made — they care that it gets done and it works.
 
 ### Campaigns
 
-- 1 / 2 / 4 per month (max 1/week)
-- "Campaigns are hard" per Chad — this is where real manual time goes
-- Content creation: AI-assisted at lower tiers, more automated at higher tiers
+Frequency scoped per client during setup. AI-assisted content creation, Chad reviews before sending.
 
-**Open question:** "All content in all tiers: needed? or user owned?" — Who creates the campaign content? Options:
-1. We create everything (more work, higher value)
-2. Client provides content, we send/optimize (less work)
-3. AI generates, we review (middle ground)
+### Meetings ✅ DECIDED
 
-**Chad's instinct:** "Less work, but less success?" — There's tension between offering less (to match capacity) and the client getting less value (fewer results).
+Monthly 30-min check-in for all Marketing clients. Quick review of the report, what's working, what to adjust. Deeper strategy sessions billed hourly.
 
-### Strategy Calls
+For larger projects (10+ hours of work): 2-hour meeting per 10 hours as a ratio.
 
-| | Grow | Accelerate | Scale |
-|---|---|---|---|
-| Strategy call | — | Quarterly | Monthly |
+### Social Media ✅ DECIDED: DEFERRED
 
-**Chad's note:** Is it "Strategy Review" or "Quarterly Check-in"? The scope matters:
-- **Check-in** = quick 30-min status update, review reports, answer questions
-- **Strategy Review** = deeper 60-min session, review data, adjust approach, plan next quarter
+**Not on services page for now.** One-liner on the Marketing detail page:
 
-For bigger projects (10+ hrs), Chad suggests: **2hr meeting per 10hrs of work** as a ratio.
+> "Social media management coming soon. Contact me if you need help now."
 
-### "Hands Off" Tier Concept
+Chad is building social media expertise over the next 6 months via a side project. Will add as a proper service offering once tooling, process, and pricing are validated.
 
-Chad floated the idea of a **passive maintenance/audit/report** tier — lower price, less active work:
-- Monthly SEO monitoring + report
-- Klaviyo performance report
-- Recommendations but no execution
-- Client acts on recommendations themselves
+### "Hands Off" Audit/Report Tier ✅ DECIDED: DROPPED
 
-This could be a "Grow Lite" at ~$149-199/mo. Mostly automated reporting with AI-generated recommendations.
+Dilutes the "done-for-you" brand positioning. Clients who want self-serve monitoring can use SEMrush and Klaviyo dashboards themselves.
 
-### Revenue Attribution — Explanation
+### Email List Maintenance ✅ DECIDED: BAKED IN
 
-**What it is:** Tracking which marketing activities (SEO, email, social) directly led to revenue. For example:
-- "This email campaign generated $2,400 in sales"
-- "Organic search drove 340 visitors who made $1,200 in purchases"
-- "The win-back flow recovered $800 from churned customers"
+Included in all Marketing plans as a standard feature. List cleaning, re-engagement campaigns, unsubscribe management, deliverability monitoring. Not a separate service.
+
+### Revenue Attribution
+
+**What it is:** Tracking which marketing activities (SEO, email) directly led to revenue.
 
 **How it works:** Klaviyo has built-in revenue attribution for email flows and campaigns. Google Analytics + Search Console provide organic traffic attribution. We report on these numbers monthly.
 
-**Why it matters:** It proves ROI. If a client pays $249/mo and we show $3,000/mo in attributed revenue, the service sells itself.
-
-### Performance Pricing
-
-Available at all tiers: base fee + 5-10% of attributed email/marketing revenue above a threshold.
-
-"Your success = my success."
+**Why it matters:** It proves ROI and makes performance pricing work. If a client pays $250/mo base and we show $5,000/mo in attributed revenue, the service sells itself.
 
 ---
 
@@ -293,11 +255,9 @@ Every store is different — no fixed tiers for setup. **Quote per project.**
 
 **Product entry:** Customer adds their own products. OR fixed price per 5 product photos. Photo sessions billed hourly ($300/hr).
 
-**Design:** Theme + customize. **No full custom.** This is a hard boundary to protect time.
+**Design:** Theme + customize. **No full custom.** Hard boundary to protect time.
 
-**Shipping plugins:** Client pays for plugin licenses (WooCommerce table rate ~$99/yr, carrier plugins ~$79-129/yr each). We configure them. On Shopify, shipping is built-in for most scenarios.
-
-**CRO — Explanation:** Conversion Rate Optimization. Making the store convert more visitors into buyers. Includes: product page optimization, checkout flow improvement, A/B testing, speed optimization. At our $249/mo maintenance tier, this means basic monitoring + AI-assisted recommendations, NOT the $990+/mo agency-level CRO.
+**Plugin/tool costs:** Client-paid. We configure. Clear note on service page: "Third-party tools (Klaviyo, shipping plugins, tax automation) are billed directly by those providers. I'll help you choose the right ones and handle all the setup." ✅ DECIDED
 
 ### Maintenance Tiers
 
@@ -307,18 +267,24 @@ Every store is different — no fixed tiers for setup. **Quote per project.**
 | **Monthly** | $374/mo | $674/mo |
 | **Includes WP Care tier** | Professional | Business |
 | **CRO** | Basic monitoring | Active optimization |
-| **Support** | Portal + Email | Portal + Email + Text/Call |
+| **Support** | Portal + Email + 4 tokens | Portal + Email + Text/Call + 8 tokens |
 | **Monthly report** | Yes | Yes + revenue analysis |
-| **Strategy call** | — | Monthly |
+| **Strategy call** | — | Monthly (30 min) |
 
-**Store Care includes hosting costs** — WP Care Professional is bundled in, which includes BigScoots hosting. For Shopify stores, the client pays Shopify directly; our maintenance covers management and optimization.
+### Store Care + Marketing Bundle ✅ DECIDED
 
-**Caching, image optimization, WPO/BigScoots, Shopify, WooCommerce:**
+| | Flat | Performance |
+|---|---|---|
+| **Annual** | $449/mo (vs $498 separate — $49 discount) | ~$225/mo base + rev share |
+| **Monthly** | $898/mo | ~$449/mo base + rev share |
+
+Bundle incentivizes the high-LTV combo. Performance pricing is the natural fit for bundles.
+
+### Platform Notes
+
 - WooCommerce stores: BigScoots handles server-level caching, Cloudflare handles CDN + image optimization
-- Shopify stores: Shopify handles hosting/CDN natively; we optimize theme, images, and apps
-- WPO (WordPress Optimization): included in WP Care tiers
-
-**Open question:** Is store maintenance priced to account for all add-on costs (plugins, shipping plugins, tax automation subscriptions)? Currently these are client-paid. Should we bundle some/all into the maintenance price?
+- Shopify stores: Client pays Shopify directly; our maintenance covers management and optimization
+- Shopify clients needing Marketing require Store Care (not WP Care)
 
 ### Process & ETA (Realistic for Side Business)
 
@@ -332,10 +298,6 @@ Every store is different — no fixed tiers for setup. **Quote per project.**
 
 ~6 weeks for a standard store. More complex = longer.
 
-### Marketing Bundle
-
-**Thinking out loud (not committed):** Bundle Store Care/Growth with Marketing at a discount. High-LTV combo. Maybe 15% off Marketing when paired with E-Commerce maintenance.
-
 ---
 
 ## 6. Starter Site
@@ -344,31 +306,22 @@ Every store is different — no fixed tiers for setup. **Quote per project.**
 
 | Scenario | Price |
 |---|---|
-| Standalone | $500 one-time |
-| With annual WordPress Care | $300 one-time (onboarding waived) |
+| Standalone (requires WP Care) | $500 one-time |
+| With annual WordPress Care | $300 one-time |
 | Additional pages | $100/page |
 | Training | 2 hours included, $300 per additional 2hrs |
 
-### Key Decisions Under Consideration
+### Hosting Requirement ✅ DECIDED
 
-**1. Starter Site requires a Care Plan (hosting)**
+**Starter Site requires a WordPress Care plan.** No hosting-only option. The pitch:
 
-The site needs to live somewhere. Options:
+> "$500 for the site (or $300 with an annual care plan). WordPress Care from $99/mo keeps it running."
 
-| Option | Model |
-|---|---|
-| A. Require annual WP Care | $500 site + $99/mo care = $1,688 year 1 |
-| B. $500 includes 1 year hosting | $500 all-in, then $99/mo after year 1 |
-| C. Require annual hosting-only | $500 site + $40/mo hosting = $980 year 1 |
-| D. Offer hosting-only at $75/mo or $40/mo annual | Separate from site build |
-
-**Chad is leaning toward:** Some form of required hosting. The site needs a home. Including 1 year of hosting in the $500 price is clean and simple for the client. After year 1, they transition to a Care plan or hosting-only plan.
-
-**2. The $300 vs $500 inconsistency**
-
-Current callout on WP Care says "Starter sites from $300 with a care plan." Starter Site service says "$500." Need to reconcile:
-- $500 standalone
-- $300 when purchased with annual WP Care (the care plan discount)
+This simplifies everything:
+- Client gets hosting + maintenance + support in one package
+- No need for a hosting-only tier
+- Care plan creates recurring revenue from day one
+- First month of WordPress Care free (existing callout)
 
 ### What's Included
 
@@ -389,47 +342,30 @@ Current callout on WP Care says "Starter sites from $300 with a care plan." Star
 
 ## 7. Cross-Cutting Concepts
 
-### Support Token System (Under Review)
+### All Third-Party Tool Costs: Client-Paid ✅ DECIDED
 
-Original proposal: 2/4/8 tokens per month, 1 token = ~15-30 min task, additional tokens at $50 each.
+Clear note on all service pages:
 
-**Chad's concern:** "Support tokens feels high" at $50 each. The $50/token = $100-300/hr effective rate depending on task length, which is steep for small requests.
+> "Third-party tools (Klaviyo, shipping plugins, tax automation) are billed directly by those providers. I'll help you choose the right ones and handle all the setup."
 
-**Alternative being considered:** Drop tokens entirely. Use BigScoots portal for hosting/security issues (free, 24/7). Our support tiers are just communication channels:
-- Essential: BigScoots portal only
-- Professional: Portal + email
-- Business: Portal + email + text/call
+This applies to:
+- Klaviyo subscription
+- WooCommerce plugins (shipping, tax, etc.)
+- Shopify plan fees
+- SEO tools (if any)
 
-Anything that requires real development work (beyond BigScoots scope) is billed hourly at $300/hr ($150 for annual clients).
-
-**Side note from Chad:** "4 convos/month" — possibly cap at 4 support conversations per month on lower tiers? And "Topics/Month" — or limit by number of topics addressed?
-
-### Content Ownership Question
-
-"All content in all tiers: needed? or user owned?"
-
-This applies to Marketing campaigns, social posts, email copy, and blog content:
-- **Option A:** We create all content (AI-assisted) — more work, more value
-- **Option B:** Client provides content, we optimize/send — less work, less value
-- **Option C:** AI generates, human reviews — middle ground
-
-The philosophical tension: "Less work, but less success?" — If we reduce what we do, clients may get less results, which hurts retention and referrals.
-
-**Practical answer for a solo operator:** AI generates first drafts, Chad reviews/approves, system sends. This is the only scalable approach.
-
-### Meeting Structure
-
-For larger projects (10+ hours of work):
-- Include a **2-hour meeting per 10 hours** of work
-- This covers planning, review, and alignment
-- Smaller projects: async communication (email/text)
+We don't bundle tool costs into our pricing. This avoids eating cost increases, managing renewals, and taking blame for third-party price changes.
 
 ### Performance-Based Pricing
 
-Available on all Marketing tiers:
-- Base monthly fee + 5-10% of attributed revenue above a threshold
-- Threshold protects against paying commission on existing revenue
+Default pitch for Marketing. Available on bundles. Structure:
+
+- Base monthly fee (reduced from flat rate) + 5-10% of attributed revenue above a baseline threshold
+- Baseline threshold protects against paying commission on existing revenue
 - Revenue attribution via Klaviyo (email) and Google Analytics (SEO)
+- "Your success = my success."
+
+Not a separate system or page — negotiated in the sales conversation per client.
 
 ---
 
@@ -470,69 +406,17 @@ Full research in the shipping/tax agent output. Key findings:
 
 ---
 
-## 9. Open Questions & Chad's Notes
+## 9. Remaining Open Questions
 
-### From Latest Conversation (Feb 16 afternoon)
+Most questions from the previous session have been resolved. These remain:
 
-These are Chad's raw notes, preserved for discussion:
+1. **Flow #7 TBD** — VIP/Loyalty? Back-in-stock? Sunset/re-engagement? Review request? Decide per client during setup.
 
-1. **Support model:** "I think we should bill per support conversation outside of BigScoots? Or maybe that's too nitty? Maybe we just say '24/7 support portal' and 'email support' and offer 'email' on the medium and 'email, text, or call' on the higher tier?" → **Leaning toward simple channel-based tiers, no tokens.**
+2. **Social media details** — Deferred until Chad completes side project (~6 months). Will need: platform scope, posting frequency, monitoring tools, pricing structure.
 
-2. **Support tokens feels high** — $50/token may be too steep. Revisit pricing or drop tokens entirely.
+3. **Performance pricing specifics** — What's the right revenue share percentage (5% vs 10%)? What baseline threshold formula? Decide per client in sales conversation for now; standardize later with experience.
 
-3. **4 convos/month** — Should we cap support conversations per month? Topics per month?
-
-4. **Strategy Review vs Quarterly Check-in** — What's the right scope and name?
-
-5. **Meetings for bigger projects** — 2hr call per 10hrs of work.
-
-6. **Image compression: Cloudflare, bundled** — Already included via BigScoots/Cloudflare. Remove from feature differentiation.
-
-7. **Allow flows a la carte** — Individual email flows purchasable outside of a Marketing tier.
-
-8. **Email list maintenance service** — Separate service? Add-on? Scope?
-
-9. **Social a la carte** — Social media as standalone add-on. What does it include? Posts? Images? Content? Which platforms?
-
-10. **Revenue attribution** — Need to explain clearly on the services page. It means tracking which marketing activities led to actual sales.
-
-11. **Content in all tiers: needed or user-owned?** — Who creates campaign/email/social content?
-
-12. **"Less work, but less success?"** — The tension between reducing scope (to match solo capacity) and delivering results (to retain clients).
-
-13. **"Hands off" maintenance/audit/report tier** — A cheaper tier that just monitors and reports, doesn't actively manage.
-
-14. **Klaviyo pricing: included?** — No. Client pays Klaviyo directly. Must be clear on page.
-
-15. **Setup cost too cheap on monthly** — $300 onboarding for monthly Marketing customers may not cover the Klaviyo config + initial flows setup (~4-6.5 hrs = $1,200-1,950 at $300/hr).
-
-16. **Monthly costs seem low on Marketing? But maybe okay?** — At $249/mo Grow with AI doing most ongoing work, the math works IF manual time stays under ~1.5hrs/mo.
-
-17. **CRO** — Conversion Rate Optimization. Need to define what "basic CRO" means at our price point vs agency-level $990+/mo CRO.
-
-18. **Store Care includes hosting costs?** — Yes, WP Care is bundled. For Shopify, client pays Shopify directly.
-
-19. **Priced to account for all add-ons?** — Should maintenance pricing include plugin/tool subscription costs? Currently client-paid.
-
-20. **Cache, img optimization, WPO/BigScoots, Shopify, WooCommerce?** — Need to clarify what's included per platform in each tier.
-
-21. **Shipping plugins** — Client pays for plugin licenses. We configure. Need to state this clearly.
-
-22. **Site Setup requires Care Plan (Hosting)** — Can't deliver a site without somewhere to host it.
-
-23. **Hosting Only: $75/mo or $40/mo annual** — A tier below Essential that's just hosting, no maintenance.
-
-24. **Require annual hosting? $500 + hosting? Or 1 year hosting included in $500?** — How to bundle starter site + hosting.
-
-### From Earlier Conversations
-
-25. **"Growth" vs "Marketing" naming** — Service name collision with WP Care tier names. Options: rename service to "Marketing" OR use different WP Care tier names (Care/Secure/Perform).
-
-26. **Flow #7 TBD** — VIP/Loyalty? Back-in-stock? Sunset/re-engagement? Review request?
-
-27. **Bundle discount structure** — 15% off Marketing when paired with E-Commerce maintenance? Math needs validation.
-
-28. **$300 vs $500 Starter Site inconsistency** — WP Care callout says "from $300 with care plan" but Starter Site says "$500."
+4. **Marketing setup cost variability** — $1,500 is the floor for annual clients. How high does it go for complex setups? Need a rough scoping guide (e.g., $1,500 for basic, $3,000 for medium, $5,000+ for complex). Build this after first few Marketing clients.
 
 ---
 
@@ -552,12 +436,12 @@ Full research in `docs/plans/2026-02-16-competitive-pricing-research.md`. Key ta
 - Maintenance: Fantail.cloud $199-299/mo, Agency $500-1,200/mo
 - Our $249/mo maintenance sits between maintenance services and agency retainers
 
-### Marketing/Growth
+### Marketing
 - SEO-only budget: $199-299/mo
 - Klaviyo management freelancer: $300-1,500/mo
-- No competitor bundles both SEO + Klaviyo at $249/mo
+- No competitor bundles both SEO + Klaviyo at our price points
 - Combined market value of our features: ~$1,500-3,000/mo
-- **Biggest money left on table: Growth at $249/mo**
+- Our $500/mo flat (annual) is competitive; performance option is a differentiator
 
 ### Starter Site ($500)
 - Fiverr professional: $300-500
@@ -596,41 +480,39 @@ OpenAI DALL-E 3 or Gemini Imagen. Review each against brand palette. Post-proces
 
 ---
 
-## Summary of Confirmed Decisions
+## 12. Summary of All Decisions
 
-These are things Chad has confirmed or strongly leaned toward:
+### Confirmed ✅
 
-1. **Annual pricing as base, 50% monthly premium** ✅
-2. **$300 onboarding, waived for annual** ✅
-3. **No "BigScoots" branding** — white-label the hosting ✅
-4. **Plugin audit: one-time at onboarding** (not recurring) ✅
-5. **Staging environment: all tiers** (BigScoots provides it) ✅
-6. **Image compression: bundled via Cloudflare** (not a tier differentiator) ✅
-7. **Theme + customize for e-commerce** (no full custom) ✅
-8. **Products added by customer** (or fixed per-5-photos price) ✅
-9. **Training: 2hrs included, $300/additional 2hrs** ✅
-10. **Campaigns: 1/2/4 per month, max 1/week** ✅
-11. **First email flow manual for style, rest leverage template** ✅
-12. **Social media: both setup and posting as tiers** ✅
-13. **Performance pricing available at all Marketing tiers** ✅
-14. **Support: BigScoots Portal → + Email → + Text/Call** (simplified) ✅
-15. **Starter site needs hosting** (some form required) ✅
+1. **Annual pricing as base, 50% monthly premium**
+2. **No "BigScoots" branding** — white-label the hosting
+3. **Plugin audit: one-time at onboarding** (not recurring)
+4. **Staging environment: all tiers** (BigScoots provides it)
+5. **Image compression: bundled via Cloudflare** (not a tier differentiator)
+6. **Theme + customize for e-commerce** (no full custom)
+7. **Products added by customer** (or fixed per-5-photos price)
+8. **Training: 2hrs included, $300/additional 2hrs**
+9. **First email flow manual for style, rest leverage template**
+10. **Starter site needs hosting** → Requires WordPress Care plan
+11. **Support model: Premium Support Tokens** — 2/4/8 per tier, < 30 min each, additional at $50/$45/$40. Simple tracking. Not rigidly enforced.
+12. **Service renamed: "Growth" → "Marketing"**
+13. **Marketing: single package** (no Grow/Accelerate/Scale tiers). Scope in setup call.
+14. **Marketing pricing: $500/mo flat (annual) or $250/mo + rev share (annual)**. Monthly at 50% premium.
+15. **Marketing setup fee: $1,500 (annual) / $3,000 (monthly)**. Not waived.
+16. **Content ownership: done-for-you** — AI generates, Chad reviews, system sends.
+17. **A la carte Klaviyo flows: $150 each** — add-on to existing Marketing plans only.
+18. **Email list maintenance: baked into Marketing** — not a separate service.
+19. **Social media: deferred** — one-liner on Marketing page, full offering in ~6 months.
+20. **"Hands off" audit tier: dropped** — dilutes brand.
+21. **Hosting-only tier: dropped** — not worth the complexity.
+22. **Bundle discount: Store Care + Marketing = $449/mo** (vs $498 separate).
+23. **Meeting cadence: monthly 30-min check-in** for all Marketing clients. Deeper sessions billed hourly.
+24. **Plugin/tool costs: client-paid** — clear note on all service pages.
+25. **Performance pricing: default pitch for Marketing** — base + 5-10% attributed revenue above threshold. Negotiated per client.
 
-## Summary of Unresolved Decisions
+### Remaining Open
 
-These need further discussion:
-
-1. Support model (tokens vs conversations vs channel-only)
-2. Token/conversation pricing
-3. Marketing tier pricing (low enough? too low?)
-4. Hosting-only tier ($75/$40)
-5. Starter site + hosting bundling model
-6. Social media scope and pricing
-7. Content ownership (who creates?)
-8. "Hands off" audit/report tier
-9. Email list maintenance service
-10. A la carte flow pricing
-11. Service renaming (Growth → Marketing)
-12. Bundle discount structure
-13. Meeting cadence/structure
-14. Plugin/tool costs: client-paid vs bundled
+1. Flow #7 selection (decide per client)
+2. Social media full offering (deferred ~6 months)
+3. Performance pricing specific percentages (decide per client for now)
+4. Marketing setup cost scoping guide (build after first clients)
