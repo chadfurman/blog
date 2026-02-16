@@ -403,13 +403,23 @@ textarea {
     @apply tracking-wide;
     @apply mt-1;
     @apply mb-0;
-    background: rgb(var(--background));
+    background: rgba(var(--foreground), 0.03);
     color: rgb(var(--foreground));
-    border: 1.5px solid rgba(var(--foreground), 0.15);
+    border: 1.5px solid rgba(var(--foreground), 0.25);
+    border-bottom: 2.5px solid rgba(var(--foreground), 0.35);
     font-family: var(--font-body), sans-serif;
     font-weight: var(--body-font-weight);
     outline: none;
-    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background 0.2s ease-in-out;
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+select:hover,
+textarea:hover {
+    border-color: rgba(var(--foreground), 0.35);
+    border-bottom-color: rgba(var(--primary), 0.5);
+    background: rgba(var(--foreground), 0.02);
 }
 
 input[type="text"]:focus,
@@ -417,7 +427,9 @@ input[type="email"]:focus,
 select:focus,
 textarea:focus {
     border-color: rgb(var(--primary));
+    border-bottom-color: rgb(var(--primary));
     box-shadow: 0 0 0 3px rgba(var(--primary), 0.1);
+    background: rgb(var(--background));
 }
 
 input[type="text"]::placeholder,
