@@ -2,6 +2,14 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Brand & Design
+
+- **Brand guidelines:** `docs/brand-guidelines.md` — colors, typography, icons, components, animation rules, voice
+- **Competitive research:** `docs/plans/2026-02-16-competitive-pricing-research.md` — pricing analysis for all 4 services
+- **Design overhaul plan:** `docs/plans/2026-02-15-design-overhaul-implementation.md`
+- **Hosting provider:** BigScoots managed WordPress hosting — clients get portal access for infrastructure support
+- **Image generation:** Can use OpenAI and Gemini API tokens for icons/illustrations. Must match brand style (line art, dark outlines, blue #2563EB accents, white/transparent backgrounds)
+
 ## Project Structure
 
 This is a personal website/blog built with a **Next.js frontend** and **Strapi CMS backend** architecture:
