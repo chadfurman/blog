@@ -425,10 +425,9 @@ input[type="text"]:focus,
 input[type="email"]:focus,
 select:focus,
 textarea:focus {
-    border-color: rgb(var(--primary));
-    border-bottom-color: rgb(var(--primary));
+    border: 2px solid rgb(var(--primary));
+    border-bottom: 3px solid rgb(var(--primary));
     box-shadow: 0 0 0 3px rgba(var(--primary), 0.12);
-    background: rgb(var(--background));
 }
 
 input[type="text"]::placeholder,
