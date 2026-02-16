@@ -394,8 +394,7 @@ export default function QuoteExplorer() {
                   className="mt-1 accent-primary"
                 />
                 <span>
-                  Subscribe to my newsletter for design, performance, and
-                  marketing tips (and get 10% off your first year)
+                  Opt in for design &amp; marketing emails + 10% off your first year
                 </span>
               </label>
 
@@ -425,28 +424,26 @@ export default function QuoteExplorer() {
       </div>
 
       {/* Navigation */}
-      {step > 1 && !submitted && (
-        <div className="flex justify-between mt-8">
-          <button
-            type="button"
-            onClick={handleBack}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-muted hover:text-highlight transition-colors"
-          >
-            Back
-          </button>
-          <div />
-        </div>
-      )}
-
-      {(step === totalSteps || submitted) && (
-        <div className="text-center mt-4">
-          <button
-            type="button"
-            onClick={reset}
-            className="text-sm text-muted hover:text-highlight transition-colors"
-          >
-            Start Over
-          </button>
+      {(step > 1 || step === totalSteps || submitted) && (
+        <div className="flex justify-center items-center gap-4 mt-8">
+          {step > 1 && !submitted && (
+            <button
+              type="button"
+              onClick={handleBack}
+              className="px-4 py-2 rounded-lg text-sm font-medium text-muted hover:text-highlight transition-colors"
+            >
+              Back
+            </button>
+          )}
+          {(step === totalSteps || submitted) && (
+            <button
+              type="button"
+              onClick={reset}
+              className="px-4 py-2 rounded-lg text-sm font-medium text-muted hover:text-highlight transition-colors"
+            >
+              Start Over
+            </button>
+          )}
         </div>
       )}
     </CardStatic>
