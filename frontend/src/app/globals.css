@@ -90,6 +90,7 @@
 html, body {
     padding: 0;
     margin: 0;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -425,9 +426,9 @@ input[type="text"]:focus,
 input[type="email"]:focus,
 select:focus,
 textarea:focus {
-    border: 2px solid rgb(var(--primary));
-    border-bottom: 3px solid rgb(var(--primary));
-    box-shadow: 0 0 0 3px rgba(var(--primary), 0.12);
+    border: 1px solid rgb(var(--primary));
+    border-bottom: 1px solid rgb(var(--primary));
+    box-shadow: 0 0 0 2px rgba(var(--primary), 0.12);
 }
 
 input[type="text"]::placeholder,

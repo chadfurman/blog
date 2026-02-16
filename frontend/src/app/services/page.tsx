@@ -2,7 +2,10 @@ import { Metadata } from "next";
 import { services } from "@/data/services";
 import ServiceCard from "@/app/_components/ServiceCard";
 import CTASection from "@/app/_components/CTASection";
-import { CardStatic } from "@/app/_components/Card";
+import TrustBar from "@/app/_components/TrustBar";
+import ProcessSteps from "@/app/_components/ProcessSteps";
+import ComparisonTable from "@/app/_components/ComparisonTable";
+import QuoteExplorer from "@/app/_components/QuoteExplorer";
 
 export const metadata: Metadata = {
   title: "Services | Chad Furman",
@@ -13,28 +16,40 @@ export const metadata: Metadata = {
 export default function ServicesPage() {
   return (
     <div>
-      <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
-        <section className="text-center my-12">
-          <h1>Services</h1>
-          <p className="max-w-2xl mx-auto text-muted">
-            I help small businesses and online stores grow with fast, secure
-            WordPress sites, e-commerce that converts, and marketing that drives
-            real results. Every engagement starts with a conversation.
-          </p>
-        </section>
+      {/* 1. Hero */}
+      <section className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto text-center py-16">
+        <h1>The Right Plan for Your Business</h1>
+        <p className="max-w-2xl mx-auto text-muted text-lg">
+          WordPress hosting, e-commerce, and growth marketing &mdash; all
+          managed by someone who actually picks up the phone.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+          <a
+            href="#services"
+            className="inline-block rounded-lg px-8 py-3 font-medium tracking-wide bg-primary text-white hover:opacity-90 transition-opacity"
+          >
+            See Plans &amp; Pricing
+          </a>
+          <a
+            href="#quiz"
+            className="inline-block rounded-lg px-8 py-3 font-medium tracking-wide border border-foreground/20 hover:border-primary/40 transition-colors"
+          >
+            Not Sure? Take the Quiz
+          </a>
+        </div>
+      </section>
 
-        <section className="my-12 text-center">
-          <p className="text-muted max-w-lg mx-auto">
-            Not sure which service is right?{" "}
-            <a href="/contact" className="link-styles">Contact me</a>{" "}
-            and I&apos;ll help you figure it out.
-          </p>
-        </section>
-      </div>
+      {/* 2. Trust Bar */}
+      <section className="border-y border-foreground/5">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
+          <TrustBar />
+        </div>
+      </section>
 
+      {/* 3. Service Overview Cards */}
       <div className="bg-background-alt">
         <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
-          <section className="py-12">
+          <section id="services" className="py-12">
             <h2 className="text-center">All Services</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
               {services.map((service) => (
@@ -45,25 +60,31 @@ export default function ServicesPage() {
         </div>
       </div>
 
-      <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
-        <section className="my-12 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          <CardStatic className="p-6">
-            <h3 className="!mt-0 !mb-2">Need a new site?</h3>
-            <p className="text-sm text-muted">
-              Starter WordPress sites from $300 when paired with a care plan.
-              Custom designs and complex builds scoped individually.
-            </p>
-          </CardStatic>
-          <CardStatic className="p-6">
-            <h3 className="!mt-0 !mb-2">Shopify?</h3>
-            <p className="text-sm text-muted">
-              Shopify setup and customization options available. Let&apos;s talk
-              about what works best for your store.
-            </p>
-          </CardStatic>
-        </section>
+      {/* 4. How I Work */}
+      <div className="bg-background-warm">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto py-12">
+          <h2 className="text-center">How I Work</h2>
+          <ProcessSteps />
+        </div>
       </div>
 
+      {/* 5. Quote Explorer */}
+      <section id="quiz" className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto py-12">
+        <QuoteExplorer />
+      </section>
+
+      {/* 6. Compare Plans */}
+      <div className="bg-background-alt">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto py-12">
+          <h2 className="text-center">Compare Services</h2>
+          <p className="text-center text-muted max-w-lg mx-auto !mb-8">
+            A quick look at what&apos;s included across each service.
+          </p>
+          <ComparisonTable />
+        </div>
+      </div>
+
+      {/* 7. CTA */}
       <div className="bg-background-warm">
         <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
           <CTASection
