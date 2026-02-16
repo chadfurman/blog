@@ -2,6 +2,15 @@
 # Pre-push hook: rebuild frontend/out/ and auto-commit before pushing
 # Ensures the static export is always fresh when deploying via Vercel
 
+GUARD_FILE="/tmp/.blog-pre-push-guard"
+
+# If we just auto-committed a build, HEAD matches the guard — skip rebuild
+if [ -f "$GUARD_FILE" ] && [ "$(cat "$GUARD_FILE")" = "$(git rev-parse HEAD)" ]; then
+  rm -f "$GUARD_FILE"
+  echo "Pre-push: build output already committed. Pushing..."
+  exit 0
+fi
+
 echo "Pre-push: rebuilding frontend..."
 cd frontend && npm run build
 BUILD_EXIT=$?
@@ -12,11 +21,15 @@ if [ $BUILD_EXIT -ne 0 ]; then
   exit 1
 fi
 
-# Auto-commit any changes to out/
-if ! git diff --quiet frontend/out/ 2>/dev/null; then
+# Check for new untracked files in out/ too
+UNTRACKED=$(git ls-files --others --exclude-standard frontend/out/ 2>/dev/null)
+
+if ! git diff --quiet frontend/out/ 2>/dev/null || [ -n "$UNTRACKED" ]; then
   echo "Build output changed — auto-committing..."
   git add frontend/out/
   git commit --no-verify -m "Rebuild frontend output"
+  # Record this commit so the next push skips the rebuild
+  git rev-parse HEAD > "$GUARD_FILE"
   echo ""
   echo "Build output committed. Run 'git push' again to include it."
   exit 1
