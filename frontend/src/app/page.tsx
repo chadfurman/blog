@@ -17,8 +17,8 @@ function Hero() {
           I help small businesses grow online.
         </h3>
         <p className="leading-7 mt-4 mb-6 max-w-lg">
-          Fast, secure WordPress sites. Smart email marketing. E-commerce that
-          converts. I handle the tech so you can focus on your business.
+          E-commerce that converts. Smart email marketing. Fast, secure WordPress
+          sites. I handle the tech so you can focus on your business.
         </p>
         <div>
           <Link
