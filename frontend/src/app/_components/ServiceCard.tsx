@@ -3,7 +3,7 @@
 import Link from "next/link";
 import ExportedImage from "next-image-export-optimizer";
 import Card from "@/app/_components/Card";
-import { Service, getPrice, getSetup } from "@/data/services";
+import { Service, getPrice, getSetup, getTierSummary } from "@/data/services";
 import { useBilling } from "@/app/_components/BillingToggle";
 
 interface ServiceCardProps {
@@ -80,9 +80,12 @@ function FullCard({ service }: { service: Service }) {
             </li>
           ))}
         </ul>
-        {service.callouts && service.callouts.length > 0 && (
+        {(getTierSummary(service, period) || (service.callouts && service.callouts.length > 0)) && (
           <div className="my-4 text-sm text-muted italic text-center">
-            {service.callouts.map((callout) => (
+            {getTierSummary(service, period) && (
+              <p className="!my-1">{getTierSummary(service, period)}</p>
+            )}
+            {service.callouts?.map((callout) => (
               <p key={callout} className="!my-1">{callout}</p>
             ))}
           </div>

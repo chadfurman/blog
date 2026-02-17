@@ -8,6 +8,7 @@ import CTASection from "@/app/_components/CTASection";
 import ServiceProcessSteps from "@/app/_components/ServiceProcessSteps";
 import BillingToggle, { BillingProvider } from "@/app/_components/BillingToggle";
 import ServiceDetailPricing from "@/app/_components/ServiceDetailPricing";
+import PricingTiers from "@/app/_components/PricingTiers";
 
 export function generateStaticParams() {
   return services.map((service) => ({
@@ -81,34 +82,46 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           </section>
         )}
 
-        {/* 3. What's Included */}
+        {/* 3. Pricing */}
         <div className="bg-background-alt">
-          <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto py-12">
-            <CardStatic className="p-8">
+          <div className="px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto py-12">
+            <h2 className="text-center">Pricing</h2>
+            <div className="mt-4 mb-8">
               <BillingToggle />
-              <div className="mt-4" />
-              <ServiceDetailPricing service={service} />
+            </div>
 
-              <h2 className="!mt-0 !mb-4 text-center">What&apos;s Included</h2>
-              <ul className="list-disc pl-6 text-left max-w-md mx-auto">
-                {service.features.map((feature) => (
-                  <li key={feature} className="my-2">
-                    {feature}
-                  </li>
+            {service.tiers && service.tiers.length > 0 ? (
+              <PricingTiers service={service} />
+            ) : (
+              <div className="max-w-md mx-auto">
+                <CardStatic className="p-8">
+                  <ServiceDetailPricing service={service} />
+                </CardStatic>
+              </div>
+            )}
+
+            {service.callouts && service.callouts.length > 0 && (
+              <div className="mt-6 text-center">
+                {service.callouts.map((callout) => (
+                  <p key={callout} className="text-sm text-muted italic">
+                    {callout}
+                  </p>
                 ))}
-              </ul>
-
-              {service.callouts && service.callouts.length > 0 && (
-                <div className="mt-6 text-center">
-                  {service.callouts.map((callout) => (
-                    <p key={callout} className="text-sm text-muted italic">
-                      {callout}
-                    </p>
-                  ))}
-                </div>
-              )}
-            </CardStatic>
+              </div>
+            )}
           </div>
+        </div>
+
+        {/* 4. What's Included (shared features) */}
+        <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto py-12">
+          <h2 className="text-center">What&apos;s Included in Every Plan</h2>
+          <ul className="list-disc pl-6 text-left max-w-md mx-auto mt-6">
+            {service.features.map((feature) => (
+              <li key={feature} className="my-2">
+                {feature}
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* 4. How It Works */}

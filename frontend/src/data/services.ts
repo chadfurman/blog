@@ -11,6 +11,15 @@ export interface ServicePricing {
   unit: string;
 }
 
+export interface ServiceTier {
+  name: string;
+  annual: number;
+  monthly: number;
+  unit: string;
+  highlighted?: boolean;
+  features: string[];
+}
+
 export interface Service {
   id: string;
   slug: string;
@@ -22,8 +31,21 @@ export interface Service {
   setupFrom?: string;
   icon?: string;
   features: string[];
+  tiers?: ServiceTier[];
   callouts?: string[];
   faq: { q: string; a: string }[];
+}
+
+export function getTierPrice(tier: ServiceTier, period: BillingPeriod): string {
+  const price = period === "annual" ? tier.annual : tier.monthly;
+  return `$${price.toLocaleString()}${tier.unit}`;
+}
+
+export function getTierSummary(service: Service, period: BillingPeriod): string | null {
+  if (!service.tiers || service.tiers.length === 0) return null;
+  return service.tiers
+    .map((t) => `${t.name} (${getTierPrice(t, period)})`)
+    .join(" \u2022 ");
 }
 
 export function getPrice(service: Service, period: BillingPeriod): string {
@@ -85,8 +107,49 @@ export const services: Service[] = [
       "2 premium support tokens/mo (< 30 min tasks)",
       "24/7 support portal access",
     ],
+    tiers: [
+      {
+        name: "Essential",
+        annual: 99,
+        monthly: 149,
+        unit: "/mo",
+        features: [
+          "Managed hosting with SSL & CDN",
+          "Daily backups & security scans",
+          "Core, theme & plugin updates",
+          "Email support",
+          "2 support tokens/mo",
+        ],
+      },
+      {
+        name: "Professional",
+        annual: 149,
+        monthly: 225,
+        unit: "/mo",
+        highlighted: true,
+        features: [
+          "Everything in Essential",
+          "Advanced speed optimization",
+          "Core Web Vitals monitoring",
+          "4 support tokens/mo",
+          "Staging environment",
+        ],
+      },
+      {
+        name: "Business",
+        annual: 249,
+        monthly: 375,
+        unit: "/mo",
+        features: [
+          "Everything in Professional",
+          "Priority speed optimization",
+          "Text & call support",
+          "8 support tokens/mo",
+          "Monthly strategy check-ins",
+        ],
+      },
+    ],
     callouts: [
-      "Three tiers: Essential ($99/mo) \u2022 Professional ($149/mo) \u2022 Business ($249/mo)",
       "Need a new site? Starter sites from $300 with an annual care plan",
     ],
     faq: [
@@ -137,8 +200,37 @@ export const services: Service[] = [
       "WordPress Care included (WooCommerce stores)",
       "Monthly performance & revenue reporting",
     ],
+    tiers: [
+      {
+        name: "Store Care",
+        annual: 249,
+        monthly: 374,
+        unit: "/mo",
+        features: [
+          "WordPress Care Professional included",
+          "WooCommerce or Shopify management",
+          "Basic CRO monitoring",
+          "Email support",
+          "4 support tokens/mo",
+        ],
+      },
+      {
+        name: "Store Growth",
+        annual: 449,
+        monthly: 675,
+        unit: "/mo",
+        highlighted: true,
+        features: [
+          "Everything in Store Care",
+          "Active conversion optimization",
+          "Revenue analysis & reporting",
+          "Text & call support",
+          "8 support tokens/mo",
+          "Monthly strategy calls",
+        ],
+      },
+    ],
     callouts: [
-      "Store Care ($249/mo) \u2022 Store Growth ($449/mo)",
       "Third-party tools (plugins, tax automation) billed separately by providers",
     ],
     faq: [
