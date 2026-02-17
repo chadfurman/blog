@@ -277,9 +277,37 @@ export const services: Service[] = [
       "Monthly 30-min strategy check-in",
       "Additional Klaviyo flows available ($150 each)",
     ],
+    tiers: [
+      {
+        name: "Performance",
+        annual: 250,
+        monthly: 500,
+        unit: "/mo",
+        highlighted: true,
+        features: [
+          "Lower base fee",
+          "5\u201310% of revenue above your baseline",
+          "I only earn more when you do",
+          "Full SEO + email marketing",
+          "Monthly strategy check-in",
+        ],
+      },
+      {
+        name: "Flat Rate",
+        annual: 500,
+        monthly: 1000,
+        unit: "/mo",
+        features: [
+          "Predictable monthly cost",
+          "No revenue share",
+          "Full SEO + email marketing",
+          "Monthly strategy check-in",
+          "Best for high-revenue stores",
+        ],
+      },
+    ],
     callouts: [
       "Requires a WordPress Care or Store Care plan",
-      "Performance-based pricing available \u2014 my success is tied to yours",
       "Social media management coming soon \u2014 contact me if you need help now",
     ],
     faq: [

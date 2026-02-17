@@ -114,7 +114,11 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
         {/* 4. What's Included (shared features) */}
         <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto py-12">
-          <h2 className="text-center">What&apos;s Included in Every Plan</h2>
+          <h2 className="text-center">
+            {service.tiers && service.tiers.length > 0
+              ? "What\u2019s Included in Every Plan"
+              : "What\u2019s Included"}
+          </h2>
           <ul className="list-disc pl-6 text-left max-w-md mx-auto mt-6">
             {service.features.map((feature) => (
               <li key={feature} className="my-2">
