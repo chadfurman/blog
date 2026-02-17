@@ -14,7 +14,7 @@ function Hero() {
         <h2 className="my-2 tracking-[.1em] text-3xl md:text-4xl lg:text-7xl">
           Hi! I&apos;m Chad.
         </h2>
-        <h3 className="my-2 text-highlight/90 text-xl md:text-2xl lg:text-4xl tracking-[.1em]">
+        <h3 className="my-2 text-highlight/90 text-xl md:text-2xl lg:text-4xl tracking-[.1em] max-w-[18ch]">
           I help small businesses grow online.
         </h3>
         <p className="leading-7 mt-4 mb-6 max-w-lg">
