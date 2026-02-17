@@ -64,7 +64,7 @@ export default function RootLayout({
               <polyline points="6 9 12 15 18 9" />
             </svg>
           </Link>
-          <div className="absolute top-full right-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+          <div className="hidden group-hover:block absolute top-full right-0 pt-2 z-50">
             <div className="bg-white rounded-lg shadow-lg border border-foreground/10 py-2 min-w-[200px]">
               <Link href="/services/wordpress-care" className="block px-4 py-2 text-sm hover:bg-primary/5 hover:text-primary transition-colors">
                 WordPress Care
