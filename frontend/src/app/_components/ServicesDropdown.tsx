@@ -20,11 +20,11 @@ export default function ServicesDropdown() {
   }, [clicked]);
 
   return (
-    <div ref={ref} className="relative group">
+    <div ref={ref} className="services-nav relative">
       <button
         type="button"
         onClick={() => setClicked((prev) => !prev)}
-        className="link-styles inline-flex items-center gap-1 cursor-pointer"
+        className="inline-flex items-center gap-1 cursor-pointer"
       >
         Services
         <svg
@@ -36,18 +36,19 @@ export default function ServicesDropdown() {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="transition-transform group-hover:rotate-180"
+          className="services-nav-chevron transition-transform"
         >
           <polyline points="6 9 12 15 18 9" />
         </svg>
       </button>
 
-      {/* CSS hover: always in DOM, shown/hidden via group-hover */}
-      <div className={`absolute top-full right-0 pt-2 z-50 transition-all duration-150 ${
-        clicked
-          ? "opacity-100 visible"
-          : "opacity-0 invisible group-hover:opacity-100 group-hover:visible"
-      }`}>
+      <div
+        className="services-nav-dropdown absolute top-full right-0 pt-2 z-50 transition-all duration-150"
+        style={{
+          opacity: clicked ? 1 : 0,
+          visibility: clicked ? "visible" : "hidden",
+        }}
+      >
         <div className="bg-white rounded-lg shadow-lg border border-foreground/10 py-2 min-w-[200px]">
           <Link
             href="/services"
