@@ -170,15 +170,6 @@ p {
     }
 }
 
-/* Services dropdown — plain CSS hover, not Tailwind group-hover */
-.services-nav:hover .services-nav-dropdown {
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-.services-nav:hover .services-nav-chevron {
-    transform: rotate(180deg);
-}
 
 hr {
     @apply border-dotted;
