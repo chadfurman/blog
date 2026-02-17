@@ -48,15 +48,15 @@ export default function RootLayout({
     <body
       className={`${body_font.variable} ${header_font.variable} antialiased`}
     >
-    <header className="relative lg:grid lg:grid-rows-1 lg:grid-cols-3 py-4 border-b border-dotted border-foreground/10 items-center px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
-      <div className="col-span-1 flex items-center justify-between lg:justify-start">
+    <header className="relative lg:grid lg:grid-rows-1 lg:grid-cols-[1fr_auto] py-4 border-b border-dotted border-foreground/10 items-center px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
+      <div className="flex items-center justify-between lg:justify-start">
         <Link href="/">
-          <h1 className="m-0 hover:text-primary">Chad&apos;s Website</h1>
-          <h2 className="m-0 text-sm tracking-[0.35em]">WordPress &amp; E-Commerce Solutions</h2>
+          <h1 className="m-0 hover:text-primary lg:whitespace-nowrap">Chad&apos;s Website</h1>
+          <h2 className="m-0 text-sm tracking-[0.35em] lg:whitespace-nowrap">WordPress &amp; E-Commerce Solutions</h2>
         </Link>
         <MobileNav />
       </div>
-      <nav className="primary-nav col-span-2 hidden lg:flex flex-row justify-end gap-8 items-center">
+      <nav className="primary-nav hidden lg:flex flex-row justify-end gap-8 items-center">
         <Link href="/">Home</Link>
         <ServicesDropdown />
         <Link href="/contact">Contact</Link>
