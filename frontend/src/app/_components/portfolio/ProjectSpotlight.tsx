@@ -3,19 +3,22 @@ import {projects, type Project} from "@/data/portfolio";
 
 function ProjectCard({project}: {project: Project}) {
   const span = project.feature ? "md:col-span-8" : "md:col-span-4";
-  const imgOpacity = project.feature ? "opacity-60" : "opacity-40";
+  const mdOpacity = project.feature ? "md:opacity-60" : "md:opacity-40";
   return (
     <div
       className={`${span} group relative overflow-hidden rounded-xl border border-border-subtle bg-surface-primary`}
     >
+      {/* Image: banner on mobile (normal flow), full-bleed backdrop on md+. */}
       {/* eslint-disable-next-line @next/next/no-img-element -- decorative cover from /public, not content */}
       <img
         src={project.image}
         alt={project.imageAlt}
-        className={`w-full h-96 object-cover ${imgOpacity} group-hover:scale-105 transition-transform duration-700`}
+        className={`w-full h-48 object-cover opacity-80 ${mdOpacity} md:absolute md:inset-0 md:h-full group-hover:scale-105 transition-transform duration-700`}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-surface-deep via-surface-deep/40 to-transparent p-8 flex flex-col justify-end">
-        <div className="flex items-center gap-2 mb-2">
+      {/* Gradient overlay only when the image is a backdrop. */}
+      <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-surface-deep via-surface-deep/60 to-transparent" />
+      <div className="relative p-6 md:p-8 flex flex-col justify-end gap-3 md:min-h-96">
+        <div className="flex flex-wrap items-center gap-2">
           {project.tags.map((tag) => (
             <span
               key={tag.label}
@@ -27,11 +30,9 @@ function ProjectCard({project}: {project: Project}) {
             </span>
           ))}
         </div>
-        <h3 className="font-display text-2xl font-semibold text-text-vibrant mb-2">{project.title}</h3>
-        <p className="text-on-surface-variant max-w-2xl mb-4 text-base leading-relaxed">
-          {project.blurb}
-        </p>
-        <button className="flex items-center gap-2 font-mono text-sm text-brand w-fit group/link">
+        <h3 className="font-display text-2xl font-semibold text-text-vibrant">{project.title}</h3>
+        <p className="text-on-surface-variant max-w-2xl text-base leading-relaxed">{project.blurb}</p>
+        <button className="flex items-center gap-2 font-mono text-sm text-brand w-fit group/link mt-1">
           {project.cta}
           <Icon name="north_east" className="text-base group-hover/link:translate-x-1 transition-transform" />
         </button>

@@ -15,8 +15,8 @@ export const profile = {
 
 // Marquee of technologies under the hero.
 export const techTicker = [
-  "Kubernetes", "Terraform", "OpenAI", "PyTorch", "Rust", "Go", "SRE",
-  "Reliability", "Scale", "Neural Nets", "Agentic Workflows",
+  "Kubernetes", "Terraform", "Anthropic", "Rust", "Go", "SRE",
+  "Reliability", "Scale", "Kafka", "OpenSearch", "Agentic Workflows",
   "Distributed Systems", "Emmy Winning Tech",
 ] as const;
 
@@ -101,12 +101,12 @@ export const skillGroups: SkillGroup[] = [
   {
     icon: "psychology",
     title: "AI Engineering",
-    skills: ["LLM Orchestration", "RAG Systems", "Agentic Workflows", "PyTorch", "OpenAI"],
+    skills: ["LLM Orchestration", "RAG Systems", "Agentic Workflows", "Anthropic"],
   },
   {
     icon: "cloud_done",
     title: "SRE & Infrastructure",
-    skills: ["Kubernetes", "Terraform", "AWS / GCP", "CI/CD Pipelines", "EKS"],
+    skills: ["Kubernetes", "Terraform", "AWS / GCP", "CI/CD Pipelines", "EKS", "Kafka", "OpenSearch"],
   },
   {
     icon: "layers",
