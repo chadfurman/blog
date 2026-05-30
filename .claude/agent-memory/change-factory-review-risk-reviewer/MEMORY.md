@@ -1,0 +1,1 @@
+- [Portfolio Frontend Risk Profile](portfolio-risk-profile.md) — Next.js 15 static-export portfolio; client canvas hero + cmdk palette, all data static in-repo

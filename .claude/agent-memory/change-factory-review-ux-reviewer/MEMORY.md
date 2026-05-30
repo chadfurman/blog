@@ -1,0 +1,2 @@
+- [No agent-lint config](no-agent-lint-config.md) — repo has no .claude/agent-lint.config; conditional gate cannot be read, resources/ absent too
+- [Frontend UX stack](frontend-ux-stack.md) — Next.js app-router + Tailwind portfolio; custom design tokens, hand-rolled a11y (no component lib)
