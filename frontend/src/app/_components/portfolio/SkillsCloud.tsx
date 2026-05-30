@@ -5,7 +5,7 @@ function SkillCard({group}: {group: SkillGroup}) {
   return (
     <div className="glass-card p-8 rounded-xl hover:border-brand/50 transition-colors">
       <div className="w-12 h-12 rounded-lg bg-brand/10 flex items-center justify-center text-brand mb-4">
-        <Icon name={group.icon} />
+        <Icon name={group.icon} className="text-2xl" />
       </div>
       <h4 className="font-display text-2xl font-semibold text-text-vibrant mb-4">{group.title}</h4>
       <div className="flex flex-wrap gap-2">
