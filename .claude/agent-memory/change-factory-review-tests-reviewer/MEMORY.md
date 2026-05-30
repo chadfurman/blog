@@ -1,0 +1,1 @@
+- [Project test posture](project_test_posture.md) — No jest/vitest; build + Playwright only. Don't block on missing unit tests for UI/animation diffs.

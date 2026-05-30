@@ -6,6 +6,7 @@ import SkillsCloud from "@/app/_components/portfolio/SkillsCloud";
 import ContactCTA from "@/app/_components/portfolio/ContactCTA";
 import SiteFooter from "@/app/_components/portfolio/SiteFooter";
 import ScrollReveal from "@/app/_components/portfolio/ScrollReveal";
+import CommandPalette from "@/app/_components/portfolio/CommandPalette";
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
       </main>
       <SiteFooter />
       <ScrollReveal />
+      <CommandPalette />
     </div>
   );
 }
