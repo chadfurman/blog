@@ -5,10 +5,15 @@ import ProjectSpotlight from "@/app/_components/portfolio/ProjectSpotlight";
 import SkillsCloud from "@/app/_components/portfolio/SkillsCloud";
 import ContactCTA from "@/app/_components/portfolio/ContactCTA";
 import SiteFooter from "@/app/_components/portfolio/SiteFooter";
+import ScrollReveal from "@/app/_components/portfolio/ScrollReveal";
 
 export default function Home() {
   return (
     <div className="portfolio">
+      {/* Without JS, scroll-reveal never fires — keep content visible. */}
+      <noscript>
+        <style>{`.portfolio [data-reveal]{opacity:1;transform:none;}`}</style>
+      </noscript>
       <SiteNav />
       <main className="relative">
         <Hero />
@@ -18,6 +23,7 @@ export default function Home() {
         <ContactCTA />
       </main>
       <SiteFooter />
+      <ScrollReveal />
     </div>
   );
 }

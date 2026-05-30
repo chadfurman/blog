@@ -1,11 +1,13 @@
 import Icon from "./Icon";
 import {projects, type Project} from "@/data/portfolio";
 
-function ProjectCard({project}: {project: Project}) {
+function ProjectCard({project, index}: {project: Project; index: number}) {
   const span = project.feature ? "md:col-span-8" : "md:col-span-4";
   const mdOpacity = project.feature ? "md:opacity-60" : "md:opacity-40";
   return (
     <div
+      data-reveal
+      style={{["--reveal-delay" as string]: `${index * 110}ms`}}
       className={`${span} group relative overflow-hidden rounded-xl border border-border-subtle bg-surface-primary`}
     >
       {/* Image: banner on mobile (normal flow), full-bleed backdrop on md+. */}
@@ -44,7 +46,7 @@ function ProjectCard({project}: {project: Project}) {
 export default function ProjectSpotlight() {
   return (
     <section id="projects" className="py-20 px-6 max-w-screen-xl mx-auto">
-      <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-4" data-reveal>
         <div>
           <h2 className="font-display text-3xl font-semibold text-text-vibrant mb-2">Project Spotlight</h2>
           <p className="text-on-surface-variant">
@@ -53,8 +55,8 @@ export default function ProjectSpotlight() {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-        {projects.map((project) => (
-          <ProjectCard key={project.title} project={project} />
+        {projects.map((project, i) => (
+          <ProjectCard key={project.title} project={project} index={i} />
         ))}
       </div>
     </section>
