@@ -34,7 +34,7 @@ export const experience: Experience[] = [
     company: "FOSSA",
     role: "Engineering Manager",
     detail:
-      "Applied AI & SRE. Spearheaded AI adoption across the company and led the Applied AI team from prototype to public beta. Product owner of FOSSAbot (New Horizons), an agentic framework for automated dependency updates and vulnerability remediation. Founded and manage the SRE team; modernized cloud infrastructure by migrating from kops to EKS.",
+      "Applied AI & SRE. Spearheaded AI adoption across the company and led the Applied AI team from prototype to public beta. Product owner of fossabot (New Horizons), an agentic framework for automated dependency updates and vulnerability remediation. Founded and manage the SRE team; modernized cloud infrastructure by migrating from kops to EKS.",
     period: "Oct 2024 — Present",
     current: true,
     tags: ["LLMs", "Agentic AI", "SRE", "Kubernetes", "EKS"],
@@ -70,9 +70,9 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    title: "FOSSAbot (New Horizons AI)",
+    title: "fossabot (New Horizons AI)",
     blurb:
-      "An industry-first agentic AI framework for automated dependency updates and vulnerability remediation. FOSSAbot uses deep, code-aware analysis to verify impact, suggest fixes, and automate migrations — saving engineering teams weeks of triage.",
+      "An industry-first agentic AI framework for automated dependency updates and vulnerability remediation. fossabot uses deep, code-aware analysis to verify impact, suggest fixes, and automate migrations — saving engineering teams weeks of triage.",
     image: "/projects/fossabot.png",
     imageAlt:
       "Dark AI dashboard with neural-network graphs and real-time compliance metrics in deep navy and glowing blue tones.",

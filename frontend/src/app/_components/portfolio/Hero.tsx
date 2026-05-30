@@ -30,7 +30,7 @@ export default function Hero() {
           </span>
         </div>
         <h1 className="font-display text-4xl md:text-6xl font-bold leading-[1.1] tracking-tight text-text-vibrant mb-4">
-          {title.trim()} | <span className="text-brand">{accent.trim()}</span>
+          {title.trim()} | <span className="text-brand whitespace-nowrap">{accent.trim()}</span>
         </h1>
         <p className="text-lg leading-relaxed text-on-surface-variant mb-8 max-w-2xl mx-auto">
           {profile.tagline}
