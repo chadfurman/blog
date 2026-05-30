@@ -1,4 +1,6 @@
 import Icon from "./Icon";
+import DependencyGraph from "./DependencyGraph";
+import CmdkHint from "./CmdkHint";
 import {profile, techTicker} from "@/data/portfolio";
 
 function TechMarquee() {
@@ -23,8 +25,22 @@ export default function Hero() {
       className="relative min-h-[92vh] flex flex-col justify-center items-center px-6 pt-24 overflow-hidden blueprint-grid"
     >
       <div className="aurora" />
+      <DependencyGraph className="opacity-70" />
       <div className="absolute inset-0 neural-glow pointer-events-none" />
-      <div className="max-w-4xl text-center z-10">
+      <div className="hero-veil absolute inset-0 pointer-events-none" />
+      {/* Legend so the backdrop reads as "fossabot healing dependencies", not generic particles. */}
+      <div className="hidden lg:flex absolute bottom-24 left-8 z-10 flex-col gap-1.5 font-mono text-[10px] text-on-surface-variant/70 pointer-events-none">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full" style={{background: "rgb(245,165,90)"}} /> vulnerable dependency
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full" style={{background: "rgb(180,197,255)"}} /> healthy
+        </div>
+        <div className="flex items-center gap-2 text-brand/80">
+          <span className="w-2 h-2 rounded-full animate-ping" style={{background: "rgb(123,208,255)"}} /> fossabot · auto-healing
+        </div>
+      </div>
+      <div className="max-w-4xl text-center z-10 relative">
         <div
           className="hero-rise inline-block px-4 py-1 border border-brand/30 bg-brand/5 rounded-full mb-6"
           style={{["--rise-delay" as string]: "0ms"}}
@@ -67,6 +83,7 @@ export default function Hero() {
             <Icon name="code" className="text-base" /> GitHub
           </a>
         </div>
+        <CmdkHint />
       </div>
       <TechMarquee />
     </section>

@@ -3,6 +3,7 @@
 import {useEffect, useState} from "react";
 import Icon from "./Icon";
 import {navLinks, profile} from "@/data/portfolio";
+import {OPEN_CMDK_EVENT} from "./constants";
 
 const SECTION_IDS = ["experience", "projects", "contact"];
 
@@ -51,6 +52,15 @@ export default function SiteNav() {
         </div>
 
         <div className="flex items-center gap-3 md:gap-4">
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event(OPEN_CMDK_EVENT))}
+            aria-label="Open command palette"
+            className="hidden md:inline-flex items-center gap-1.5 font-mono text-xs text-on-surface-variant hover:text-brand border border-border-subtle rounded-md px-2 py-1 transition-colors"
+          >
+            <span className="opacity-70">Search</span>
+            <kbd className="text-[10px]">⌘K</kbd>
+          </button>
           <a
             href={profile.github}
             aria-label="GitHub"
@@ -92,13 +102,23 @@ export default function SiteNav() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className={`font-mono text-sm py-3 border-b border-border-subtle/40 last:border-0 ${
+                className={`font-mono text-sm py-3 border-b border-border-subtle/40 ${
                   isActive(link.href) ? "text-brand font-bold" : "text-on-surface-variant"
                 }`}
               >
                 {link.label}
               </a>
             ))}
+            <button
+              type="button"
+              onClick={() => {
+                setMenuOpen(false);
+                window.dispatchEvent(new Event(OPEN_CMDK_EVENT));
+              }}
+              className="font-mono text-sm py-3 text-left text-on-surface-variant flex items-center gap-2"
+            >
+              <Icon name="code" className="text-base" /> Search…
+            </button>
           </div>
         </div>
       )}
