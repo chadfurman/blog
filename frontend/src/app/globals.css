@@ -170,23 +170,6 @@ p {
     }
 }
 
-.services-nav-dropdown {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-.services-nav:hover .services-nav-dropdown,
-.services-nav-dropdown.force-open {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-}
-
-.services-nav:hover .services-nav-chevron {
-    transform: rotate(180deg);
-}
-
 hr {
     @apply border-dotted;
     @apply border-primary/20;

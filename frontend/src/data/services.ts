@@ -92,16 +92,20 @@ export const services: Service[] = [
     tagline: "Keep your site fast, secure, and up to date",
     icon: "/icon-wordpress-care.png",
     description:
-      "Your website is your storefront \u2014 it needs to be fast, secure, and always online. WordPress Care includes managed hosting on enterprise infrastructure, daily backups, security monitoring, hack-fix guarantee, and premium support tokens for site changes and updates.",
+      "Your website is your storefront \u2014 it needs to be fast, secure, and always online. WordPress Care includes managed hosting on enterprise infrastructure with a 99.99% uptime SLA, free migration, daily backups, firewall protection, hack-fix guarantee, and premium support tokens for site changes and updates.",
     pricing: { annual: 99, monthly: 149, setupAnnual: 0, setupMonthly: 300, unit: "/mo" },
     startingAt: "From $99/mo (annual)",
     setupFrom: "$300 onboarding \u2014 waived for annual plans",
     features: [
-      "Managed WordPress hosting with SSL & CDN",
+      "Managed WordPress hosting with SSL, CDN & image optimization",
+      "99.99% uptime SLA",
+      "Free site migration \u2014 zero downtime",
       "Daily backups with one-click restore",
+      "Firewall, DDoS protection & spam filtering",
       "Security monitoring, malware scans & hack-fix guarantee",
       "Core, theme & plugin updates",
       "Staging environment for safe testing",
+      "Speed optimization with Core Web Vitals targets",
       "Plugin audit at onboarding",
       "Monthly performance report",
       "2 premium support tokens/mo (< 30 min tasks)",
@@ -114,10 +118,11 @@ export const services: Service[] = [
         monthly: 149,
         unit: "/mo",
         features: [
-          "Managed hosting with SSL & CDN",
+          "Managed hosting with SSL, CDN & image optimization",
+          "99.99% uptime SLA",
           "Daily backups & security scans",
+          "Firewall, DDoS & spam protection",
           "Core, theme & plugin updates",
-          "Email support",
           "2 support tokens/mo",
         ],
       },
@@ -131,8 +136,8 @@ export const services: Service[] = [
           "Everything in Essential",
           "Advanced speed optimization",
           "Core Web Vitals monitoring",
+          "Email support",
           "4 support tokens/mo",
-          "Staging environment",
         ],
       },
       {
@@ -155,7 +160,7 @@ export const services: Service[] = [
     faq: [
       {
         q: "What\u2019s the difference between Essential, Professional, and Business?",
-        a: "All tiers include hosting, backups, security, and updates. Professional adds email support, more support tokens, advanced speed optimization, and Core Web Vitals monitoring. Business adds text/call support, 8 tokens/mo, priority speed optimization, and monthly strategy check-ins.",
+        a: "All tiers include managed hosting with SSL, CDN, image optimization, 99.99% uptime SLA, daily backups, firewall, spam protection, malware scans, hack-fix guarantee, and updates. Professional adds email support, more support tokens, advanced speed optimization, and Core Web Vitals monitoring. Business adds text/call support, 8 tokens/mo, priority speed optimization, and monthly strategy check-ins.",
       },
       {
         q: "What are premium support tokens?",
@@ -195,8 +200,8 @@ export const services: Service[] = [
       "Product catalog setup & migration",
       "Payment gateway integration",
       "Shipping & tax configuration",
-      "Conversion rate optimization",
-      "Ongoing store management",
+      "Checkout flow & conversion funnel monitoring",
+      "Ongoing store management & optimization",
       "WordPress Care included (WooCommerce stores)",
       "Monthly performance & revenue reporting",
     ],
@@ -209,7 +214,7 @@ export const services: Service[] = [
         features: [
           "WordPress Care Professional included",
           "WooCommerce or Shopify management",
-          "Basic CRO monitoring",
+          "Checkout flow & conversion monitoring",
           "Email support",
           "4 support tokens/mo",
         ],
@@ -222,7 +227,7 @@ export const services: Service[] = [
         highlighted: true,
         features: [
           "Everything in Store Care",
-          "Active conversion optimization",
+          "Active conversion optimization & A/B testing",
           "Revenue analysis & reporting",
           "Text & call support",
           "8 support tokens/mo",
@@ -244,7 +249,7 @@ export const services: Service[] = [
       },
       {
         q: "What\u2019s the difference between Store Care and Store Growth?",
-        a: "Store Care ($249/mo) includes WordPress Care Professional, basic CRO monitoring, email support, and 4 support tokens/mo. Store Growth ($449/mo) adds active conversion optimization, text/call support, 8 tokens/mo, revenue analysis, and monthly strategy calls.",
+        a: "Store Care ($249/mo) includes WordPress Care Professional, checkout flow and conversion monitoring, email support, and 4 support tokens/mo. Store Growth ($449/mo) adds active conversion optimization with A/B testing, text/call support, 8 tokens/mo, revenue analysis, and monthly strategy calls.",
       },
       {
         q: "Is WordPress Care included?",
@@ -263,7 +268,7 @@ export const services: Service[] = [
     tagline: "Get found, get customers, get sales",
     icon: "/icon-growth.png",
     description:
-      "Customers don\u2019t find you by accident. Marketing combines SEO and Klaviyo email marketing to drive traffic, nurture leads, and turn one-time buyers into repeat customers \u2014 with clear revenue attribution so you know exactly what\u2019s working.",
+      "Customers don\u2019t find you by accident. Marketing combines SEO and Klaviyo email marketing to drive traffic, nurture leads, and turn one-time buyers into repeat customers \u2014 with clear revenue attribution so you know exactly what\u2019s working. Available as an add-on to any WordPress Care or Store Care plan.",
     pricing: { annual: 500, monthly: 1000, setupAnnual: 1500, setupMonthly: 3000, unit: "/mo" },
     startingAt: "From $500/mo (annual) or $250/mo + rev share",
     setupFrom: "Setup from $1,500",
@@ -355,6 +360,7 @@ export const services: Service[] = [
       "SEO-ready structure & meta tags",
       "Contact form integration",
       "Google Analytics setup",
+      "2 hours of hands-on training included",
       "Launch within 2 weeks",
       "First month of WordPress Care free",
     ],
