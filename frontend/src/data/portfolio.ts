@@ -57,19 +57,34 @@ export const experience: Experience[] = [
   },
 ];
 
+export type CaseStudySection = {
+  heading: string;
+  body?: string;
+  bullets?: string[];
+};
+
+export type CaseStudy = {
+  tagline: string; // one-line subtitle under the title
+  role: string; // "Role · Company · dates"
+  sections: CaseStudySection[];
+  tech: string[];
+};
+
 export type Project = {
+  slug: string;
   title: string;
   blurb: string;
   image: string;
   imageAlt: string;
   tags: { label: string; tone: "primary" | "secondary" }[];
   cta: string;
-  href?: string;
   feature?: boolean; // large bento cell
+  caseStudy: CaseStudy;
 };
 
 export const projects: Project[] = [
   {
+    slug: "fossabot",
     title: "fossabot (New Horizons AI)",
     blurb:
       "An industry-first agentic AI framework for automated dependency updates and vulnerability remediation. fossabot uses deep, code-aware analysis to verify impact, suggest fixes, and automate migrations — saving engineering teams weeks of triage.",
@@ -82,8 +97,52 @@ export const projects: Project[] = [
     ],
     cta: "Project Case Study",
     feature: true,
+    caseStudy: {
+      tagline: "Agentic AI that keeps software dependencies current — safely, automatically.",
+      role: "Engineering Manager, Applied AI & SRE · FOSSA · 2024–present",
+      sections: [
+        {
+          heading: "The problem",
+          body:
+            "Modern software runs on hundreds of open-source dependencies, and keeping them current is a thankless, never-ending tax on engineering teams. Updates break builds, introduce behavioral changes, and pile up until a backlog of outdated, vulnerable packages becomes a real security and maintenance liability. Most teams either fall behind or burn senior-engineer time triaging upgrades one at a time.",
+        },
+        {
+          heading: "What I led",
+          body:
+            "I built and led the Applied AI team that created fossabot — an agentic AI product that automates dependency updates and vulnerability remediation directly inside developers' pull-request workflows. I owned the effort from early prototype through public beta: standing up the team from scratch (mission, hiring, mentorship), driving the architecture, and staying hands-on across the stack. In parallel I founded and led the SRE function that stabilized and scaled the production environment, including a migration from kops to managed EKS.",
+        },
+        {
+          heading: "What we built",
+          bullets: [
+            "An AI agent that opens pull requests, bumps versions, reads CI logs, and verifies impact in a sandbox before recommending a change — so updates are safe, not just automatic.",
+            "Code-aware change & impact detection with a caching layer for faster, cheaper analysis.",
+            "Static-analysis (SAST) checks surfaced as part of the PR review.",
+            "Support across the languages teams actually use — JavaScript/TypeScript, Java, Python, Go, and Ruby.",
+            "Integrations beyond GitHub, including GitLab, to meet enterprises where they already work.",
+            "A dependency-intelligence data layer (GraphQL API, event bus, OpenSearch) powering faster vulnerability data and future agentic capabilities.",
+          ],
+        },
+        {
+          heading: "Impact",
+          body:
+            "fossabot carried FOSSA from its license-compliance roots into agentic AI — a new product line taken from idea to public beta, adopted by enterprise design partners, and shaped into a multi-agent roadmap (detection → prioritization → autonomous remediation → advisory) presented to company and board leadership. The throughline: give engineers enough confidence in automated updates that they stop doing the work by hand.",
+        },
+      ],
+      tech: [
+        "LLM orchestration",
+        "Agentic workflows",
+        "Sandboxed code analysis",
+        "Kubernetes / EKS",
+        "Kafka",
+        "OpenSearch",
+        "GraphQL",
+        "Go",
+        "TypeScript",
+      ],
+    },
   },
   {
+    slug: "evercast",
     title: "Evercast — WebRTC for Hollywood",
     blurb:
       "The real-time creative-collaboration platform used by major studios. Led the engineering of the core WebRTC streaming engine delivering 4K/60fps, 10-bit 4:4:4 color precision and 7.1 surround sound — earning an Engineering Emmy®.",
@@ -92,6 +151,45 @@ export const projects: Project[] = [
       "High-speed data visualized as glowing light paths through optical fibers in a dark server room, tech-blue and cyan hues.",
     tags: [{ label: "Engineering Emmy®", tone: "secondary" }],
     cta: "Technical Details",
+    caseStudy: {
+      tagline: "Real-time, studio-grade video collaboration for film & television.",
+      role: "Technical Lead · Clevertech / Evercast · 2016–2021",
+      sections: [
+        {
+          heading: "The problem",
+          body:
+            "Film and television production had no secure, studio-grade way for editors, directors, and producers to work on footage together remotely. Reviewing a cut meant being in the same room — and unreleased intellectual property couldn't leave it. The industry needed real-time, frame-accurate collaboration over the internet without compromising security.",
+        },
+        {
+          heading: "What I did",
+          body:
+            "I took Evercast from pre-seed to a fully funded, functioning business. I started as a team of one — teaching myself C, WebRTC, SIP, RTP, and the Janus media server — and grew it into the engineering team that built the product. Along the way I worked directly with industry experts: the Meetecho team behind Janus, Cosmo Software and the Alliance for Open Media, and members of the IETF shaping the real-time-media standards we were building on.",
+        },
+        {
+          heading: "What we built",
+          body:
+            "A browser-based platform delivering encrypted 4K streaming at 60fps, 10-bit color, and multichannel audio — fast and faithful enough for professional color and sound work. Under the hood: a custom WebRTC signaling protocol (VP8 / VP9 / AV1, Opus, SRTP), an SFU tuned at the OS level, simulcast / scalable video coding, and an OBS-based broadcast application — deployed on Kubernetes (EKS) with security designed for Hollywood IP (role-based access, stateless JWT sessions, routine third-party pentests). We contributed engine improvements back to OBS's WebRTC implementation and the Janus Gateway.",
+        },
+        {
+          heading: "Impact",
+          bullets: [
+            "Scaled to 250+ real-time virtual editing rooms and up to 256 concurrent teams.",
+            "Adopted by major studios for productions including Godzilla: King of the Monsters.",
+            "Recognized with an Engineering Emmy® and WebRTC patents.",
+            "Became a standard for remote creative collaboration — helping reinvent how movies are made.",
+          ],
+        },
+      ],
+      tech: [
+        "WebRTC (VP8 / VP9 / AV1)",
+        "SRTP",
+        "SIP / RTP",
+        "Janus Gateway",
+        "OBS",
+        "C",
+        "Kubernetes / EKS",
+      ],
+    },
   },
 ];
 
