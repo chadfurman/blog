@@ -474,3 +474,47 @@ button[type="submit"]:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* ===========================================================================
+   Applied AI & SRE portfolio (dark) — scoped effects.
+   The homepage opts in via `.portfolio` so dormant light pages stay intact.
+   =========================================================================== */
+.portfolio {
+    background-color: #0c1324;
+    color: #dce1fb;
+}
+/* Offset anchor jumps so the fixed nav doesn't cover section headings. */
+.portfolio section[id] {
+    scroll-margin-top: 5rem;
+}
+
+.blueprint-grid {
+    background-image: radial-gradient(#334155 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+}
+
+.neural-glow {
+    background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.1) 0%, rgba(12, 19, 36, 0) 70%);
+}
+
+.glass-card {
+    backdrop-filter: blur(20px);
+    background-color: rgba(15, 23, 42, 0.6);
+    border: 1px solid #334155;
+}
+
+.timeline-line {
+    background: linear-gradient(to bottom, transparent, #2563eb, #2563eb, transparent);
+}
+
+/* Scrolling technology marquee under the hero. */
+@keyframes portfolio-marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+    animation: portfolio-marquee 40s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+    .animate-marquee { animation: none; }
+}

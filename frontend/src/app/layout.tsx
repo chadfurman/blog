@@ -1,34 +1,34 @@
 import type {Metadata} from "next";
-import {Plus_Jakarta_Sans, Source_Sans_3} from 'next/font/google'
+import {Plus_Jakarta_Sans, Geist, JetBrains_Mono} from 'next/font/google'
 import {GoogleAnalytics} from '@next/third-parties/google'
 import "./globals.css";
-import Link from "next/link";
 
 import PrismLoader from "@/app/_components/PrismLoader/PrismLoader";
-import MobileNav from "@/app/_components/MobileNav";
-import Footer from "@/app/_components/Footer";
-import ServicesDropdown from "@/app/_components/ServicesDropdown";
-
-
-const body_font = Source_Sans_3({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-body",
-  display: "swap",
-})
 
 const header_font = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: "--font-header",
   weight: ['400', '500', '600', '700', '800'],
-  style: ['normal', 'italic'],
   display: 'swap',
 })
 
+const body_font = Geist({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-body",
+  display: "swap",
+})
+
+const mono_font = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
+  display: "swap",
+})
+
 export const metadata: Metadata = {
-  title: "Chad Furman",
-  description: "WordPress hosting, SEO, e-commerce, and Klaviyo marketing automation for small businesses and online stores.",
+  title: "Chad Furman | Applied AI & SRE",
+  description: "Engineering Manager building scalable infrastructure and agentic AI products. Applied AI, SRE, and full-stack engineering leadership.",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -39,33 +39,16 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-                                     children,
-                                   }: Readonly<{
+  children,
+}: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark scroll-smooth">
     <body
-      className={`${body_font.variable} ${header_font.variable} antialiased`}
+      className={`${body_font.variable} ${header_font.variable} ${mono_font.variable} font-body antialiased`}
     >
-    <header className="relative lg:grid lg:grid-rows-1 lg:grid-cols-[1fr_auto] py-4 border-b border-dotted border-foreground/10 items-center px-4 sm:px-6 lg:px-8 max-w-screen-xl mx-auto">
-      <div className="flex items-center justify-between lg:justify-start">
-        <Link href="/">
-          <h1 className="m-0 hover:text-primary lg:whitespace-nowrap">Chad&apos;s Website</h1>
-          <h2 className="m-0 text-sm tracking-[0.35em] lg:whitespace-nowrap">WordPress &amp; E-Commerce Solutions</h2>
-        </Link>
-        <MobileNav />
-      </div>
-      <nav className="primary-nav hidden lg:flex flex-row justify-end gap-8 items-center">
-        <Link href="/">Home</Link>
-        <ServicesDropdown />
-        <Link href="/contact">Contact</Link>
-      </nav>
-    </header>
-    <main className="min-h-screen">
-      {children}
-    </main>
-    <Footer />
+    {children}
     <PrismLoader />
     <GoogleAnalytics gaId="G-HBRN8ECZ6C"/>
     </body>
