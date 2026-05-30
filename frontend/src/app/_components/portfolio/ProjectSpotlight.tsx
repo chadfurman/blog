@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Icon from "./Icon";
 import {projects, type Project} from "@/data/portfolio";
 
@@ -34,10 +35,13 @@ function ProjectCard({project, index}: {project: Project; index: number}) {
         </div>
         <h3 className="font-display text-2xl font-semibold text-text-vibrant">{project.title}</h3>
         <p className="text-on-surface-variant max-w-2xl text-base leading-relaxed">{project.blurb}</p>
-        <button className="flex items-center gap-2 font-mono text-sm text-brand w-fit group/link mt-1">
+        <Link
+          href={`/case-studies/${project.slug}`}
+          className="flex items-center gap-2 font-mono text-sm text-brand w-fit group/link mt-1"
+        >
           {project.cta}
           <Icon name="north_east" className="text-base group-hover/link:translate-x-1 transition-transform" />
-        </button>
+        </Link>
       </div>
     </div>
   );
