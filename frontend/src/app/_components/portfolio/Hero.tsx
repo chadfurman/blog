@@ -20,23 +20,38 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative min-h-screen flex flex-col justify-center items-center px-6 pt-24 overflow-hidden blueprint-grid"
+      className="relative min-h-[92vh] flex flex-col justify-center items-center px-6 pt-24 overflow-hidden blueprint-grid"
     >
+      <div className="aurora" />
       <div className="absolute inset-0 neural-glow pointer-events-none" />
       <div className="max-w-4xl text-center z-10">
-        <div className="inline-block px-4 py-1 border border-brand/30 bg-brand/5 rounded-full mb-4">
+        <div
+          className="hero-rise inline-block px-4 py-1 border border-brand/30 bg-brand/5 rounded-full mb-6"
+          style={{["--rise-delay" as string]: "0ms"}}
+        >
           <span className="font-mono text-xs text-brand uppercase tracking-widest">
             {profile.availability}
           </span>
         </div>
-        <h1 className="font-display text-4xl md:text-6xl font-bold leading-[1.1] tracking-tight text-text-vibrant mb-4">
-          <span className="block">{title.trim()}</span>
-          <span className="block text-brand">{accent.trim()}</span>
+        <h1
+          className="hero-rise font-display text-5xl md:text-7xl font-extrabold leading-[1.06] tracking-tight text-text-vibrant mb-5"
+          style={{["--rise-delay" as string]: "90ms"}}
+        >
+          <span className="block pb-1">{title.trim()}</span>
+          <span className="block pb-2 bg-gradient-to-r from-brand via-brand to-secondary bg-clip-text text-transparent">
+            {accent.trim()}
+          </span>
         </h1>
-        <p className="text-lg leading-relaxed text-on-surface-variant mb-8 max-w-2xl mx-auto">
+        <p
+          className="hero-rise text-lg leading-relaxed text-on-surface-variant mb-9 max-w-2xl mx-auto"
+          style={{["--rise-delay" as string]: "180ms"}}
+        >
           {profile.tagline}
         </p>
-        <div className="flex flex-col md:flex-row gap-4 justify-center">
+        <div
+          className="hero-rise flex flex-col md:flex-row gap-4 justify-center"
+          style={{["--rise-delay" as string]: "270ms"}}
+        >
           <a
             href="#experience"
             className="bg-primary-container text-on-primary-container px-8 py-4 font-mono text-sm rounded-lg hover:brightness-110 transition-all flex items-center justify-center gap-2"

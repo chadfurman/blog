@@ -2,7 +2,7 @@ import {profile} from "@/data/portfolio";
 
 export default function ContactCTA() {
   return (
-    <section id="contact" className="py-20 px-6 text-center max-w-4xl mx-auto">
+    <section id="contact" className="py-20 px-6 text-center max-w-4xl mx-auto" data-reveal>
       <h2 className="font-display text-4xl md:text-6xl font-bold text-text-vibrant mb-4">
         Ready to scale your intelligence?
       </h2>
