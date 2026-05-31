@@ -70,7 +70,7 @@ export default function Hero() {
         >
           <a
             href="#experience"
-            className="bg-primary-container text-on-primary-container px-8 py-4 font-mono text-sm rounded-lg hover:brightness-110 transition-all flex items-center justify-center gap-2"
+            className="cta-primary bg-primary-container text-on-primary-container px-8 py-4 font-mono text-sm rounded-lg hover:brightness-110 flex items-center justify-center gap-2"
           >
             View Experience <Icon name="arrow_forward" className="text-base" />
           </a>
@@ -78,7 +78,7 @@ export default function Hero() {
             href={profile.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-border-subtle hover:border-brand/50 text-on-surface px-8 py-4 font-mono text-sm rounded-lg transition-all flex items-center justify-center gap-2"
+            className="cta-secondary border border-border-subtle hover:border-brand/50 text-on-surface px-8 py-4 font-mono text-sm rounded-lg flex items-center justify-center gap-2"
           >
             <Icon name="code" className="text-base" /> GitHub
           </a>
