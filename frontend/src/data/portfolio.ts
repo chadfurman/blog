@@ -43,7 +43,7 @@ export const experience: Experience[] = [
     company: "Klaviyo",
     role: "Senior Software Engineer",
     detail:
-      "Core platform engineering for marketing-automation infrastructure operating at massive scale. Built and optimized high-throughput data pipelines and the reliability of systems behind millions of customer interactions.",
+      "Core platform engineering for marketing-automation infrastructure operating at massive scale. Built and optimized high-throughput data pipelines and the reliability of systems behind millions of customer interactions. Championed JSON:API standards across the org.",
     period: "Jan 2021 — Mar 2024",
     tags: ["Python", "Distributed Systems", "Scale"],
   },
@@ -51,9 +51,51 @@ export const experience: Experience[] = [
     company: "Clevertech",
     role: "Technical Lead",
     detail:
-      "Led the engineering of Evercast, a real-time WebRTC collaboration platform for film and TV production used by major studios. The work helped raise $4M and earned an Engineering Emmy® for delivering 4K/60fps, 10-bit 4:4:4 color and 7.1 surround over the web. Championed JSON:API standards across the org.",
+      "Led the engineering of Evercast, a real-time WebRTC collaboration platform for film and TV production used by major studios. The work helped raise $4M and earned an Engineering Emmy® for delivering 4K/60fps, 10-bit 4:4:4 color and 7.1 surround over the web.",
     period: "Jul 2016 — Jan 2021",
     tags: ["WebRTC", "Real-time Video", "Engineering Emmy"],
+  },
+];
+
+// Compact "earlier" roles — shown below the headline timeline, less visual weight.
+export type EarlierRole = {
+  company: string;
+  role: string;
+  period: string;
+  detail: string;
+};
+
+export const earlierRoles: EarlierRole[] = [
+  {
+    company: "Fuzz Productions",
+    role: "Senior Web Developer",
+    period: "2013 — 2015",
+    detail: "Built REST APIs across MVC frameworks — Laravel, CakePHP, Sails, Rails, Django.",
+  },
+  {
+    company: "KathodeRay Media",
+    role: "Web Developer",
+    period: "2012 — 2013",
+    detail: "Delivered client projects, including legacy Joomla 1.5 systems, with direct client communication.",
+  },
+];
+
+export type Education = {
+  school: string;
+  degree: string;
+  period: string;
+};
+
+export const education: Education[] = [
+  {
+    school: "University at Albany, SUNY",
+    degree: "B.S., Mathematics & Computer Science",
+    period: "2008 — 2012",
+  },
+  {
+    school: "Hudson Valley Community College",
+    degree: "A.S., Computer Information Systems",
+    period: "2006 — 2008",
   },
 ];
 

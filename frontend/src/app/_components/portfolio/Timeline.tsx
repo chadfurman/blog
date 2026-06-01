@@ -1,4 +1,36 @@
-import {experience, type Experience} from "@/data/portfolio";
+import {experience, earlierRoles, education, type Experience} from "@/data/portfolio";
+
+function CompactList({label, children}: {label: string; children: React.ReactNode}) {
+  return (
+    <div>
+      <h3 className="font-mono text-sm uppercase tracking-widest text-brand mb-6">{label}</h3>
+      <ul className="space-y-6">{children}</ul>
+    </div>
+  );
+}
+
+function CompactRow({
+  title,
+  meta,
+  period,
+  detail,
+}: {
+  title: string;
+  meta: string;
+  period: string;
+  detail?: string;
+}) {
+  return (
+    <li className="border-l border-border-subtle pl-4">
+      <div className="flex items-baseline justify-between gap-3">
+        <span className="font-display text-lg font-semibold text-text-vibrant">{title}</span>
+        <span className="font-mono text-xs text-on-surface-variant whitespace-nowrap">{period}</span>
+      </div>
+      <p className="font-mono text-xs text-secondary mb-1">{meta}</p>
+      {detail && <p className="text-on-surface-variant text-sm leading-relaxed">{detail}</p>}
+    </li>
+  );
+}
 
 function Tag({label}: {label: string}) {
   return (
@@ -71,6 +103,21 @@ export default function Timeline() {
             <TimelineItem key={item.company} item={item} side={i % 2 === 0 ? "left" : "right"} index={i} />
           ))}
         </div>
+      </div>
+      <div
+        className="mt-20 pt-12 border-t border-border-subtle grid md:grid-cols-2 gap-x-12 gap-y-12"
+        data-reveal
+      >
+        <CompactList label="Earlier">
+          {earlierRoles.map((r) => (
+            <CompactRow key={r.company} title={r.role} meta={r.company} period={r.period} detail={r.detail} />
+          ))}
+        </CompactList>
+        <CompactList label="Education">
+          {education.map((e) => (
+            <CompactRow key={e.school} title={e.school} meta={e.degree} period={e.period} />
+          ))}
+        </CompactList>
       </div>
     </section>
   );
