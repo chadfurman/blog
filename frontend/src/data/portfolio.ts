@@ -37,7 +37,7 @@ export const experience: Experience[] = [
       "Applied AI & SRE. Spearheaded AI adoption across the company and led the Applied AI team from prototype to public beta. Product owner of fossabot (New Horizons), an agentic framework for automated dependency updates and vulnerability remediation. Founded and manage the SRE team; modernized cloud infrastructure by migrating from kops to EKS.",
     period: "Oct 2024 — Present",
     current: true,
-    tags: ["LLMs", "Agentic AI", "SRE", "Kubernetes", "EKS"],
+    tags: ["LLMs", "Agentic AI", "SRE", "Kubernetes", "EKS", "Kafka"],
   },
   {
     company: "Klaviyo",
@@ -45,7 +45,7 @@ export const experience: Experience[] = [
     detail:
       "Core platform engineering for marketing-automation infrastructure operating at massive scale. Built and optimized high-throughput data pipelines and the reliability of systems behind millions of customer interactions. Championed JSON:API standards across the org.",
     period: "Jan 2021 — Mar 2024",
-    tags: ["Python", "Distributed Systems", "Scale"],
+    tags: ["Python", "Distributed Systems", "Scale", "RabbitMQ"],
   },
   {
     company: "Clevertech",
