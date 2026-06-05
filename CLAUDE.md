@@ -6,6 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **No PRs required.** The maintainer does not want a PR-per-change for this repo — commit directly to `main` and push to ship. Only branch/open a PR when explicitly asked.
 - **Deploys via Vercel on push to `main`** → production at chads.website (chadfurman.com). The repo commits the built `frontend/out/` artifact, so run `npm run build` (in `frontend/`) before committing site changes.
+- **Vercel deploys one build per commit SHA.** When isolating in a worktree, the branch commit gets pushed and Vercel claims that SHA as a *Preview*. If you then **fast-forward** `main` to that same SHA, Vercel sees the SHA already deployed and produces **no Production deploy**. Fix: merge into `main` with `git merge --no-ff <branch>` so `main` gets a *unique* merge-commit SHA → guaranteed Production build (this is what PR merges did automatically). Always verify production by curling chads.website for the change, not just by checking `git`.
 - **`gh` CLI account:** this repo needs the `chadfurman` account active (`gh auth switch --user chadfurman`); the machine default is `chad-fossa`, which is not a collaborator.
 
 ## Brand & Design
