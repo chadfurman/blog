@@ -37,7 +37,7 @@ export const experience: Experience[] = [
       "Applied AI & SRE. Spearheaded AI adoption across the company and led the Applied AI team from prototype to public beta. Product owner of fossabot (New Horizons), an agentic framework for automated dependency updates and vulnerability remediation. Founded and manage the SRE team; modernized cloud infrastructure by migrating from kops to EKS.",
     period: "Oct 2024 — Present",
     current: true,
-    tags: ["LLMs", "Agentic AI", "SRE", "Kubernetes", "EKS", "Kafka"],
+    tags: ["LLMs", "Agentic AI", "SRE", "Kubernetes", "Kafka", "TypeScript", "Node.js", "GraphQL"],
   },
   {
     company: "Klaviyo",
@@ -45,7 +45,7 @@ export const experience: Experience[] = [
     detail:
       "Core platform engineering for marketing-automation infrastructure operating at massive scale. Built and optimized high-throughput data pipelines and the reliability of systems behind millions of customer interactions. Championed JSON:API standards across the org.",
     period: "Jan 2021 — Mar 2024",
-    tags: ["Python", "Distributed Systems", "Scale", "RabbitMQ"],
+    tags: ["Python", "Distributed Systems", "Scale", "RabbitMQ", "JSON:API"],
   },
   {
     company: "Clevertech",
@@ -53,7 +53,7 @@ export const experience: Experience[] = [
     detail:
       "Led the engineering of Evercast, a real-time WebRTC collaboration platform for film and TV production used by major studios. The work helped raise $4M and earned an Engineering Emmy® for delivering 4K/60fps, 10-bit 4:4:4 color and 7.1 surround over the web.",
     period: "Jul 2016 — Jan 2021",
-    tags: ["WebRTC", "Real-time Video", "Engineering Emmy"],
+    tags: ["Real-time Video", "Engineering Emmy", "TypeScript", "Node.js", "GraphQL"],
   },
 ];
 
