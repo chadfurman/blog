@@ -15,7 +15,7 @@ export const profile = {
 
 // Engineering creed — what good work optimizes for. Shown as a band under the hero.
 export const creed = {
-  label: "What I optimize for",
+  label: "Code that...",
   points: ["Ships", "Scales", "Works", "Lasts"],
 } as const;
 

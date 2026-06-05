@@ -1,13 +1,12 @@
-import {Fragment} from "react";
 import {creed} from "@/data/portfolio";
 
-// A slim "engineering creed" band under the hero: the four things good work
-// optimizes for. Each word scroll-reveals with a slight stagger.
+// A slim "engineering creed" band under the hero: the four things good code
+// does. Renders as a 2x2 card grid on mobile, a 4-across row on desktop —
+// avoids the awkward 3-then-1 wrap of a plain inline row.
 export default function EngineeringCreed() {
-  const lastIndex = creed.points.length - 1;
   return (
     <section
-      aria-label="What I optimize for"
+      aria-label="Code that ships, scales, works, and lasts"
       className="py-16 px-6 max-w-screen-xl mx-auto border-t border-border-subtle"
     >
       <p
@@ -16,22 +15,18 @@ export default function EngineeringCreed() {
       >
         {creed.label}
       </p>
-      <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 md:gap-x-9">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
         {creed.points.map((word, i) => (
-          <Fragment key={word}>
-            <span
-              className="font-display text-4xl md:text-6xl font-extrabold tracking-tight text-text-vibrant transition-colors duration-300 hover:text-brand"
-              data-reveal
-              style={{["--reveal-delay" as string]: `${i * 110}ms`}}
-            >
+          <div
+            key={word}
+            data-reveal
+            style={{["--reveal-delay" as string]: `${i * 100}ms`}}
+            className="glass-card rounded-xl py-8 px-4 text-center transition-all duration-300 hover:-translate-y-1 hover:border-brand/50"
+          >
+            <span className="font-display text-3xl md:text-4xl font-extrabold tracking-tight text-text-vibrant">
               {word}
             </span>
-            {i < lastIndex && (
-              <span aria-hidden className="hidden md:inline select-none text-3xl text-brand/50">
-                ·
-              </span>
-            )}
-          </Fragment>
+          </div>
         ))}
       </div>
     </section>
