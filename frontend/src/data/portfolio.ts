@@ -13,6 +13,12 @@ export const profile = {
   linkedin: "https://linkedin.com/in/chadfurman",
 } as const;
 
+// Engineering creed — what good work optimizes for. Shown as a band under the hero.
+export const creed = {
+  label: "What I optimize for",
+  points: ["Ships", "Scales", "Works", "Lasts"],
+} as const;
+
 // Marquee of technologies under the hero.
 export const techTicker = [
   "Kubernetes", "Terraform", "Anthropic", "Rust", "Go", "SRE",

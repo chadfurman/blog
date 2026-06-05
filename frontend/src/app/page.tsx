@@ -1,5 +1,6 @@
 import SiteNav from "@/app/_components/portfolio/SiteNav";
 import Hero from "@/app/_components/portfolio/Hero";
+import EngineeringCreed from "@/app/_components/portfolio/EngineeringCreed";
 import Timeline from "@/app/_components/portfolio/Timeline";
 import ProjectSpotlight from "@/app/_components/portfolio/ProjectSpotlight";
 import SkillsCloud from "@/app/_components/portfolio/SkillsCloud";
@@ -18,6 +19,7 @@ export default function Home() {
       <SiteNav />
       <main className="relative">
         <Hero />
+        <EngineeringCreed />
         <Timeline />
         <ProjectSpotlight />
         <SkillsCloud />
