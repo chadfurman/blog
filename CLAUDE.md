@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Workflow & Deployment
+
+- **No PRs required.** The maintainer does not want a PR-per-change for this repo — commit directly to `main` and push to ship. Only branch/open a PR when explicitly asked.
+- **Deploys via Vercel on push to `main`** → production at chads.website (chadfurman.com). The repo commits the built `frontend/out/` artifact, so run `npm run build` (in `frontend/`) before committing site changes.
+- **`gh` CLI account:** this repo needs the `chadfurman` account active (`gh auth switch --user chadfurman`); the machine default is `chad-fossa`, which is not a collaborator.
+
 ## Brand & Design
 
 - **Brand guidelines:** `docs/brand-guidelines.md` — colors, typography, icons, components, animation rules, voice
