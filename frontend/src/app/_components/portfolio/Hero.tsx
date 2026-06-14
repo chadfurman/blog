@@ -1,6 +1,5 @@
 import Icon from "./Icon";
 import DependencyGraph from "./DependencyGraph";
-import CmdkHint from "./CmdkHint";
 import {profile, techTicker} from "@/data/portfolio";
 
 function TechMarquee() {
@@ -83,7 +82,6 @@ export default function Hero() {
             <Icon name="code" className="text-base" /> GitHub
           </a>
         </div>
-        <CmdkHint />
       </div>
       <TechMarquee />
     </section>
