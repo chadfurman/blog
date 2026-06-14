@@ -28,9 +28,9 @@ const CHAT_API_URL =
   process.env.NEXT_PUBLIC_CHAT_API_URL ?? "https://chadfurman-chat.vercel.app/api/chat";
 
 const SUGGESTIONS = [
-  "What's your biggest project?",
-  "What's your AI experience?",
-  "Why should I hire you?",
+  "What's Chad's biggest project?",
+  "What's Chad's AI experience?",
+  "Why should I hire Chad?",
 ];
 
 function getOrCreateVisitorId(): string {
@@ -174,7 +174,7 @@ export default function AskConsole() {
   return (
     <section
       id="ask"
-      aria-label="Ask about my work"
+      aria-label="Ask about Chad's work"
       className="py-20 px-6 max-w-screen-xl mx-auto border-t border-border-subtle"
     >
       <p
@@ -195,7 +195,7 @@ export default function AskConsole() {
         data-reveal
         style={{ ["--reveal-delay" as string]: "160ms" }}
       >
-        An AI version of me, trained on my real work. Ask anything — I&apos;ll
+        An AI assistant trained on Chad&apos;s real work. Ask anything — it&apos;ll
         point you to the receipts.
       </p>
 
@@ -228,8 +228,8 @@ export default function AskConsole() {
             }}
             maxLength={MAX_CHARS}
             disabled={capped}
-            placeholder="Ask anything about my work…"
-            aria-label="Ask a question about my work"
+            placeholder="Ask anything about Chad's work…"
+            aria-label="Ask a question about Chad's work"
             className="flex-1 min-w-0 font-mono text-base sm:text-lg text-on-surface placeholder:text-on-surface-variant/50 disabled:opacity-40"
             // The site's global input rule (white bg, dark text, border, margins)
             // outranks utility classes by selector specificity — neutralise it
@@ -325,7 +325,7 @@ export default function AskConsole() {
 
               {error === "visitor_exhausted" && (
                 <div className="text-sm text-on-surface-variant space-y-2">
-                  <p>That&apos;s the message limit for now — but I&apos;d love to hear from you directly:</p>
+                  <p>That&apos;s the message limit for now — but Chad would love to hear from you directly:</p>
                   <p className="font-mono">
                     <a
                       href="mailto:chad@chadfurman.com"
@@ -356,12 +356,13 @@ export default function AskConsole() {
                 </p>
               )}
             </div>
-
-            <p className="font-mono text-[10px] text-on-surface-variant/50 px-5 sm:px-6 py-2.5 border-t border-border-subtle">
-              An AI version of me — conversations are logged for my review.
-            </p>
           </div>
         )}
+
+        {/* Always visible — polite to disclose logging before the user types. */}
+        <p className="font-mono text-[10px] text-on-surface-variant/50 px-5 sm:px-6 py-2.5 border-t border-border-subtle">
+          Conversations are logged for review by Chad.
+        </p>
       </div>
     </section>
   );
