@@ -2,6 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "cd api && npm install",
-  "buildCommand": "mkdir -p public",
+  "buildCommand": "mkdir -p public && printf '<!doctype html><meta charset=utf-8><title>chadfurman-chat API</title>chadfurman-chat function endpoint. See /api/chat.' > public/index.html",
   "outputDirectory": "public"
 }
