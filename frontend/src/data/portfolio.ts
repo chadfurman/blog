@@ -84,6 +84,13 @@ export const earlierRoles: EarlierRole[] = [
     period: "2012 — 2013",
     detail: "Delivered client projects, including legacy Joomla 1.5 systems, with direct client communication.",
   },
+  {
+    company: "Cyber Architecture (Freelance)",
+    role: "Web Developer & Systems Administrator",
+    period: "2005 — 2012",
+    detail:
+      "Freelance web development and systems administration since age 16 — small-business sites, custom backends, and community projects across PHP, MySQL, and Linux.",
+  },
 ];
 
 export type Education = {
