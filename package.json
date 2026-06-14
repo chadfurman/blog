@@ -5,7 +5,10 @@
     "build": "npx lage build",
     "dev": "concurrently --names frontend,backend --prefix-colors blue,green \"cd frontend && npm run dev\" \"cd backend && npm run dev\"",
     "dev:frontend": "cd frontend && npm run dev",
-    "lint": "npx lage lint"
+    "lint": "npx lage lint",
+    "tickets": "node --experimental-transform-types \"$CLAUDE_PLUGIN_ROOT/src/cli.ts\"",
+    "tickets:serve": "node --experimental-transform-types \"$CLAUDE_PLUGIN_ROOT/src/cli.ts\" serve",
+    "tickets:generate": "node --experimental-transform-types \"$CLAUDE_PLUGIN_ROOT/src/cli.ts\" generate"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",

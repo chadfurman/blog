@@ -4,6 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Workflow & Deployment
 
+- **Work items live in ticket-kit (`tickets/*.md`), not Jira.** Capture/triage backlog as ticket-kit tickets; don't create or sync Jira issues for this repo. Board: `/ticket-kit:serve` (static mode). The Atlassian/Jira MCP is disabled here via `.claude/settings.json`.
 - **No PRs required.** The maintainer does not want a PR-per-change for this repo — commit directly to `main` and push to ship. Only branch/open a PR when explicitly asked.
 - **Deploys via Vercel on push to `main`** → production at chads.website (chadfurman.com). The repo commits the built `frontend/out/` artifact, so run `npm run build` (in `frontend/`) before committing site changes.
 - **Vercel deploys one build per commit SHA.** When isolating in a worktree, the branch commit gets pushed and Vercel claims that SHA as a *Preview*. If you then **fast-forward** `main` to that same SHA, Vercel sees the SHA already deployed and produces **no Production deploy**. Fix: merge into `main` with `git merge --no-ff <branch>` so `main` gets a *unique* merge-commit SHA → guaranteed Production build (this is what PR merges did automatically). Always verify production by curling chads.website for the change, not just by checking `git`.
