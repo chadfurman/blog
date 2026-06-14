@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>chadfurman.com — Backlog — Board</title>
+<style>
+:root {
+  --bg: #05060f;
+  --panel: #0b1024;
+  --col-bg: #0d1330;
+  --ink: #cdd6ff;
+  --dim: #5a6699;
+  --border: #1c2550;
+  --accent: #7aa2ff;
+  --card-bg: #0b1228;
+  --card-hover: #111b3a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: radial-gradient(1200px 800px at 50% -10%, #0a1030, #05060f 70%);
+  color: var(--ink);
+  font: 13px/1.5 ui-monospace, Menlo, Consolas, monospace;
+  min-height: 100vh;
+}
+header {
+  padding: 18px 22px 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+h1 {
+  font-size: 17px;
+  letter-spacing: 0.5px;
+  color: #fff;
+  text-shadow: 0 0 12px rgba(120,160,255,0.6);
+}
+.header-note { color: var(--dim); font-size: 11px; }
+.live-dot { color: #4ade80; margin-right: 4px; }
+.filters {
+  padding: 10px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+.filter-label {
+  color: var(--dim);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-right: 4px;
+}
+.filter-chip {
+  background: var(--panel);
+  color: var(--dim);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font: inherit;
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.15s;
+}
+.filter-chip:hover { border-color: var(--accent); color: var(--ink); }
+.filter-chip.active { background: var(--accent); color: #05060f; border-color: var(--accent); }
+.filter-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+.search-box {
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 11px;
+  min-width: 180px;
+}
+.search-box:focus { outline: none; border-color: var(--accent); }
+.board {
+  display: flex;
+  gap: 16px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  align-items: flex-start;
+}
+.column {
+  flex: 0 0 300px;
+  background: var(--col-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.col-header {
+  padding: 10px 14px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.col-count {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 11px;
+  color: var(--dim);
+}
+.cards { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
+.card {
+  display: block;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 13px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: all 0.15s;
+}
+.card:hover { background: var(--card-hover); border-color: #2a3870; }
+.card.hidden { display: none; }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.card-id { color: var(--dim); font-size: 11px; }
+.chip { border-radius: 4px; padding: 1px 7px; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; }
+.card-title { font-size: 12px; color: #fff; margin-bottom: 5px; line-height: 1.4; }
+.card-area { font-size: 10px; color: var(--dim); margin-bottom: 6px; }
+.card-pillars { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag {
+  background: #111b3a;
+  color: #7aa2ff;
+  border: 1px solid #1c2d5e;
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 10px;
+}
+.blocked { font-size: 10px; color: #e67e22; margin-top: 5px; }
+.subtask-badge {
+  background: #111b3a; color: #7aa2ff; border: 1px solid #1c2d5e;
+  border-radius: 10px; padding: 0 7px; font-size: 10px; font-weight: 600; margin-left: 4px;
+}
+.subtasks {
+  margin-top: 8px; padding-top: 7px; border-top: 1px dashed var(--border);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.subtask { display: flex; align-items: baseline; gap: 6px; font-size: 11px; color: #8b96c4; }
+.subtask .st-box { color: #8b96c4; width: 10px; }
+.subtask.done { color: #4ade80; }
+.subtask.done .st-box { color: #4ade80; }
+.subtask.done .st-title { text-decoration: line-through; opacity: 0.7; }
+.subtask .st-id { color: #7aa2ff; }
+.icebox-note { padding: 10px 22px 20px; color: var(--dim); font-size: 11px; }
+footer {
+  padding: 14px 22px 40px;
+  color: var(--dim);
+  font-size: 11px;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>◈ chadfurman.com — Backlog</h1>
+  <span class="header-note">static snapshot — regenerate with <code>ticket-kit generate</code></span>
+</header>
+<div class="filters">
+  <input id="search" class="search-box" type="search" placeholder="search tickets…" autocomplete="off">
+  <div class="filter-sep"></div>
+  <span class="filter-label">Priority</span>
+  <button class="filter-chip" data-filter="priority" data-value="P0">P0</button><button class="filter-chip" data-filter="priority" data-value="P1">P1</button><button class="filter-chip" data-filter="priority" data-value="P2">P2</button><button class="filter-chip" data-filter="priority" data-value="P3">P3</button>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Area</span>
+  <button class="filter-chip" data-filter="area" data-value="infra">infra</button><button class="filter-chip" data-filter="area" data-value="web">web</button>
+</div>
+<div class="board">
+<div class="column" data-status="open">
+  <div class="col-header">Open <span class="col-count">2</span></div>
+  <div class="cards"><a class="card" href="TD-0002-add-a-writing-surface-essays-notes-in-chad-s-voi.md">
+  <div class="card-header">
+    <span class="card-id">TD-0002</span>
+    <span class="chip" style="background:#2980b9;color:#fff">P2</span>
+  </div>
+  <div class="card-title">Add a writing surface — essays / notes in Chad's voice</div>
+  <div class="card-area">web</div>
+  <div class="card-pillars"></div>
+  
+  
+</a>
+<a class="card" href="TD-0003-sharpen-the-site-s-call-to-action-what-chad-actu.md">
+  <div class="card-header">
+    <span class="card-id">TD-0003</span>
+    <span class="chip" style="background:#2980b9;color:#fff">P2</span>
+  </div>
+  <div class="card-title">Sharpen the site's call-to-action — what Chad actually wants</div>
+  <div class="card-area">web</div>
+  <div class="card-pillars"></div>
+  
+  
+</a></div>
+</div>
+<div class="column" data-status="in-progress">
+  <div class="col-header">In Progress <span class="col-count">0</span></div>
+  <div class="cards"></div>
+</div>
+<div class="column" data-status="done">
+  <div class="col-header">Done <span class="col-count">1</span></div>
+  <div class="cards"><a class="card" href="TD-0001-set-up-ticket-kit.md">
+  <div class="card-header">
+    <span class="card-id">TD-0001</span>
+    <span class="chip" style="background:#2980b9;color:#fff">P2</span>
+  </div>
+  <div class="card-title">set up ticket-kit</div>
+  <div class="card-area">infra</div>
+  <div class="card-pillars"></div>
+  
+  
+</a></div>
+</div>
+</div>
+<footer>Generated from tickets/*.md frontmatter · open via file://</footer>
+<script>
+const TICKETS = [{"id":"TD-0002","priority":"P2","area":"web"},{"id":"TD-0003","priority":"P2","area":"web"},{"id":"TD-0001","priority":"P2","area":"infra"}];
+const chips = document.querySelectorAll('.filter-chip');
+const active = { priority: null, area: null };
+const searchEl = document.getElementById('search');
+let searchTerm = '';
+
+function applyFilters() {
+  const cards = document.querySelectorAll('.card');
+  for (const card of cards) {
+    const priOk = !active.priority || card.dataset.priority === active.priority;
+    const areaOk = !active.area || card.dataset.area === active.area;
+    const text = (card.textContent || '').toLowerCase();
+    const searchOk = !searchTerm || text.includes(searchTerm);
+    card.classList.toggle('hidden', !(priOk && areaOk && searchOk));
+  }
+}
+
+chips.forEach((chip) => {
+  chip.addEventListener('click', () => {
+    const filter = chip.dataset.filter;
+    const value = chip.dataset.value;
+    if (active[filter] === value) {
+      active[filter] = null;
+      chip.classList.remove('active');
+    } else {
+      document.querySelectorAll(`.filter-chip[data-filter="${filter}"]`).forEach((c) => c.classList.remove('active'));
+      active[filter] = value;
+      chip.classList.add('active');
+    }
+    applyFilters();
+  });
+});
+
+if (searchEl) {
+  searchEl.addEventListener('input', (e) => {
+    searchTerm = (e.target.value || '').toLowerCase();
+    applyFilters();
+  });
+}
+
+function stampDataAttrs(TICKETS) {
+  document.querySelectorAll('.card').forEach((card) => {
+    const id = card.querySelector('.card-id')?.textContent?.trim();
+    const ticket = TICKETS.find((t) => t.id === id);
+    if (ticket) {
+      card.dataset.priority = ticket.priority;
+      card.dataset.area = ticket.area;
+    }
+  });
+}
+stampDataAttrs(TICKETS);
+</script>
+</body>
+</html>
