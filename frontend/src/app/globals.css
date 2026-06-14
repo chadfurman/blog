@@ -563,11 +563,12 @@ button[type="submit"]:disabled {
     50%      { box-shadow: 0 0 38px -8px rgba(123, 208, 255, 0.6); transform: translateY(-4px); }
 }
 .creed-card {
-    transition: box-shadow 0.6s ease, transform 0.6s ease, border-color 0.6s ease;
+    /* ~2.5s glow-up on hover, matching the auto-breathe's half-cycle pace. */
+    transition: box-shadow 2.5s ease, transform 2.5s ease, border-color 0.6s ease;
 }
 .creed-breathe {
-    /* 10s per card — ~5s glow up, ~5s glow down (peak is at 50%). */
-    animation: creed-breathe var(--creed-ms, 10000ms) ease-in-out both;
+    /* 5s per card — ~2.5s glow up, ~2.5s glow down (peak is at 50%). */
+    animation: creed-breathe var(--creed-ms, 5000ms) ease-in-out both;
 }
 .creed-held {
     box-shadow: 0 0 38px -8px rgba(123, 208, 255, 0.6);
@@ -581,7 +582,8 @@ button[type="submit"]:disabled {
     100% { box-shadow: 0 0 0 -8px rgba(123, 208, 255, 0); transform: translateY(0); }
 }
 .creed-breathe-out {
-    animation: creed-breathe-out 1200ms ease-in-out both;
+    /* Release glow-down at the same ~2.5s pace as the breathe's down-half. */
+    animation: creed-breathe-out 2500ms ease-in-out both;
 }
 @media (prefers-reduced-motion: reduce) {
     .creed-breathe, .creed-breathe-out { animation: none; }
