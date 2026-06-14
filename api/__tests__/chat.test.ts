@@ -30,7 +30,7 @@ vi.mock("@upstash/redis", () => {
 });
 
 // ── import handler AFTER mocks ───────────────────────────────────────────
-import handler from "../chat.js";
+import { POST as handler } from "../chat.js";
 
 // ── helpers ──────────────────────────────────────────────────────────────
 function makeRequest(body: unknown, headers: Record<string, string> = {}): Request {

@@ -54,7 +54,9 @@ function getClientIp(req: Request): string {
 }
 
 // ── handler ───────────────────────────────────────────────────────────────
-export default async function handler(req: Request): Promise<Response> {
+// Exported as named method handlers (POST/OPTIONS) so Vercel invokes this with
+// a Web-standard `Request` (and we return a `Response`), not the Node req/res.
+async function handler(req: Request): Promise<Response> {
   // CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders(req) });
@@ -177,3 +179,6 @@ export default async function handler(req: Request): Promise<Response> {
     },
   });
 }
+
+export const POST = handler;
+export const OPTIONS = handler;
