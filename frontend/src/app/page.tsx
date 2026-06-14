@@ -8,6 +8,7 @@ import ContactCTA from "@/app/_components/portfolio/ContactCTA";
 import SiteFooter from "@/app/_components/portfolio/SiteFooter";
 import ScrollReveal from "@/app/_components/portfolio/ScrollReveal";
 import CommandPalette from "@/app/_components/portfolio/CommandPalette";
+import AskWidget from "@/app/_components/portfolio/AskWidget";
 
 export default function Home() {
   return (
@@ -28,6 +29,7 @@ export default function Home() {
       <SiteFooter />
       <ScrollReveal />
       <CommandPalette />
+      <AskWidget />
     </div>
   );
 }
