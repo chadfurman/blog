@@ -89,6 +89,7 @@ export default function AskConsole() {
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<ErrorState>(null);
+  const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -210,7 +211,18 @@ export default function AskConsole() {
             e.preventDefault();
             if (!sendDisabled) send(input);
           }}
-          className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5"
+          // Click anywhere in the row (prefix, padding, empty space) focuses the
+          // input — except when the click lands on the send button.
+          onMouseDown={(e) => {
+            if (
+              e.target !== inputRef.current &&
+              !(e.target as HTMLElement).closest("button")
+            ) {
+              e.preventDefault();
+              inputRef.current?.focus();
+            }
+          }}
+          className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5 cursor-text"
         >
           <span aria-hidden="true" className="font-mono text-xl text-brand select-none">
             ›
@@ -226,9 +238,11 @@ export default function AskConsole() {
                 if (!sendDisabled) send(input);
               }
             }}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
             maxLength={MAX_CHARS}
             disabled={capped}
-            placeholder="Ask anything about Chad's work…"
+            placeholder={focused ? "" : "Ask anything about Chad's work…"}
             aria-label="Ask a question about Chad's work"
             className="flex-1 min-w-0 font-mono text-base sm:text-lg text-on-surface placeholder:text-on-surface-variant/50 disabled:opacity-40"
             // The site's global input rule (white bg, dark text, border, margins)
