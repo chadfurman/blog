@@ -89,7 +89,14 @@ export const earlierRoles: EarlierRole[] = [
     role: "Web Developer & Systems Administrator",
     period: "2005 — 2012",
     detail:
-      "Freelance web development and systems administration since age 16 — small-business sites, custom backends, and community projects across PHP, MySQL, and Linux.",
+      "Freelance web development and systems administration since age 16 — custom PHP and JavaScript programming plus CMS builds on Joomla, ZenCart, and others, backed by MySQL and Linux.",
+  },
+  {
+    company: "University at Albany, SUNY",
+    role: "Undergraduate ML Research Assistant",
+    period: "2008 — 2012",
+    detail:
+      "Machine-learning research in Dr. Özlem Uzuner's NLP lab — de-identification of protected health information (PHI) in clinical text using support vector machines over local context, building on the lab's i2b2 / Stat De-id work.",
   },
 ];
 
