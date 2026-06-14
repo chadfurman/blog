@@ -118,20 +118,28 @@ async function handler(req: Request): Promise<Response> {
       "",
   });
 
-  // 5. Check global budget FIRST
-  const globalCheck = await checkGlobalBudget(redis);
-  if (!globalCheck.allowed) {
-    return jsonError(req, 503, "global_exhausted");
-  }
+  // Test bypass: only active when CHAT_BYPASS_TOKEN is set on the project AND
+  // the request carries the matching header. Skips all caps and recording so
+  // our own testing never eats the real rate limit or token budget.
+  const bypassToken = process.env.CHAT_BYPASS_TOKEN;
+  const bypass = !!bypassToken && req.headers.get("x-chat-bypass") === bypassToken;
 
-  // 6. Check visitor + IP limits (either blocks → 429)
-  const [visitorCheck, ipCheck] = await Promise.all([
-    checkVisitorLimit(visitorId, redis),
-    checkIpLimit(ip, redis),
-  ]);
+  if (!bypass) {
+    // 5. Check global budget FIRST
+    const globalCheck = await checkGlobalBudget(redis);
+    if (!globalCheck.allowed) {
+      return jsonError(req, 503, "global_exhausted");
+    }
 
-  if (!visitorCheck.allowed || !ipCheck.allowed) {
-    return jsonError(req, 429, "visitor_exhausted");
+    // 6. Check visitor + IP limits (either blocks → 429)
+    const [visitorCheck, ipCheck] = await Promise.all([
+      checkVisitorLimit(visitorId, redis),
+      checkIpLimit(ip, redis),
+    ]);
+
+    if (!visitorCheck.allowed || !ipCheck.allowed) {
+      return jsonError(req, 429, "visitor_exhausted");
+    }
   }
 
   // 7. Trim history to MAX_HISTORY_MESSAGES
@@ -161,7 +169,9 @@ async function handler(req: Request): Promise<Response> {
             usage?.totalTokens ??
             (usage?.inputTokens ?? usage?.promptTokens ?? 0) +
               (usage?.outputTokens ?? usage?.completionTokens ?? 0);
-          await recordUsage({ redis, visitorId, ip, messages, tokensUsed });
+          if (!bypass) {
+            await recordUsage({ redis, visitorId, ip, messages, tokensUsed });
+          }
         } catch {
           // Never fail the response on a bookkeeping error.
         }

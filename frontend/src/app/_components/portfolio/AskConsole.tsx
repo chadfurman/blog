@@ -231,8 +231,9 @@ export default function AskConsole() {
             placeholder="Ask anything about Chad's work…"
             aria-label="Ask a question about Chad's work"
             className="flex-1 min-w-0 font-mono text-base sm:text-lg text-on-surface placeholder:text-on-surface-variant/50 disabled:opacity-40"
-            // The site's global input rule (white bg, border, margins) outranks
-            // utility classes by selector specificity — neutralise it inline.
+            // The site's global input rule (white bg, dark text, border, margins)
+            // outranks utility classes by selector specificity — neutralise it
+            // inline, including the text colour (on-surface = #dce1fb).
             style={{
               background: "transparent",
               border: "none",
@@ -240,6 +241,8 @@ export default function AskConsole() {
               margin: 0,
               padding: 0,
               width: "100%",
+              color: "#dce1fb",
+              fontFamily: "var(--font-mono), monospace",
             }}
           />
           <span
@@ -322,7 +325,7 @@ export default function AskConsole() {
 
               {error === "visitor_exhausted" && (
                 <div className="text-sm text-on-surface-variant space-y-2">
-                  <p>That&apos;s the limit for this session — but Chad would love to hear from you directly:</p>
+                  <p>That&apos;s the message limit for now — but Chad would love to hear from you directly:</p>
                   <p className="font-mono">
                     <a
                       href="mailto:chad@chadfurman.com"

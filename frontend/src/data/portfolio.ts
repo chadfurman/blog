@@ -263,6 +263,7 @@ export const skillGroups: SkillGroup[] = [
 
 export const navLinks = [
   { label: "Home", href: "#top" },
+  { label: "Ask AI", href: "#ask" },
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
   { label: "Contact", href: "#contact" },

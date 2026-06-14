@@ -5,7 +5,7 @@ import Icon from "./Icon";
 import {navLinks, profile} from "@/data/portfolio";
 import {OPEN_CMDK_EVENT} from "./constants";
 
-const SECTION_IDS = ["experience", "projects", "contact"];
+const SECTION_IDS = ["ask", "experience", "projects", "contact"];
 
 export default function SiteNav() {
   const [active, setActive] = useState<string>("top");
