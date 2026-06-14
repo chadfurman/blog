@@ -1,3 +1,6 @@
+"use client";
+
+import {useState} from "react";
 import {experience, earlierRoles, education, type Experience} from "@/data/portfolio";
 
 function CompactList({label, children}: {label: string; children: React.ReactNode}) {
@@ -41,6 +44,7 @@ function Tag({label}: {label: string}) {
 }
 
 function TimelineItem({item, side, index}: {item: Experience; side: "left" | "right"; index: number}) {
+  const [open, setOpen] = useState(false);
   const rowDir = side === "left" ? "md:flex-row" : "md:flex-row-reverse";
   const dateAlign = side === "left" ? "text-right pr-12 items-end" : "text-left pl-12 items-start";
   const year = item.period.match(/\d{4}/)?.[0];
@@ -75,6 +79,40 @@ function TimelineItem({item, side, index}: {item: Experience; side: "left" | "ri
             <Tag key={tag} label={tag} />
           ))}
         </div>
+        {item.deepDive && (
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}
+              className="font-mono text-xs text-on-surface-variant hover:text-brand transition-colors inline-flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand rounded"
+            >
+              {open ? "Hide details" : "More details"}
+              <span aria-hidden="true" className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}>↓</span>
+            </button>
+            {open && (
+              <div className="mt-3 space-y-3 motion-safe:animate-[hero-rise_0.3s_ease-out]">
+                {item.deepDive.tech && (
+                  <div className="flex flex-wrap gap-2">
+                    {item.deepDive.tech.map((t) => (
+                      <Tag key={t} label={t} />
+                    ))}
+                  </div>
+                )}
+                {item.deepDive.notes && (
+                  <ul className="space-y-1.5">
+                    {item.deepDive.notes.map((note, idx) => (
+                      <li key={idx} className="text-on-surface-variant text-sm leading-relaxed flex gap-2">
+                        <span aria-hidden="true" className="text-brand select-none">›</span>
+                        <span>{note}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

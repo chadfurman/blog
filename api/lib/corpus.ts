@@ -4,6 +4,7 @@ import {
   earlierRoles,
   education,
   projects,
+  softSkills,
 } from "../../frontend/src/data/portfolio.js";
 
 function serializeSections(
@@ -38,6 +39,10 @@ export function buildCorpus(): string {
     lines.push(`${job.role} at ${job.company} (${job.period})`);
     lines.push(`  ${job.detail}`);
     lines.push(`  Skills: ${job.tags.join(", ")}`);
+    if (job.deepDive?.tech) lines.push(`  Tech & tools: ${job.deepDive.tech.join(", ")}`);
+    if (job.deepDive?.notes) {
+      for (const note of job.deepDive.notes) lines.push(`  - ${note}`);
+    }
     lines.push("");
   }
 
@@ -67,6 +72,11 @@ export function buildCorpus(): string {
     lines.push(`  Tech: ${project.caseStudy.tech.join(", ")}`);
     lines.push("");
   }
+
+  // Strengths & leadership (generalized, no confidential specifics)
+  lines.push("== STRENGTHS & LEADERSHIP ==");
+  for (const skill of softSkills) lines.push(`- ${skill}`);
+  lines.push("");
 
   return lines.join("\n");
 }

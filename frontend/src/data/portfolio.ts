@@ -53,6 +53,12 @@ export type Experience = {
   period: string;
   current?: boolean;
   tags: string[];
+  // Extra depth kept off the headline résumé — surfaced via a "More" expander
+  // on the timeline and fed to the AI assistant's corpus.
+  deepDive?: {
+    tech?: string[];
+    notes?: string[];
+  };
 };
 
 export const experience: Experience[] = [
@@ -64,6 +70,19 @@ export const experience: Experience[] = [
     period: "Oct 2024 — Present",
     current: true,
     tags: ["Agentic AI", "AWS", "Kafka", "TypeScript", "React", "Node.js", "GraphQL", "SOC2"],
+    deepDive: {
+      tech: [
+        "Rust", "Go", "TypeScript / Node.js", "GraphQL (Apollo Federation)",
+        "Protobuf / Buf", "Kafka", "Terraform", "Helm", "Kubernetes / EKS",
+        "Karpenter", "FluxCD", "OpenSearch", "Datadog", "AWS",
+      ],
+      notes: [
+        "Built and owns a composed Apollo Federation supergraph plus a custom Rust Apollo Router with native auth and rate-limiting plugins.",
+        "Schema-driven data contracts: a Protobuf/Buf repo generating TypeScript and Rust bindings for dependency and vulnerability event data.",
+        "Terraform-managed EKS on AWS with Karpenter autoscaling and FluxCD GitOps delivery; Helm charts for the full service and data layer (Kafka, OpenSearch, Redis, Postgres), with Datadog observability.",
+        "Go infrastructure tooling (cluster-health, resource calculators) alongside TypeScript/Node services with Kafka consumers.",
+      ],
+    },
   },
   {
     company: "Klaviyo",
@@ -273,6 +292,20 @@ export const projects: Project[] = [
       ],
     },
   },
+];
+
+// Leadership / soft-skill themes for the AI assistant to draw on — generalized
+// and anonymized from 1:1s, incident logs, and reviews (no names, customers,
+// figures, or confidential specifics).
+export const softSkills: string[] = [
+  "Handles difficult performance conversations directly and constructively — including managing a report who had previously been his manager — reframing issues into productive change rather than confrontation.",
+  "Mentors and develops engineers toward growth and promotion, coaching career-path decisions (IC vs. management), prioritization, and when to ask for help.",
+  "Takes the incident-commander role during production outages: diagnoses root causes live, coordinates cross-functional responders, and keeps stakeholders updated through multi-day events.",
+  "Defuses customer escalations and rebuilds trust, taking personal ownership of customer-facing problems and leading remediation directly.",
+  "Navigates cross-team disagreements to a decision while keeping buy-in, tailoring communication from executive summaries to engineering detail.",
+  "Builds team alignment and psychological safety — led his team through a mission/vision/values exercise and operates on the principle that people must feel genuinely heard.",
+  "Balances delivery speed with sustainable quality, and is mindful of avoiding team and personal burnout.",
+  "A welcoming community builder who onboards new hires, shares tools and training broadly, and credits others publicly.",
 ];
 
 export type SkillGroup = { icon: string; title: string; skills: string[] };
