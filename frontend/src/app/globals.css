@@ -566,7 +566,8 @@ button[type="submit"]:disabled {
     transition: box-shadow 0.6s ease, transform 0.6s ease, border-color 0.6s ease;
 }
 .creed-breathe {
-    animation: creed-breathe var(--creed-ms, 3400ms) ease-in-out both;
+    /* 10s per card — ~5s glow up, ~5s glow down (peak is at 50%). */
+    animation: creed-breathe var(--creed-ms, 10000ms) ease-in-out both;
 }
 .creed-held {
     box-shadow: 0 0 38px -8px rgba(123, 208, 255, 0.6);
