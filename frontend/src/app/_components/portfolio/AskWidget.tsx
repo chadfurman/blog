@@ -37,7 +37,8 @@ function getOrCreateVisitorId(): string {
 // The chat function ships as a separate Vercel project; the widget calls it
 // cross-origin. NEXT_PUBLIC_CHAT_API_URL is the full endpoint URL, baked in at
 // build time. Falls back to a same-origin path for local dev.
-const CHAT_API_URL = process.env.NEXT_PUBLIC_CHAT_API_URL ?? "/api/chat";
+const CHAT_API_URL =
+  process.env.NEXT_PUBLIC_CHAT_API_URL ?? "https://chadfurman-chat.vercel.app/api/chat";
 
 // ---- component ------------------------------------------------------------
 
