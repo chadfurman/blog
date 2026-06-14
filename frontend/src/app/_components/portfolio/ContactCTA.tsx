@@ -4,7 +4,7 @@ export default function ContactCTA() {
   return (
     <section id="contact" className="py-20 px-6 text-center max-w-4xl mx-auto" data-reveal>
       <h2 className="font-display text-4xl md:text-6xl font-bold text-text-vibrant mb-4">
-        Ready to scale your intelligence?
+        Let&apos;s build something good.
       </h2>
       <p className="text-lg text-on-surface-variant mb-8">
         I&apos;m always open to discussing new AI initiatives, infrastructure challenges, or
