@@ -180,6 +180,9 @@ export type Project = {
   tags: { label: string; tone: "primary" | "secondary" }[];
   cta: string;
   feature?: boolean; // large bento cell
+  // Ties a project to the experience entry (by company) it came out of, so the
+  // corpus can group it under that role. Omit for independent / side projects.
+  company?: string;
   caseStudy: CaseStudy;
 };
 
@@ -198,6 +201,7 @@ export const projects: Project[] = [
     ],
     cta: "Project Case Study",
     feature: true,
+    company: "FOSSA",
     caseStudy: {
       tagline: "Agentic AI that keeps software dependencies current — safely, automatically.",
       role: "Engineering Manager, Applied AI & SRE · FOSSA · 2024–present",
@@ -252,6 +256,7 @@ export const projects: Project[] = [
       "High-speed data visualized as glowing light paths through optical fibers in a dark server room, tech-blue and cyan hues.",
     tags: [{ label: "Engineering Emmy®", tone: "secondary" }],
     cta: "Technical Details",
+    company: "Clevertech",
     caseStudy: {
       tagline: "Real-time, studio-grade video collaboration for film & television.",
       role: "Technical Lead · Clevertech / Evercast · 2016–2021",
@@ -289,6 +294,56 @@ export const projects: Project[] = [
         "OBS",
         "C",
         "Kubernetes / EKS",
+      ],
+    },
+  },
+  {
+    slug: "ladder-legends",
+    title: "Ladder Legends — SC2 Coaching Platform",
+    blurb:
+      "A coaching platform for StarCraft II that turns your ladder replays into pro-grade analysis. A Rust/Tauri desktop agent auto-uploads replays, a Python service extracts build orders and metrics, and a Next.js academy delivers coaching content and insight.",
+    image: "/projects/ladder-legends.png",
+    imageAlt:
+      "Ladder Legends homepage — 'Master StarCraft 2' headline over a dark astronaut backdrop with lesson, coach, and build-order stats.",
+    tags: [
+      { label: "Rust", tone: "primary" },
+      { label: "Side Project", tone: "secondary" },
+    ],
+    cta: "Project Case Study",
+    company: "Side Project",
+    caseStudy: {
+      tagline: "Auto-upload your StarCraft II replays and get pro-grade build-order analysis.",
+      role: "Creator & Full-Stack Engineer · Ladder Legends · 2025–present",
+      sections: [
+        {
+          heading: "The problem",
+          body:
+            "Serious StarCraft II players want feedback on their games, but extracting build orders and benchmarking them against pros by hand is tedious. Ladder Legends automates the path from 'game just finished' to 'here's what to work on.'",
+        },
+        {
+          heading: "What I built",
+          body:
+            "A three-part system I designed and built end to end: a Rust/Tauri desktop agent that watches your replay folder, classifies competitive games locally, and securely uploads them; a Python/FastAPI analyzer that parses replays into timestamped build orders and coaching metrics; and a Next.js academy that stores replays, presents the analysis, and delivers coaching video content.",
+        },
+        {
+          heading: "Highlights",
+          bullets: [
+            "Rust/Tauri desktop agent: cross-platform replay-folder detection, local s2protocol parsing, OS-keychain token storage, device-code login, background tray operation, and self-updating signed binaries.",
+            "Python analyzer reaching ~99% build-order parity with sc2replaystats — APM/EPM split, production timelines, build fingerprinting, and pro benchmark comparison.",
+            "Next.js academy on Vercel: Discord OAuth, a replay library, Mux-hosted coaching videos, a markdown-driven CMS, and product analytics.",
+            "A resilient upload pipeline: hash-based dedup, single-flight scanning, 401-triggered re-auth, atomic config writes, and Windows concurrency fixes.",
+          ],
+        },
+      ],
+      tech: [
+        "Rust",
+        "Tauri",
+        "Python / FastAPI",
+        "Next.js / React",
+        "TypeScript",
+        "Vercel (Blob / KV)",
+        "s2protocol / sc2reader",
+        "Discord OAuth",
       ],
     },
   },
