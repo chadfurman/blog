@@ -12,12 +12,6 @@ const { mockStreamText, mockRedisInstance } = vi.hoisted(() => {
   return { mockStreamText, mockRedisInstance };
 });
 
-// ── Mock @ai-sdk/anthropic ───────────────────────────────────────────────
-vi.mock("@ai-sdk/anthropic", () => ({
-  createAnthropic: vi.fn(() => (model: string) => ({ provider: "anthropic", model })),
-  anthropic: vi.fn((model: string) => ({ provider: "anthropic", model })),
-}));
-
 // ── Mock ai (streamText) ─────────────────────────────────────────────────
 vi.mock("ai", () => ({
   streamText: mockStreamText,
@@ -52,18 +46,14 @@ function makeRequest(body: unknown, headers: Record<string, string> = {}): Reque
 }
 
 function makeStreamResult() {
-  const encoder = new TextEncoder();
-  const stream = new ReadableStream({
-    start(controller) {
-      controller.enqueue(encoder.encode("data: hello\n\n"));
-      controller.close();
-    },
-  });
+  // AI SDK v5 shape: an async-iterable `textStream` + a `usage` promise.
+  async function* textStream() {
+    yield "hello";
+    yield " world";
+  }
   return {
-    toDataStreamResponse: vi.fn(() => new Response(stream, {
-      headers: { "Content-Type": "text/event-stream" },
-    })),
-    usage: Promise.resolve({ promptTokens: 100, completionTokens: 50 }),
+    textStream: textStream(),
+    usage: Promise.resolve({ inputTokens: 100, outputTokens: 50, totalTokens: 150 }),
   };
 }
 

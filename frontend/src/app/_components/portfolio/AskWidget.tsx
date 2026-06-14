@@ -33,21 +33,11 @@ function getOrCreateVisitorId(): string {
   }
 }
 
-// ---- SSE streaming --------------------------------------------------------
-// Parses the Vercel AI SDK data stream protocol.
-// Text deltas arrive as lines like:  0:"token"
-// Error status lines like:           3:"error message"
-// Done signal:                        d:{...}
-
-function parseDataLine(line: string): { type: "text"; value: string } | null {
-  if (!line.startsWith("0:")) return null;
-  try {
-    const raw = line.slice(2);
-    return { type: "text", value: JSON.parse(raw) as string };
-  } catch {
-    return null;
-  }
-}
+// ---- chat endpoint --------------------------------------------------------
+// The chat function ships as a separate Vercel project; the widget calls it
+// cross-origin. NEXT_PUBLIC_CHAT_API_URL is the full endpoint URL, baked in at
+// build time. Falls back to a same-origin path for local dev.
+const CHAT_API_URL = process.env.NEXT_PUBLIC_CHAT_API_URL ?? "/api/chat";
 
 // ---- component ------------------------------------------------------------
 
@@ -134,7 +124,7 @@ export default function AskWidget(): JSX.Element {
     abortRef.current = new AbortController();
 
     try {
-      const res = await fetch("/api/chat", {
+      const res = await fetch(CHAT_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ visitorId, messages: nextMessages }),
@@ -171,33 +161,23 @@ export default function AskWidget(): JSX.Element {
         return;
       }
 
-      // Stream SSE text deltas
+      // Stream plain-text deltas straight into the assistant message
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let buffer = "";
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() ?? "";
-        for (const line of lines) {
-          const parsed = parseDataLine(line);
-          if (parsed) {
-            setMessages((prev) => {
-              const copy = [...prev];
-              const last = copy[copy.length - 1];
-              if (last?.role === "assistant") {
-                copy[copy.length - 1] = {
-                  ...last,
-                  content: last.content + parsed.value,
-                };
-              }
-              return copy;
-            });
+        const chunk = decoder.decode(value, { stream: true });
+        if (!chunk) continue;
+        setMessages((prev) => {
+          const copy = [...prev];
+          const last = copy[copy.length - 1];
+          if (last?.role === "assistant") {
+            copy[copy.length - 1] = { ...last, content: last.content + chunk };
           }
-        }
+          return copy;
+        });
       }
     } catch (err) {
       if ((err as Error).name !== "AbortError") {
