@@ -572,8 +572,18 @@ button[type="submit"]:disabled {
     box-shadow: 0 0 38px -8px rgba(123, 208, 255, 0.6);
     transform: translateY(-4px);
 }
+/* Release from a held card: continue the glow DOWN from full (no abrupt
+   restart), then EngineeringCreed resumes the loop on animationend. Starts at
+   the same values as .creed-held so the handoff is seamless. */
+@keyframes creed-breathe-out {
+    0%   { box-shadow: 0 0 38px -8px rgba(123, 208, 255, 0.6); transform: translateY(-4px); }
+    100% { box-shadow: 0 0 0 -8px rgba(123, 208, 255, 0); transform: translateY(0); }
+}
+.creed-breathe-out {
+    animation: creed-breathe-out 1200ms ease-in-out both;
+}
 @media (prefers-reduced-motion: reduce) {
-    .creed-breathe { animation: none; }
+    .creed-breathe, .creed-breathe-out { animation: none; }
 }
 
 /* Scroll-reveal — ScrollReveal client component toggles .reveal-in on intersect. */
