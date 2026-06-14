@@ -40,14 +40,21 @@ export default function Hero() {
         </div>
       </div>
       <div className="max-w-4xl text-center z-10 relative">
-        <div
-          className="hero-rise inline-block px-4 py-1 border border-brand/30 bg-brand/5 rounded-full mb-6"
+        <a
+          href={profile.badge.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hero-rise group inline-flex items-center gap-1.5 px-4 py-1 border border-brand/30 bg-brand/5 rounded-full mb-6 hover:border-brand/60 hover:bg-brand/10 transition-colors"
           style={{["--rise-delay" as string]: "0ms"}}
         >
           <span className="font-mono text-xs text-brand uppercase tracking-widest">
-            {profile.availability}
+            {profile.badge.text}
           </span>
-        </div>
+          <Icon
+            name="north_east"
+            className="text-brand text-xs motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+          />
+        </a>
         <h1
           className="hero-rise font-display text-5xl md:text-7xl font-extrabold leading-[1.06] tracking-tight text-text-vibrant mb-5"
           style={{["--rise-delay" as string]: "90ms"}}

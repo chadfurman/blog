@@ -4,7 +4,10 @@
 export const profile = {
   name: "Chad Furman",
   title: "Engineering Manager | Applied AI & SRE",
-  availability: "Available for Technical Leadership",
+  badge: {
+    text: "Now building · buildaloud.ai",
+    href: "https://buildaloud.ai",
+  },
   tagline:
     "Building scalable infrastructure and agentic AI products. Specialized in bridging the gap between robust systems engineering and cutting-edge intelligence.",
   location: "South Hadley, Massachusetts",
@@ -16,7 +19,24 @@ export const profile = {
 // Engineering creed — what good work optimizes for. Shown as a band under the hero.
 export const creed = {
   label: "Code that...",
-  points: ["Ships", "Scales", "Works", "Lasts"],
+  points: [
+    {
+      word: "Ships",
+      line: "It reaches production. I optimize for getting real value in front of users early and iterating — not polishing in a vacuum.",
+    },
+    {
+      word: "Scales",
+      line: "It grows without a rewrite. I design for the next order of magnitude — billions of emails, thousands of live rooms — before it hurts.",
+    },
+    {
+      word: "Works",
+      line: "It's correct and observable. Types, tests, and telemetry, so it behaves in production the way it did on my machine.",
+    },
+    {
+      word: "Lasts",
+      line: "It's maintainable. Readable and boring in the right places, so the next engineer — or me in a year — can move fast without fear.",
+    },
+  ],
 } as const;
 
 // Marquee of technologies under the hero.
