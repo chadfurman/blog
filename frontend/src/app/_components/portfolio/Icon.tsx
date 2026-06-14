@@ -40,12 +40,6 @@ const PATHS: Record<string, React.ReactNode> = {
       <polyline points="2 12 12 17 22 12" />
     </>
   ),
-  push_pin: (
-    <>
-      <path d="M12 17v5" />
-      <path d="M9 10.8a2 2 0 0 1-1.1 1.79l-1.78.9A2 2 0 0 0 5 15.27V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.73a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.8V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" />
-    </>
-  ),
 };
 
 export default function Icon({
