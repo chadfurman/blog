@@ -11,7 +11,6 @@ export default function SiteFooter() {
     <footer className="w-full py-20 border-t border-border-subtle bg-surface-deep">
       <div className="flex flex-col md:flex-row justify-between items-center px-6 max-w-screen-xl mx-auto gap-4">
         <div className="flex flex-col items-center md:items-start">
-          <div className="font-display text-2xl text-on-surface mb-2 tracking-tight">{profile.name}</div>
           <p className="text-base text-on-surface-variant text-center md:text-left">
             © 2026 {profile.name}. Engineering Manager | Applied AI &amp; SRE
           </p>
