@@ -4,49 +4,57 @@ import {useEffect, useRef, useState} from "react";
 import {creed} from "@/data/portfolio";
 
 // A slim "engineering creed" band under the hero. The active card "breathes" —
-// its glow swells in and out — and when the breath ends the next card takes
-// over, so the loop reads as something gently alive. Hovering/focusing/tapping
-// a card holds a steady glow on it; releasing (or, on touch, a few seconds
-// later) resumes the loop. Respects reduced-motion (no auto-advance).
-type Phase = "breathing" | "held" | "releasing";
+// glow eases up for a half-breath, back down for another — then the next card
+// takes over. All movement rides the .creed-card CSS transition (no keyframes),
+// so interrupting it anywhere (fast mouse passes included) eases from the
+// current glow instead of cancelling an animation. Hover/focus/tap holds the
+// glow on a card; releasing resumes the loop. Reduced motion: no auto-loop.
+type Phase = "in" | "out" | "held";
+
+const HALF_BREATH_MS = 2500;
 
 export default function EngineeringCreed() {
   const [active, setActive] = useState(0);
-  const [phase, setPhase] = useState<Phase>("breathing");
-  const releaseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [phase, setPhase] = useState<Phase>("in");
+  const [autoLoop, setAutoLoop] = useState(false);
+  const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const count = creed.points.length;
 
-  const clearRelease = () => {
-    if (releaseTimer.current) clearTimeout(releaseTimer.current);
-    releaseTimer.current = null;
-  };
-  useEffect(() => clearRelease, []);
+  useEffect(() => {
+    setAutoLoop(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
 
-  // Begin releasing only from a held card, so the glow fades DOWN from full
-  // rather than snapping off and restarting.
-  const release = () => setPhase((p) => (p === "held" ? "releasing" : p));
+  const clearTap = () => {
+    if (tapTimer.current) clearTimeout(tapTimer.current);
+    tapTimer.current = null;
+  };
+  useEffect(() => clearTap, []);
+
+  const release = () => setPhase((p) => (p === "held" ? "out" : p));
+
+  useEffect(() => {
+    if (!autoLoop || phase === "held") return;
+    const t = setTimeout(() => {
+      if (phase === "in") {
+        setPhase("out");
+      } else {
+        setActive((a) => (a + 1) % count);
+        setPhase("in");
+      }
+    }, HALF_BREATH_MS);
+    return () => clearTimeout(t);
+  }, [autoLoop, phase, active, count]);
 
   const holdOn = (i: number) => {
-    clearRelease();
+    clearTap();
     setActive(i);
     setPhase("held");
   };
   // Tap (touch): glow up, hold a few seconds, then fade down — touch has no
   // reliable "leave", so a timer starts the release.
   const tap = (i: number) => {
-    clearRelease();
-    setActive(i);
-    setPhase("held");
-    releaseTimer.current = setTimeout(release, 4000);
-  };
-
-  // A breath (in-and-out) or a release (fade-out) finished — advance the loop.
-  const onAnimEnd = (e: React.AnimationEvent) => {
-    if (e.animationName !== "creed-breathe" && e.animationName !== "creed-breathe-out") {
-      return;
-    }
-    setActive((a) => (a + 1) % count);
-    setPhase("breathing");
+    holdOn(i);
+    tapTimer.current = setTimeout(release, 4000);
   };
 
   return (
@@ -64,13 +72,10 @@ export default function EngineeringCreed() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
         {creed.points.map((point, i) => {
           const isActive = active === i;
-          const glow = !isActive
-            ? ""
-            : phase === "held"
-              ? "creed-held"
-              : phase === "releasing"
-                ? "creed-breathe-out"
-                : "creed-breathe";
+          const glow =
+            isActive && (phase === "held" || (autoLoop && phase === "in"))
+              ? "creed-glow"
+              : "";
           // data-reveal lives on the static wrapper so React's className
           // rewrites on the button don't wipe ScrollReveal's reveal-in class.
           return (
@@ -87,7 +92,6 @@ export default function EngineeringCreed() {
                 onFocus={() => holdOn(i)}
                 onBlur={release}
                 onClick={() => tap(i)}
-                onAnimationEnd={onAnimEnd}
                 className={`creed-card w-full glass-card rounded-xl py-8 px-4 text-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
                   isActive ? "border-brand/60" : "hover:border-brand/50"
                 } ${glow}`}
