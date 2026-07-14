@@ -1,0 +1,23 @@
+[     531ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/nextImageExportOptimizer/chad-no-circle.10d74dcd-opt-10.WEBP:0
+[     665ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/nextImageExportOptimizer/icon-wordpress-care-opt-10.WEBP:0
+[     665ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/nextImageExportOptimizer/icon-growth-opt-10.WEBP:0
+[     666ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/nextImageExportOptimizer/icon-ecommerce-opt-10.WEBP:0
+[     727ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/nextImageExportOptimizer/icon-cta-opt-10.WEBP:0
+[     786ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/nextImageExportOptimizer/chad-no-circle.10d74dcd-opt-1080.WEBP:0
+[     797ms] [WARNING] Image with src "/_next/static/media/chad-no-circle.10d74dcd.png" has a "loader" property that does not implement width. Please implement it or use the "unoptimized" property instead.
+Read more: https://nextjs.org/docs/messages/next-image-missing-loader-width @ http://localhost:3002/_next/static/chunks/9e883_next_dist_0e511d54._.js:968
+[     825ms] [WARNING] Image with src "http://localhost:3002/_next/static/media/chad-no-circle.10d74dcd.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3002/_next/static/chunks/9e883_next_dist_0e511d54._.js:968
+[     849ms] [WARNING] Image with src "/_next/static/media/chad-no-circle.10d74dcd.png" was detected as the Largest Contentful Paint (LCP). Please add the "priority" property if this image is above the fold.
+Read more: https://nextjs.org/docs/api-reference/next/image#priority @ http://localhost:3002/_next/static/chunks/9e883_next_dist_0e511d54._.js:968
+[     970ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/nextImageExportOptimizer/icon-wordpress-care-opt-256.WEBP:0
+[     976ms] [WARNING] Image with src "/icon-wordpress-care.png" has a "loader" property that does not implement width. Please implement it or use the "unoptimized" property instead.
+Read more: https://nextjs.org/docs/messages/next-image-missing-loader-width @ http://localhost:3002/_next/static/chunks/9e883_next_dist_0e511d54._.js:968
+[    1046ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/nextImageExportOptimizer/icon-ecommerce-opt-256.WEBP:0
+[    1073ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/nextImageExportOptimizer/icon-growth-opt-256.WEBP:0
+[    1073ms] [WARNING] Image with src "/icon-ecommerce.png" has a "loader" property that does not implement width. Please implement it or use the "unoptimized" property instead.
+Read more: https://nextjs.org/docs/messages/next-image-missing-loader-width @ http://localhost:3002/_next/static/chunks/9e883_next_dist_0e511d54._.js:968
+[    1081ms] [WARNING] Image with src "/icon-growth.png" has a "loader" property that does not implement width. Please implement it or use the "unoptimized" property instead.
+Read more: https://nextjs.org/docs/messages/next-image-missing-loader-width @ http://localhost:3002/_next/static/chunks/9e883_next_dist_0e511d54._.js:968
+[    4884ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/nextImageExportOptimizer/icon-cta-opt-256.WEBP:0
+[    4895ms] [WARNING] Image with src "/icon-cta.png" has a "loader" property that does not implement width. Please implement it or use the "unoptimized" property instead.
+Read more: https://nextjs.org/docs/messages/next-image-missing-loader-width @ http://localhost:3002/_next/static/chunks/9e883_next_dist_0e511d54._.js:968

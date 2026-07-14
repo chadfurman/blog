@@ -201,9 +201,16 @@ export default function AskConsole() {
       </p>
 
       <div
-        className="glass-card rounded-2xl border border-border-subtle overflow-hidden max-w-3xl mx-auto"
+        className="glass-card rounded-2xl border border-border-subtle overflow-hidden max-w-3xl mx-auto cursor-text"
         data-reveal
         style={{ ["--reveal-delay" as string]: "240ms" }}
+        // Click anywhere on the card focuses the input — unless the click hit an
+        // interactive element or the visitor is selecting transcript text.
+        onClick={(e) => {
+          if ((e.target as HTMLElement).closest("button, a, input")) return;
+          if (window.getSelection()?.toString()) return;
+          inputRef.current?.focus();
+        }}
       >
         {/* Prompt row — pinned at the top; answers flow below like a REPL */}
         <form
@@ -211,8 +218,8 @@ export default function AskConsole() {
             e.preventDefault();
             if (!sendDisabled) send(input);
           }}
-          // Click anywhere in the row (prefix, padding, empty space) focuses the
-          // input — except when the click lands on the send button.
+          // Mousedown (vs the card's click) focuses without first blurring the
+          // input, so the placeholder doesn't flicker — skip the send button.
           onMouseDown={(e) => {
             if (
               e.target !== inputRef.current &&
@@ -222,8 +229,15 @@ export default function AskConsole() {
               inputRef.current?.focus();
             }
           }}
-          className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5 cursor-text"
+          className="px-4 pt-4 sm:px-5 sm:pt-5 pb-4 sm:pb-5"
         >
+          <div
+            className={`flex items-center gap-3 rounded-xl border px-4 py-3 sm:py-3.5 transition-colors duration-150 ${
+              focused
+                ? "border-brand/70 bg-surface-container ring-1 ring-brand/30"
+                : "border-border-subtle bg-surface-container-low hover:border-brand/40"
+            }`}
+          >
           <span aria-hidden="true" className="font-mono text-xl text-brand select-none">
             ›
           </span>
@@ -281,11 +295,12 @@ export default function AskConsole() {
           >
             ↵
           </button>
+          </div>
         </form>
 
         {/* Suggestion chips — only before the first question */}
         {!expanded && (
-          <div className="flex flex-wrap gap-2 px-5 sm:px-6 pb-5">
+          <div className="flex flex-wrap gap-2 px-4 sm:px-5 pb-5">
             {SUGGESTIONS.map((s) => (
               <button
                 key={s}
