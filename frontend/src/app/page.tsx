@@ -22,9 +22,9 @@ export default function Home() {
         <Hero />
         <AskConsole />
         <EngineeringCreed />
+        <SkillsCloud />
         <Timeline />
         <ProjectSpotlight />
-        <SkillsCloud />
         <ContactCTA />
       </main>
       <SiteFooter />

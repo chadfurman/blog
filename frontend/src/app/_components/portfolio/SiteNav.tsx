@@ -68,7 +68,16 @@ export default function SiteNav() {
             rel="noopener noreferrer"
             className="text-on-surface-variant hover:text-brand transition-colors"
           >
-            <Icon name="code" className="text-xl" />
+            <Icon name="github" className="text-xl" />
+          </a>
+          <a
+            href={profile.linkedin}
+            aria-label="LinkedIn"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-on-surface-variant hover:text-brand transition-colors"
+          >
+            <Icon name="linkedin" className="text-xl" />
           </a>
           <a
             href={profile.linkedin}

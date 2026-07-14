@@ -6,10 +6,11 @@ function ProjectCard({project, index}: {project: Project; index: number}) {
   const span = project.feature ? "md:col-span-8" : "md:col-span-4";
   const mdOpacity = project.feature ? "md:opacity-60" : "md:opacity-40";
   return (
-    <div
+    <Link
+      href={`/case-studies/${project.slug}`}
       data-reveal
       style={{["--reveal-delay" as string]: `${index * 110}ms`}}
-      className={`${span} group relative overflow-hidden rounded-xl border border-border-subtle bg-surface-primary`}
+      className={`${span} group relative block overflow-hidden rounded-xl border border-border-subtle bg-surface-primary transition-colors hover:border-brand/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand`}
     >
       {/* Image: banner on mobile (normal flow), full-bleed backdrop on md+. */}
       {/* eslint-disable-next-line @next/next/no-img-element -- decorative cover from /public, not content */}
@@ -35,15 +36,12 @@ function ProjectCard({project, index}: {project: Project; index: number}) {
         </div>
         <h3 className="font-display text-2xl font-semibold text-text-vibrant">{project.title}</h3>
         <p className="text-on-surface-variant max-w-2xl text-base leading-relaxed">{project.blurb}</p>
-        <Link
-          href={`/case-studies/${project.slug}`}
-          className="flex items-center gap-2 font-mono text-sm text-brand w-fit group/link mt-1"
-        >
+        <span className="flex items-center gap-2 font-mono text-sm text-brand w-fit mt-1">
           {project.cta}
-          <Icon name="north_east" className="text-base group-hover/link:translate-x-1 transition-transform" />
-        </Link>
+          <Icon name="north_east" className="text-base group-hover:translate-x-1 transition-transform" />
+        </span>
       </div>
-    </div>
+    </Link>
   );
 }
 
