@@ -34,7 +34,7 @@ import {
 } from "../ratelimit.js";
 
 const MAX_VISITOR_MESSAGES = 5;
-const DAILY_TOKEN_CEILING = 500_000;
+const DAILY_TOKEN_CEILING = 5_000_000;
 
 describe("checkVisitorLimit", () => {
   it("allows when count is 0 (no prior messages)", async () => {

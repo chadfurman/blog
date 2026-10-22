@@ -146,9 +146,9 @@ describe("handler — input validation", () => {
 // ── rate-limit tests ──────────────────────────────────────────────────────
 describe("handler — rate limiting", () => {
   it("returns 503 global_exhausted when daily token ceiling is hit", async () => {
-    // daily tally >= ceiling (500000)
+    // daily tally >= ceiling (5000000)
     mockRedisInstance.get.mockImplementation(async (key: string) => {
-      if (key.startsWith("chat:global:tokens:")) return 500_000;
+      if (key.startsWith("chat:global:tokens:")) return 5_000_000;
       return null;
     });
 
@@ -161,6 +161,17 @@ describe("handler — rate limiting", () => {
     expect(res.status).toBe(503);
     const json = await res.json();
     expect(json.error).toBe("global_exhausted");
+  });
+
+  it("still serves requests when the day's token tally is 1M (ceiling is 5M)", async () => {
+    mockRedisInstance.get.mockImplementation(async (key: string) => {
+      if (key.startsWith("chat:global:tokens:")) return 1_000_000;
+      return null;
+    });
+    const res = await handler(
+      makeRequest({ visitorId: "v-1m", messages: [{ role: "user", content: "hi" }] })
+    );
+    expect(res.status).toBe(200);
   });
 
   it("returns 429 visitor_exhausted when visitor hit the cap", async () => {
@@ -200,7 +211,7 @@ describe("handler — rate limiting", () => {
   it("checks global budget before visitor limit", async () => {
     // Both global ceiling AND visitor cap hit — should return 503 (global checked first)
     mockRedisInstance.get.mockImplementation(async (key: string) => {
-      if (key.startsWith("chat:global:tokens:")) return 600_000;
+      if (key.startsWith("chat:global:tokens:")) return 6_000_000;
       if (key.startsWith("chat:visitor:")) return 5;
       return null;
     });
@@ -353,6 +364,22 @@ describe("handler — happy path", () => {
     expect(bumped).toBe(true);
   });
 
+  it("caps every history message so one request stays far under the 100k-token price tier", async () => {
+    await handler(
+      makeRequest({
+        visitorId: "v-big-history",
+        messages: [
+          { role: "user", content: "u".repeat(30_000) },
+          { role: "assistant", content: "x".repeat(400_000) },
+          { role: "user", content: "hi" },
+        ],
+      })
+    );
+    const sent = mockStreamText.mock.calls[0][0].messages as { content: string }[];
+    expect(sent.length).toBe(3);
+    for (const m of sent) expect(m.content.length).toBeLessThanOrEqual(2000);
+  });
+
   it("truncates history to MAX_HISTORY_MESSAGES", async () => {
     const manyMessages = Array.from({ length: 20 }, (_, i) => ({
       role: i % 2 === 0 ? "user" : "assistant",
@@ -394,7 +421,7 @@ describe("handler — transcript logging", () => {
 
   it("saves global_exhausted rejections", async () => {
     mockRedisInstance.get.mockImplementation(async (key: string) =>
-      key.startsWith("chat:global:tokens:") ? 500_000 : null
+      key.startsWith("chat:global:tokens:") ? 5_000_000 : null
     );
     await handler(
       makeRequest({ visitorId: "v-glob", messages: [{ role: "user", content: "hi" }] })
@@ -523,7 +550,7 @@ describe("handler — limit reset times", () => {
   });
 
   it("resets at the next UTC midnight when the global budget is spent", async () => {
-    const res = await limited((k) => (k.startsWith("chat:global:tokens:") ? 500_000 : null));
+    const res = await limited((k) => (k.startsWith("chat:global:tokens:") ? 5_000_000 : null));
     expect(res.status).toBe(503);
     expect((await res.json()).resetAt).toBe("2026-10-23T00:00:00.000Z");
   });

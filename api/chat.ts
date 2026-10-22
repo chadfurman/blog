@@ -16,6 +16,11 @@ import {
 // ── env constants ─────────────────────────────────────────────────────────
 const MAX_INPUT_CHARS = parseInt(process.env.MAX_INPUT_CHARS ?? "99", 10);
 const MAX_OUTPUT_TOKENS = parseInt(process.env.MAX_OUTPUT_TOKENS ?? "300", 10);
+// Per-message cap on everything sent to the model. Only the last user message
+// is length-checked on the way in, so without this a client could stuff a huge
+// assistant message into the history and push one request past haiku 5.5's
+// 100k-token cheap tier. 10 messages x 2000 chars keeps history near 6k tokens.
+const MAX_MESSAGE_CHARS = parseInt(process.env.MAX_MESSAGE_CHARS ?? "2000", 10);
 const MAX_HISTORY_MESSAGES = parseInt(
   process.env.MAX_HISTORY_MESSAGES ?? "10",
   10
@@ -113,7 +118,9 @@ async function handler(req: Request): Promise<Response> {
   }
 
   const messages = rawMessages as Message[];
-  const trimmedMessages = messages.slice(-MAX_HISTORY_MESSAGES);
+  const trimmedMessages = messages
+    .slice(-MAX_HISTORY_MESSAGES)
+    .map((m) => ({ role: m.role, content: m.content.slice(0, MAX_MESSAGE_CHARS) }));
   const ip = getClientIp(req);
 
   // Vercel Upstash integration injects KV_REST_API_*

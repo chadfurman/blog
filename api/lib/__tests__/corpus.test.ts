@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { buildSystemPrompt } from "../systemPrompt.js";
 import { buildCorpus } from "../corpus.js";
 
 describe("buildCorpus", () => {
@@ -65,5 +66,9 @@ describe("buildCorpus", () => {
     const corpus = buildCorpus();
     expect(corpus).toContain("Engineering Lead at FOSSA");
     expect(corpus).not.toContain("Staff Engineer");
+  });
+  it("keeps the whole system prompt well under the 100k-token price tier", () => {
+    // ~3.5 chars per token; the cheap tier ends at 100k input tokens per request.
+    expect(buildSystemPrompt().length / 3.5).toBeLessThan(25_000);
   });
 });

@@ -7,7 +7,7 @@ export type Message = { role: "user" | "assistant"; content: string };
 const HOURLY_LIMIT = parseInt(process.env.MAX_MESSAGES_PER_HOUR ?? "5", 10);
 const DAILY_LIMIT = parseInt(process.env.MAX_MESSAGES_PER_DAY ?? "20", 10);
 const DAILY_TOKEN_CEILING = parseInt(
-  process.env.DAILY_TOKEN_CEILING ?? "500000",
+  process.env.DAILY_TOKEN_CEILING ?? "5000000",
   10
 );
 
