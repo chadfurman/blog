@@ -3,7 +3,7 @@
 
 export const profile = {
   name: "Chad Furman",
-  title: "Staff Engineer, Manager | Applied AI & SRE",
+  title: "Engineering Lead | Applied AI & SRE",
   badge: {
     text: "Now building · buildaloud.ai",
     href: "https://buildaloud.ai",
@@ -64,7 +64,7 @@ export type Experience = {
 export const experience: Experience[] = [
   {
     company: "FOSSA",
-    role: "Staff Engineer, Manager",
+    role: "Engineering Lead",
     detail:
       "Applied AI & SRE. Spearheaded AI adoption across the company and led the Applied AI team from prototype to public beta. Product owner of fossabot (New Horizons), an agentic framework for automated dependency updates and vulnerability remediation. Founded and manage the SRE team; modernized our Kubernetes platform by migrating from kops to EKS. Built agentic data infrastructure on OpenSearch and Kafka that delivered a 20x speedup on a critical path, coordinate delivery across four engineering teams, and lead R&D in context engineering, evaluations, and cost optimization.",
     period: "Mar 2024 — Present",
@@ -207,7 +207,7 @@ export const projects: Project[] = [
     company: "FOSSA",
     caseStudy: {
       tagline: "Agentic AI that keeps software dependencies current — safely, automatically.",
-      role: "Staff Engineer, Manager, Applied AI & SRE · FOSSA · 2024–present",
+      role: "Engineering Lead, Applied AI & SRE · FOSSA · 2024–present",
       sections: [
         {
           heading: "The problem",

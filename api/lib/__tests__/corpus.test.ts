@@ -61,4 +61,9 @@ describe("buildCorpus", () => {
   it("includes the blog posts", () => {
     expect(buildCorpus()).toContain("RSI");
   });
+  it("uses the Engineering Lead title at FOSSA", () => {
+    const corpus = buildCorpus();
+    expect(corpus).toContain("Engineering Lead at FOSSA");
+    expect(corpus).not.toContain("Staff Engineer");
+  });
 });
