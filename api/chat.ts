@@ -19,7 +19,7 @@ const MAX_HISTORY_MESSAGES = parseInt(
 
 // Vercel AI Gateway resolves this string model id; auth is automatic on Vercel
 // via the function's OIDC token (no ANTHROPIC_API_KEY needed).
-const MODEL = process.env.CHAT_MODEL ?? "anthropic/claude-haiku-5.5";
+const MODEL = process.env.CHAT_MODEL ?? "anthropic/claude-haiku-4.5";
 
 // The widget is served cross-origin (separate Vercel project), so every
 // response — including errors and the stream — needs CORS headers.
