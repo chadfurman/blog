@@ -243,6 +243,28 @@ describe("handler — happy path", () => {
     expect(callArgs[0].system).toContain("Chad Furman");
   });
 
+  it("uses the gateway's haiku 5.5 model id by default", async () => {
+    await handler(
+      makeRequest({
+        visitorId: "v-happy",
+        messages: [{ role: "user", content: "What did Chad build?" }],
+      })
+    );
+    const [callArgs] = mockStreamText.mock.calls;
+    expect(callArgs[0].model).toBe("anthropic/claude-haiku-5.5");
+  });
+
+  it("logs model stream errors instead of swallowing them", async () => {
+    await handler(
+      makeRequest({
+        visitorId: "v-happy",
+        messages: [{ role: "user", content: "What did Chad build?" }],
+      })
+    );
+    const [callArgs] = mockStreamText.mock.calls;
+    expect(callArgs[0]).toHaveProperty("onError");
+  });
+
   it("truncates history to MAX_HISTORY_MESSAGES", async () => {
     const manyMessages = Array.from({ length: 20 }, (_, i) => ({
       role: i % 2 === 0 ? "user" : "assistant",
