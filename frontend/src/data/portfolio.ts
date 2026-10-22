@@ -3,7 +3,7 @@
 
 export const profile = {
   name: "Chad Furman",
-  title: "Engineering Manager | Applied AI & SRE",
+  title: "Staff Engineer, Manager | Applied AI & SRE",
   badge: {
     text: "Now building · buildaloud.ai",
     href: "https://buildaloud.ai",
@@ -26,7 +26,7 @@ export const creed = {
     },
     {
       word: "Scales",
-      line: "It grows without a rewrite. I design for the next order of magnitude — billions of emails, thousands of live rooms — before it hurts.",
+      line: "It grows without a rewrite. I design for the next order of magnitude — billions of emails, hundreds of live rooms — before it hurts.",
     },
     {
       word: "Works",
@@ -64,9 +64,9 @@ export type Experience = {
 export const experience: Experience[] = [
   {
     company: "FOSSA",
-    role: "Engineering Manager",
+    role: "Staff Engineer, Manager",
     detail:
-      "Applied AI & SRE. Spearheaded AI adoption across the company and led the Applied AI team from prototype to public beta. Product owner of fossabot (New Horizons), an agentic framework for automated dependency updates and vulnerability remediation. Founded and manage the SRE team; modernized our Kubernetes platform by migrating from kops to EKS.",
+      "Applied AI & SRE. Spearheaded AI adoption across the company and led the Applied AI team from prototype to public beta. Product owner of fossabot (New Horizons), an agentic framework for automated dependency updates and vulnerability remediation. Founded and manage the SRE team; modernized our Kubernetes platform by migrating from kops to EKS. Built agentic data infrastructure on OpenSearch and Kafka that delivered a 20x speedup on a critical path, coordinate delivery across four engineering teams, and lead R&D in context engineering, evaluations, and cost optimization.",
     period: "Mar 2024 — Present",
     current: true,
     tags: ["Agentic AI", "AWS", "Kafka", "TypeScript", "React", "Node.js", "GraphQL", "SOC2"],
@@ -81,6 +81,8 @@ export const experience: Experience[] = [
         "Schema-driven data contracts: a Protobuf/Buf repo generating TypeScript and Rust bindings for dependency and vulnerability event data.",
         "Terraform-managed EKS on AWS with Karpenter autoscaling and FluxCD GitOps delivery; Helm charts for the full service and data layer (Kafka, OpenSearch, Redis, Postgres), with Datadog observability.",
         "Go infrastructure tooling (cluster-health, resource calculators) alongside TypeScript/Node services with Kafka consumers.",
+        "Tested embeddings for customer-specific knowledge graphs and found index maintenance cost-prohibitive; models with agentic tooling proved effective for the use case.",
+        "Built internal agentic engineering workflows and code-review evaluations that use engineer feedback as ground truth.",
       ],
     },
   },
@@ -88,7 +90,7 @@ export const experience: Experience[] = [
     company: "Klaviyo",
     role: "Senior Software Engineer",
     detail:
-      "Core platform engineering for marketing-automation infrastructure handling billions of emails a day. Built and optimized high-throughput data pipelines and the reliability of distributed systems behind millions of customer interactions. A founding member of the API committee, where I championed JSON:API standards across the org.",
+      "Core platform engineering for marketing-automation infrastructure handling billions of emails a day. Built and optimized high-throughput data pipelines and the reliability of distributed systems behind millions of customer interactions. A founding member of the API Engineering Team, supporting JSON:API adoption across 20 engineering teams. Scaled the Django email-rendering pipeline and led template-editor and data-retrieval modernization that cut error rates by 95%.",
     period: "Jan 2021 — Feb 2024",
     tags: ["Python", "RabbitMQ", "JSON:API"],
   },
@@ -96,9 +98,9 @@ export const experience: Experience[] = [
     company: "Clevertech",
     role: "Technical Lead",
     detail:
-      "Led the engineering of Evercast, a real-time WebRTC collaboration platform for film and TV production used by major studios. The work helped raise $4M and earned an Engineering Emmy® for delivering 4K/60fps, 10-bit 4:4:4 color and 7.1 surround over the web.",
-    period: "Jul 2016 — Jan 2021",
-    tags: ["Real-time Video", "Engineering Emmy", "Pentesting", "TypeScript", "Node.js", "GraphQL"],
+      "Led the engineering of Evercast, a real-time WebRTC collaboration platform for film and TV production used by major studios. The work helped raise $4M and earned an Engineering Emmy® for delivering 4K/60fps, 10-bit 4:4:4 color and 7.1 surround over the web. Owned the security program that earned approval from all major Hollywood studios, and scaled the infrastructure through 10x growth in three months.",
+    period: "Jun 2015 — Jan 2021",
+    tags: ["Real-time Video", "Engineering Emmy", "Pentesting", "Security Program", "TypeScript", "Node.js", "GraphQL"],
   },
 ];
 
@@ -126,16 +128,22 @@ export const earlierRoles: EarlierRole[] = [
   {
     company: "Cyber Architecture (Freelance)",
     role: "Web Developer & Systems Administrator",
-    period: "2005 — 2012",
+    period: "2003 — 2012",
     detail:
-      "Freelance web development and systems administration since age 16 — custom PHP and JavaScript programming plus CMS builds on Joomla, ZenCart, and others, backed by MySQL and Linux.",
+      "Freelance web development and systems administration — custom PHP and JavaScript programming plus CMS builds on Joomla, ZenCart, and others, backed by MySQL and Linux.",
   },
   {
     company: "University at Albany, SUNY",
-    role: "Undergraduate ML Research Assistant",
-    period: "2008 — 2012",
+    role: "Research Assistant, Natural Language Processing",
+    period: "2010 — 2011",
     detail:
       "Machine-learning research in Dr. Özlem Uzuner's NLP lab — de-identification of protected health information (PHI) in clinical text using support vector machines over local context, building on the lab's i2b2 / Stat De-id work.",
+  },
+  {
+    company: "University at Albany, SUNY",
+    role: "Teaching Assistant, Computer Science",
+    period: "2010",
+    detail: "Teaching assistant for computer science courses.",
   },
 ];
 
@@ -148,13 +156,8 @@ export type Education = {
 export const education: Education[] = [
   {
     school: "University at Albany, SUNY",
-    degree: "B.S., Mathematics & Computer Science",
-    period: "2008 — 2012",
-  },
-  {
-    school: "Hudson Valley Community College",
-    degree: "A.S., Computer Information Systems",
-    period: "2006 — 2008",
+    degree: "B.S., Computer Science with Applied Mathematics",
+    period: "2009 — 2012",
   },
 ];
 
@@ -204,7 +207,7 @@ export const projects: Project[] = [
     company: "FOSSA",
     caseStudy: {
       tagline: "Agentic AI that keeps software dependencies current — safely, automatically.",
-      role: "Engineering Manager, Applied AI & SRE · FOSSA · 2024–present",
+      role: "Staff Engineer, Manager, Applied AI & SRE · FOSSA · 2024–present",
       sections: [
         {
           heading: "The problem",
@@ -259,7 +262,7 @@ export const projects: Project[] = [
     company: "Clevertech",
     caseStudy: {
       tagline: "Real-time, studio-grade video collaboration for film & television.",
-      role: "Technical Lead · Clevertech / Evercast · 2016–2021",
+      role: "Technical Lead · Clevertech / Evercast · 2015–2021",
       sections: [
         {
           heading: "The problem",
@@ -369,7 +372,7 @@ export const skillGroups: SkillGroup[] = [
   {
     icon: "psychology",
     title: "AI Engineering",
-    skills: ["LLM Orchestration", "RAG Systems", "Agentic Workflows", "Anthropic"],
+    skills: ["LLM Orchestration", "Context Engineering", "Model Evaluation", "Agentic Workflows", "MCP", "Anthropic"],
   },
   {
     icon: "cloud_done",
@@ -379,7 +382,7 @@ export const skillGroups: SkillGroup[] = [
   {
     icon: "layers",
     title: "Full-Stack Dev",
-    skills: ["Go", "Rust", "React / Next.js", "PostgreSQL", "WebRTC"],
+    skills: ["TypeScript", "Python", "Go", "Rust", "PHP", "React / Next.js", "SQL / PostgreSQL", "WebRTC"],
   },
 ];
 
