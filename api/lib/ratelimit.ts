@@ -11,6 +11,9 @@ const DAILY_TOKEN_CEILING = parseInt(
   10
 );
 
+const MAX_STORED_CHARS = 2000;
+const MAX_REJECTED_RECORDS_PER_IP_DAY = 50;
+
 const TTL_1H = 60 * 60; // seconds
 const TTL_24H = 24 * 60 * 60;
 const TTL_48H = 48 * 60 * 60;
@@ -89,21 +92,38 @@ export async function recordUsage(opts: {
   const existing = ((await redis.get<number>(tokenKey)) ?? 0) as number;
   await redis.set(tokenKey, existing + tokensUsed, { ex: TTL_48H });
 
-  await recordTranscript({ redis, visitorId, ip, messages });
+  await recordTranscript({ redis, visitorId, ip, messages, status: 200 });
 }
 
-// Transcripts never expire, and failed requests are kept too (error set).
+// Transcripts never expire. `status` is the HTTP status returned and `reason`
+// the error code when it wasn't a success.
 export async function recordTranscript(opts: {
   redis: Redis;
   visitorId: string;
   ip: string;
   messages: Message[];
-  error?: string;
+  status: number;
+  reason?: string;
 }): Promise<void> {
-  const { redis, visitorId, ip, messages, error } = opts;
+  const { redis, visitorId, ip, messages, status, reason } = opts;
   const ts = Date.now();
+  const kept = messages.map((m) => ({
+    role: m.role,
+    content: m.content.slice(0, MAX_STORED_CHARS),
+  }));
   await redis.set(
     `chat:transcript:${visitorId}:${ts}`,
-    JSON.stringify({ messages, ip, ts, error })
+    JSON.stringify({ messages: kept, ip, ts, status, reason })
   );
+}
+
+// Rejected requests are saved too, but capped per IP per day so a flood of
+// rejected requests can't write unbounded permanent keys.
+export async function recordRejection(
+  opts: Parameters<typeof recordTranscript>[0]
+): Promise<void> {
+  const key = `chat:ip:${opts.ip}:rej:${utcDate()}`;
+  const count = await opts.redis.incr(key);
+  await opts.redis.expire(key, TTL_48H);
+  if (count <= MAX_REJECTED_RECORDS_PER_IP_DAY) await recordTranscript(opts);
 }

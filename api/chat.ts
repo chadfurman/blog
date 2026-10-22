@@ -6,7 +6,7 @@ import {
   checkGlobalBudget,
   checkIpLimit,
   recordUsage,
-  recordTranscript,
+  recordRejection,
   type Message,
 } from "./lib/ratelimit.js";
 
@@ -97,20 +97,10 @@ async function handler(req: Request): Promise<Response> {
   }
 
   const messages = rawMessages as Message[];
-
-  // 2. Check last user message length
-  const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
-  if (!lastUserMsg) {
-    return jsonError(req, 400, "bad_request");
-  }
-  if (lastUserMsg.content.length > MAX_INPUT_CHARS) {
-    return jsonError(req, 400, "input_too_long");
-  }
-
-  // 3. Get client IP
+  const trimmedMessages = messages.slice(-MAX_HISTORY_MESSAGES);
   const ip = getClientIp(req);
 
-  // 4. Initialise Redis (Vercel Upstash integration injects KV_REST_API_*)
+  // Vercel Upstash integration injects KV_REST_API_*
   const redis = new Redis({
     url: process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL ?? "",
     token:
@@ -125,26 +115,38 @@ async function handler(req: Request): Promise<Response> {
   const bypassToken = process.env.CHAT_BYPASS_TOKEN;
   const bypass = !!bypassToken && req.headers.get("x-chat-bypass") === bypassToken;
 
+  // Every rejection past body validation is saved with its status and reason.
+  const reject = async (status: number, reason: string): Promise<Response> => {
+    if (!bypass) {
+      await recordRejection({ redis, visitorId, ip, messages: trimmedMessages, status, reason });
+    }
+    return jsonError(req, status, reason);
+  };
+
+  const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
+  if (!lastUserMsg) {
+    return reject(400, "bad_request");
+  }
+  if (lastUserMsg.content.length > MAX_INPUT_CHARS) {
+    return reject(400, "input_too_long");
+  }
+
   if (!bypass) {
-    // 5. Check global budget FIRST
+    // Global budget first, then visitor + IP limits (either blocks -> 429)
     const globalCheck = await checkGlobalBudget(redis);
     if (!globalCheck.allowed) {
-      return jsonError(req, 503, "global_exhausted");
+      return reject(503, "global_exhausted");
     }
 
-    // 6. Check visitor + IP limits (either blocks → 429)
     const [visitorCheck, ipCheck] = await Promise.all([
       checkVisitorLimit(visitorId, redis),
       checkIpLimit(ip, redis),
     ]);
 
     if (!visitorCheck.allowed || !ipCheck.allowed) {
-      return jsonError(req, 429, "visitor_exhausted");
+      return reject(429, "visitor_exhausted");
     }
   }
-
-  // 7. Trim history to MAX_HISTORY_MESSAGES
-  const trimmedMessages = messages.slice(-MAX_HISTORY_MESSAGES);
 
   // 8. Stream from the model via the AI Gateway, as plain text
   const result = streamText({
@@ -160,10 +162,7 @@ async function handler(req: Request): Promise<Response> {
   const chunks = result.textStream[Symbol.asyncIterator]();
   const first = await chunks.next();
   if (first.done) {
-    if (!bypass) {
-      await recordTranscript({ redis, visitorId, ip, messages, error: "model_error" });
-    }
-    return jsonError(req, 502, "model_error");
+    return reject(502, "model_error");
   }
 
   const encoder = new TextEncoder();
@@ -184,7 +183,7 @@ async function handler(req: Request): Promise<Response> {
             (usage?.inputTokens ?? usage?.promptTokens ?? 0) +
               (usage?.outputTokens ?? usage?.completionTokens ?? 0);
           if (!bypass) {
-            await recordUsage({ redis, visitorId, ip, messages, tokensUsed });
+            await recordUsage({ redis, visitorId, ip, messages: trimmedMessages, tokensUsed });
           }
         } catch {
           // Never fail the response on a bookkeeping error.

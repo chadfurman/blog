@@ -299,7 +299,8 @@ describe("handler — happy path", () => {
     );
     expect(call).toBeDefined();
     const payload = JSON.parse(call![1] as string);
-    expect(payload.error).toBe("model_error");
+    expect(payload.status).toBe(502);
+    expect(payload.reason).toBe("model_error");
     expect(payload.messages[0].content).toBe("will this be kept?");
     expect(call![2]?.ex).toBeUndefined();
   });
@@ -319,5 +320,101 @@ describe("handler — happy path", () => {
 
     const [callArgs] = mockStreamText.mock.calls;
     expect(callArgs[0].messages.length).toBeLessThanOrEqual(10);
+  });
+});
+
+
+// ── transcript logging: every request with a valid shape is kept ──────────
+function savedTranscript(visitorId: string) {
+  const call = mockRedisInstance.set.mock.calls.find(([k]) =>
+    (k as string).startsWith(`chat:transcript:${visitorId}:`)
+  );
+  return call ? { payload: JSON.parse(call[1] as string), opts: call[2] } : undefined;
+}
+
+describe("handler — transcript logging", () => {
+  it("saves input_too_long rejections with status and reason", async () => {
+    await handler(
+      makeRequest({
+        visitorId: "v-long",
+        messages: [{ role: "user", content: "a".repeat(100) }],
+      })
+    );
+    const saved = savedTranscript("v-long");
+    expect(saved?.payload).toMatchObject({ status: 400, reason: "input_too_long" });
+  });
+
+  it("saves global_exhausted rejections", async () => {
+    mockRedisInstance.get.mockImplementation(async (key: string) =>
+      key.startsWith("chat:global:tokens:") ? 500_000 : null
+    );
+    await handler(
+      makeRequest({ visitorId: "v-glob", messages: [{ role: "user", content: "hi" }] })
+    );
+    expect(savedTranscript("v-glob")?.payload).toMatchObject({
+      status: 503,
+      reason: "global_exhausted",
+    });
+  });
+
+  it("saves rate-limited rejections", async () => {
+    mockRedisInstance.get.mockImplementation(async (key: string) =>
+      key.startsWith("chat:visitor:") ? 5 : null
+    );
+    await handler(
+      makeRequest({ visitorId: "v-rl", messages: [{ role: "user", content: "hi" }] })
+    );
+    expect(savedTranscript("v-rl")?.payload).toMatchObject({
+      status: 429,
+      reason: "visitor_exhausted",
+    });
+  });
+
+  it("saves successful requests with status 200 and no expiry", async () => {
+    const res = await handler(
+      makeRequest({ visitorId: "v-ok", messages: [{ role: "user", content: "hi" }] })
+    );
+    await res.text();
+    const saved = savedTranscript("v-ok");
+    expect(saved?.payload.status).toBe(200);
+    expect(saved?.payload.reason).toBeUndefined();
+    expect(saved?.opts?.ex).toBeUndefined();
+  });
+
+  it("stops saving rejections for an IP past the daily rejection cap", async () => {
+    mockRedisInstance.incr.mockResolvedValue(10_000);
+    await handler(
+      makeRequest({
+        visitorId: "v-spam",
+        messages: [{ role: "user", content: "a".repeat(100) }],
+      })
+    );
+    expect(savedTranscript("v-spam")).toBeUndefined();
+  });
+
+  it("truncates long history messages in the saved transcript", async () => {
+    await handler(
+      makeRequest({
+        visitorId: "v-trunc",
+        messages: [
+          { role: "assistant", content: "x".repeat(50_000) },
+          { role: "user", content: "a".repeat(100) },
+        ],
+      })
+    );
+    const stored = savedTranscript("v-trunc")!.payload.messages;
+    expect(stored[0].content.length).toBeLessThanOrEqual(2000);
+  });
+
+  it("does not save anything for bypass requests", async () => {
+    process.env.CHAT_BYPASS_TOKEN = "tok";
+    await handler(
+      makeRequest(
+        { visitorId: "v-byp", messages: [{ role: "user", content: "a".repeat(100) }] },
+        { "x-chat-bypass": "tok" }
+      )
+    );
+    delete process.env.CHAT_BYPASS_TOKEN;
+    expect(savedTranscript("v-byp")).toBeUndefined();
   });
 });
