@@ -108,6 +108,12 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-header), sans-serif;
 }
 
+/* Display text: the body's wide tracking is for small text; headings read
+   better at the font's natural spacing. */
+h1, h2, h3, h4, h5, h6, .font-display {
+    letter-spacing: normal;
+}
+
 p {
     @apply my-4;
 }

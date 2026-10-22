@@ -274,7 +274,7 @@ export default function AskConsole() {
         <span aria-hidden="true">$ </span>ask my work
       </p>
       <h2
-        className="text-center font-display text-4xl md:text-5xl font-extrabold tracking-tight text-text-vibrant mb-4"
+        className="text-center font-display text-4xl md:text-5xl font-semibold tracking-normal text-text-vibrant mb-4"
         data-reveal
         style={{ ["--reveal-delay" as string]: "80ms" }}
       >

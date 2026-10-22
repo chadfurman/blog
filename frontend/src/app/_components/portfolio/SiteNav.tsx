@@ -30,7 +30,7 @@ export default function SiteNav() {
   return (
     <header className="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-xl border-b border-border-subtle">
       <nav className="flex justify-between items-center px-6 py-4 max-w-screen-xl mx-auto">
-        <a href="#top" className="font-display text-2xl font-bold text-brand tracking-tight">
+        <a href="#top" className="font-display text-2xl font-medium tracking-normal text-brand">
           {profile.name}
         </a>
 

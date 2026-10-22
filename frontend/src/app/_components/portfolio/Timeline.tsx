@@ -55,7 +55,7 @@ function TimelineItem({item, side, index}: {item: Experience; side: "left" | "ri
       style={{["--reveal-delay" as string]: `${index * 90}ms`}}
     >
       <div className={`hidden md:flex flex-col w-[45%] ${dateAlign}`}>
-        <span className="timeline-year font-display font-extrabold text-7xl mb-2">{year}</span>
+        <span className="timeline-year font-display font-semibold text-7xl mb-2">{year}</span>
         <span className={`font-mono text-sm ${item.current ? "text-brand" : "text-on-surface-variant"}`}>
           {item.period}
         </span>

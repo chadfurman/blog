@@ -56,7 +56,7 @@ export default function Hero() {
           />
         </a>
         <h1
-          className="hero-rise font-display text-5xl md:text-7xl font-extrabold leading-[1.06] tracking-tight text-text-vibrant mb-5"
+          className="hero-rise font-display text-5xl md:text-7xl font-semibold leading-[1.1] tracking-normal text-text-vibrant mb-5"
           style={{["--rise-delay" as string]: "90ms"}}
         >
           <span className="block pb-1">{title.trim()}</span>

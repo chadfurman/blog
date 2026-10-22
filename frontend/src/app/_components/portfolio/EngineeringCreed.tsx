@@ -87,7 +87,7 @@ export default function EngineeringCreed() {
                   isActive ? "border-brand/60" : "hover:border-brand/50"
                 } ${glow}`}
               >
-                <span className="font-display text-3xl md:text-4xl font-extrabold tracking-tight text-text-vibrant">
+                <span className="font-display text-3xl md:text-4xl font-semibold tracking-normal text-text-vibrant">
                   {point.word}
                 </span>
               </button>

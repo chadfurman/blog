@@ -1,15 +1,15 @@
 import type {Metadata} from "next";
-import {Plus_Jakarta_Sans, Geist, JetBrains_Mono} from 'next/font/google'
+import {Manrope, Geist, JetBrains_Mono} from 'next/font/google'
 import {GoogleAnalytics} from '@next/third-parties/google'
 import {Analytics} from '@vercel/analytics/next'
 import "./globals.css";
 
 import PrismLoader from "@/app/_components/PrismLoader/PrismLoader";
 
-const header_font = Plus_Jakarta_Sans({
+const header_font = Manrope({
   subsets: ['latin'],
   variable: "--font-header",
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['500', '600'],
   display: 'swap',
 })
 

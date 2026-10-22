@@ -63,7 +63,7 @@ export default async function CaseStudyPage({params}: PageProps) {
 
       <header className="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-xl border-b border-border-subtle">
         <nav className="flex justify-between items-center px-6 py-4 max-w-screen-xl mx-auto">
-          <Link href="/" className="font-display text-2xl font-bold text-brand tracking-tight">
+          <Link href="/" className="font-display text-2xl font-medium tracking-normal text-brand">
             {profile.name}
           </Link>
           <Link
@@ -93,7 +93,7 @@ export default async function CaseStudyPage({params}: PageProps) {
               </span>
             ))}
           </div>
-          <h1 className="font-display text-4xl md:text-6xl font-extrabold leading-[1.06] tracking-tight text-text-vibrant mb-4">
+          <h1 className="font-display text-4xl md:text-6xl font-semibold leading-[1.1] tracking-normal text-text-vibrant mb-4">
             {project.title}
           </h1>
           <p className="text-xl text-on-surface-variant mb-4 leading-relaxed">{cs.tagline}</p>
