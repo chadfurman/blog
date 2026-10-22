@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ComponentPropsWithoutRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { formatReset } from "./askLimits";
 import {
   METRICS_SENTINEL,
   formatCost,
@@ -152,6 +153,7 @@ export default function AskConsole() {
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<ErrorState>(null);
+  const [resetAt, setResetAt] = useState<string | null>(null);
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -161,6 +163,7 @@ export default function AskConsole() {
   const capped = error === "visitor_exhausted" || error === "global_exhausted";
   const sendDisabled = streaming || charCount === 0 || charCount > MAX_CHARS || capped;
   const expanded = messages.length > 0 || error !== null;
+  const resetLabel = resetAt ? formatReset(resetAt) : null;
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -187,6 +190,7 @@ export default function AskConsole() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             visitorId,
+            metrics: true,
             messages: next.map(({ role, content }) => ({ role, content })),
           }),
           signal: abortRef.current.signal,
@@ -194,11 +198,15 @@ export default function AskConsole() {
 
         if (!res.ok || !res.body) {
           let code: string | null = null;
+          let reset: string | null = null;
           try {
-            code = ((await res.json()) as { error?: string }).error ?? null;
+            const body = (await res.json()) as { error?: string; resetAt?: string };
+            code = body.error ?? null;
+            reset = body.resetAt ?? null;
           } catch {
             /* non-JSON body */
           }
+          setResetAt(reset);
           setMessages((prev) => prev.slice(0, -1)); // drop placeholder
           setError(
             code === "visitor_exhausted" ||
@@ -433,7 +441,11 @@ export default function AskConsole() {
 
               {error === "visitor_exhausted" && (
                 <div className="text-sm text-on-surface-variant space-y-2">
-                  <p>That&apos;s the message limit for now — but Chad would love to hear from you directly:</p>
+                  <p>
+                    That&apos;s the message limit for now
+                    {resetLabel ? ` — it resets ${resetLabel}` : ""}. Chad would love to
+                    hear from you directly in the meantime:
+                  </p>
                   <p className="font-mono">
                     <a
                       href="mailto:chad@chadfurman.com"
@@ -455,7 +467,8 @@ export default function AskConsole() {
               )}
               {error === "global_exhausted" && (
                 <p className="text-sm text-on-surface-variant">
-                  The assistant is fully booked for today — please come back tomorrow.
+                  The assistant is fully booked for today
+                  {resetLabel ? ` — it\u2019s back ${resetLabel}` : " — please come back tomorrow"}.
                 </p>
               )}
               {error === "network" && (

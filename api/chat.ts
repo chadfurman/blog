@@ -8,6 +8,8 @@ import {
   checkIpLimit,
   recordUsage,
   recordRejection,
+  resetAtFor,
+  nextUtcMidnight,
   type Message,
 } from "./lib/ratelimit.js";
 
@@ -44,10 +46,17 @@ function corsHeaders(req: Request): Record<string, string> {
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────
-function jsonError(req: Request, status: number, error: string): Response {
-  return new Response(JSON.stringify({ error }), {
+function jsonError(req: Request, status: number, error: string, resetAt?: Date): Response {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...corsHeaders(req),
+  };
+  if (resetAt) {
+    headers["Retry-After"] = String(Math.max(0, Math.ceil((resetAt.getTime() - Date.now()) / 1000)));
+  }
+  return new Response(JSON.stringify({ error, resetAt: resetAt?.toISOString() }), {
     status,
-    headers: { "Content-Type": "application/json", ...corsHeaders(req) },
+    headers,
   });
 }
 
@@ -70,7 +79,7 @@ async function handler(req: Request): Promise<Response> {
   }
 
   // 1. Parse + validate body
-  let body: { visitorId?: unknown; messages?: unknown };
+  let body: { visitorId?: unknown; messages?: unknown; metrics?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -78,6 +87,7 @@ async function handler(req: Request): Promise<Response> {
   }
 
   const { visitorId, messages: rawMessages } = body;
+  const wantsMetrics = body.metrics === true;
 
   if (
     typeof visitorId !== "string" ||
@@ -122,11 +132,11 @@ async function handler(req: Request): Promise<Response> {
   const bypass = !!bypassToken && req.headers.get("x-chat-bypass") === bypassToken;
 
   // Every rejection past body validation is saved with its status and reason.
-  const reject = async (status: number, reason: string): Promise<Response> => {
+  const reject = async (status: number, reason: string, resetAt?: Date): Promise<Response> => {
     if (!bypass) {
       await recordRejection({ redis, visitorId, ip, messages: trimmedMessages, status, reason });
     }
-    return jsonError(req, status, reason);
+    return jsonError(req, status, reason, resetAt);
   };
 
   const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
@@ -141,7 +151,7 @@ async function handler(req: Request): Promise<Response> {
     // Global budget first, then visitor + IP limits (either blocks -> 429)
     const globalCheck = await checkGlobalBudget(redis);
     if (!globalCheck.allowed) {
-      return reject(503, "global_exhausted");
+      return reject(503, "global_exhausted", nextUtcMidnight(new Date()));
     }
 
     const [visitorCheck, ipCheck] = await Promise.all([
@@ -149,8 +159,10 @@ async function handler(req: Request): Promise<Response> {
       checkIpLimit(ip, redis),
     ]);
 
-    if (!visitorCheck.allowed || !ipCheck.allowed) {
-      return reject(429, "visitor_exhausted");
+    const blocked = [visitorCheck, ipCheck].filter((c) => !c.allowed);
+    if (blocked.length > 0) {
+      const resets = blocked.map((c) => resetAtFor(c).getTime());
+      return reject(429, "visitor_exhausted", new Date(Math.max(...resets)));
     }
   }
 
@@ -194,8 +206,12 @@ async function handler(req: Request): Promise<Response> {
           ttftMs,
           serverMs: Date.now() - startedAt,
         });
+        // Opt-in: pages cached from before the metrics panel would print the
+        // trailer as part of the answer.
         try {
-          controller.enqueue(encoder.encode(METRICS_SENTINEL + JSON.stringify(metrics)));
+          if (wantsMetrics) {
+            controller.enqueue(encoder.encode(METRICS_SENTINEL + JSON.stringify(metrics)));
+          }
         } catch {
           // Client already gone.
         }

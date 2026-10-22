@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 // ── Hoist mutable references so vi.mock factories can access them ─────────
 const { mockStreamText, mockRedisInstance } = vi.hoisted(() => {
@@ -305,10 +305,21 @@ describe("handler — happy path", () => {
     expect(call![2]?.ex).toBeUndefined();
   });
 
+  it("sends no metrics trailer unless the client opts in", async () => {
+    const res = await handler(
+      makeRequest({
+        visitorId: "v-nometrics",
+        messages: [{ role: "user", content: "hi" }],
+      })
+    );
+    expect(await res.text()).toBe("hello world");
+  });
+
   it("ends the stream with a metrics trailer after the answer", async () => {
     const res = await handler(
       makeRequest({
         visitorId: "v-metrics",
+        metrics: true,
         messages: [{ role: "user", content: "hi" }],
       })
     );
@@ -479,5 +490,41 @@ describe("handler — identifier validation", () => {
       (k as string).startsWith("chat:transcript:v-badip:")
     );
     expect(JSON.parse(call![1] as string).ip).toBe("unknown");
+  });
+});
+
+// ── limit reset times ─────────────────────────────────────────────────────
+describe("handler — limit reset times", () => {
+  const NOW = new Date("2026-10-22T15:20:00.000Z");
+  beforeEach(() => vi.useFakeTimers({ toFake: ["Date"], now: NOW }));
+  afterEach(() => vi.useRealTimers());
+
+  async function limited(getImpl: (key: string) => number | null) {
+    mockRedisInstance.get.mockImplementation(async (key: string) => getImpl(key));
+    return handler(
+      makeRequest({ visitorId: "v-reset", messages: [{ role: "user", content: "hi" }] })
+    );
+  }
+
+  it("resets at the top of the next UTC hour when the hourly cap is hit", async () => {
+    const res = await limited((k) => (k.startsWith("chat:visitor:") ? 5 : null));
+    expect(res.status).toBe(429);
+    const json = await res.json();
+    expect(json.resetAt).toBe("2026-10-22T16:00:00.000Z");
+    expect(res.headers.get("Retry-After")).toBe("2400");
+  });
+
+  it("resets at the next UTC midnight when the daily cap is hit", async () => {
+    const res = await limited((k) =>
+      k.startsWith("chat:visitor:") ? (k.includes(":d:") ? 20 : 1) : null
+    );
+    const json = await res.json();
+    expect(json.resetAt).toBe("2026-10-23T00:00:00.000Z");
+  });
+
+  it("resets at the next UTC midnight when the global budget is spent", async () => {
+    const res = await limited((k) => (k.startsWith("chat:global:tokens:") ? 500_000 : null));
+    expect(res.status).toBe(503);
+    expect((await res.json()).resetAt).toBe("2026-10-23T00:00:00.000Z");
   });
 });

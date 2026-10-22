@@ -27,6 +27,20 @@ function utcHour(): string {
   return new Date().toISOString().slice(0, 13); // YYYY-MM-DDTHH
 }
 
+export function nextUtcHour(now: Date): Date {
+  return new Date(Math.floor(now.getTime() / 3_600_000) * 3_600_000 + 3_600_000);
+}
+
+export function nextUtcMidnight(now: Date): Date {
+  return new Date(Math.floor(now.getTime() / 86_400_000) * 86_400_000 + 86_400_000);
+}
+
+// When a blocked identity can send again: the daily cap clears at UTC midnight,
+// otherwise it was the hourly cap, which clears at the top of the UTC hour.
+export function resetAtFor(check: { daily: number }, now: Date = new Date()): Date {
+  return check.daily >= DAILY_LIMIT ? nextUtcMidnight(now) : nextUtcHour(now);
+}
+
 async function checkWindows(
   redis: Redis,
   prefix: string,
