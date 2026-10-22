@@ -556,15 +556,23 @@ button[type="submit"]:disabled {
 }
 
 /* Engineering-creed glow. EngineeringCreed toggles .creed-glow on the active
-   card on half-breath timers; all movement rides this transition — keyframes
-   are avoided on purpose, since removing one mid-flight snaps to base styles
-   while a transition always eases from the current glow. */
+   card. The card lights fast and bright (rise uses .creed-glow's own timing),
+   holds while its sentence shows, and fades slowly once the next card has
+   taken over (fall uses .creed-card's timing). Keyframes are avoided on
+   purpose: removing one mid-flight snaps to base styles, while a transition
+   always eases from the current glow. */
 .creed-card {
-    transition: box-shadow 2.5s ease-in-out, transform 2.5s ease-in-out, border-color 0.6s ease;
+    transition: box-shadow 2.4s ease-in-out, transform 2.4s ease-in-out,
+                background-color 2.4s ease-in-out, border-color 2.4s ease-in-out;
 }
 .creed-glow {
-    box-shadow: 0 0 38px -8px rgba(123, 208, 255, 0.6);
-    transform: translateY(-4px);
+    box-shadow: 0 0 46px -4px rgba(123, 208, 255, 0.8),
+                inset 0 0 32px rgba(123, 208, 255, 0.18);
+    background-color: rgba(30, 58, 95, 0.55);
+    border-color: rgba(123, 208, 255, 0.75);
+    transform: translateY(-3px);
+    transition-duration: 0.45s;
+    transition-timing-function: ease-out;
 }
 
 /* Scroll-reveal — ScrollReveal client component toggles .reveal-in on intersect. */

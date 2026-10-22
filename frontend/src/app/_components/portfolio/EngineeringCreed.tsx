@@ -3,19 +3,20 @@
 import {useEffect, useRef, useState} from "react";
 import {creed} from "@/data/portfolio";
 
-// A slim "engineering creed" band under the hero. The active card "breathes" —
-// glow eases up for a half-breath, back down for another — then the next card
-// takes over. All movement rides the .creed-card CSS transition (no keyframes),
-// so interrupting it anywhere (fast mouse passes included) eases from the
-// current glow instead of cancelling an animation. Hover/focus/tap holds the
-// glow on a card; releasing resumes the loop. Reduced motion: no auto-loop.
-type Phase = "in" | "out" | "held";
+// A slim "engineering creed" band under the hero. The active card lights up
+// quickly, stays lit while its sentence shows, and fades slowly after the next
+// card has taken over, so the current card is always the brightest. All
+// movement rides the .creed-card CSS transitions (no keyframes), so
+// interrupting it anywhere (fast mouse passes included) eases from the current
+// glow instead of cancelling an animation. Hover/focus/tap holds the glow on a
+// card; releasing resumes the loop. Reduced motion: no auto-loop.
+type Phase = "loop" | "held";
 
-const HALF_BREATH_MS = 2500;
+const HOLD_MS = 5000;
 
 export default function EngineeringCreed() {
   const [active, setActive] = useState(0);
-  const [phase, setPhase] = useState<Phase>("in");
+  const [phase, setPhase] = useState<Phase>("loop");
   const [autoLoop, setAutoLoop] = useState(false);
   const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const count = creed.points.length;
@@ -30,18 +31,11 @@ export default function EngineeringCreed() {
   };
   useEffect(() => clearTap, []);
 
-  const release = () => setPhase((p) => (p === "held" ? "out" : p));
+  const release = () => setPhase("loop");
 
   useEffect(() => {
     if (!autoLoop || phase === "held") return;
-    const t = setTimeout(() => {
-      if (phase === "in") {
-        setPhase("out");
-      } else {
-        setActive((a) => (a + 1) % count);
-        setPhase("in");
-      }
-    }, HALF_BREATH_MS);
+    const t = setTimeout(() => setActive((a) => (a + 1) % count), HOLD_MS);
     return () => clearTimeout(t);
   }, [autoLoop, phase, active, count]);
 
@@ -50,8 +44,8 @@ export default function EngineeringCreed() {
     setActive(i);
     setPhase("held");
   };
-  // Tap (touch): glow up, hold a few seconds, then fade down — touch has no
-  // reliable "leave", so a timer starts the release.
+  // Tap (touch): glow up, hold a few seconds, then resume the loop — touch has
+  // no reliable "leave", so a timer starts the release.
   const tap = (i: number) => {
     holdOn(i);
     tapTimer.current = setTimeout(release, 4000);
@@ -72,10 +66,7 @@ export default function EngineeringCreed() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
         {creed.points.map((point, i) => {
           const isActive = active === i;
-          const glow =
-            isActive && (phase === "held" || (autoLoop && phase === "in"))
-              ? "creed-glow"
-              : "";
+          const glow = isActive && (phase === "held" || autoLoop) ? "creed-glow" : "";
           // data-reveal lives on the static wrapper so React's className
           // rewrites on the button don't wipe ScrollReveal's reveal-in class.
           return (
