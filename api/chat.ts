@@ -1,7 +1,7 @@
 import { streamText } from "ai";
 import { Redis } from "@upstash/redis";
 import { buildSystemPrompt } from "./lib/systemPrompt.js";
-import { buildMetrics, normalizeUsage, METRICS_SENTINEL } from "./lib/metrics.js";
+import { buildMetrics, estimateTokens, normalizeUsage, METRICS_SENTINEL } from "./lib/metrics.js";
 import {
   checkVisitorLimit,
   checkGlobalBudget,
@@ -190,6 +190,7 @@ async function handler(req: Request): Promise<Response> {
         const metrics = buildMetrics({
           model: MODEL,
           usage,
+          userTokens: estimateTokens(trimmedMessages),
           ttftMs,
           serverMs: Date.now() - startedAt,
         });

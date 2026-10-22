@@ -4,6 +4,7 @@ export const METRICS_SENTINEL = "\u001e";
 export interface AskMetrics {
   model: string;
   inputTokens: number;
+  systemTokens: number;
   outputTokens: number;
   costUsd: number | null;
   ttftMs: number;

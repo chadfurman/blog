@@ -319,6 +319,7 @@ describe("handler — happy path", () => {
     expect(metrics).toMatchObject({
       model: "anthropic/claude-haiku-5.5",
       inputTokens: 100,
+      systemTokens: 95,
       outputTokens: 50,
     });
     expect(metrics.costUsd).toBeCloseTo(0.000035, 9);

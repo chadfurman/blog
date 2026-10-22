@@ -1,3 +1,5 @@
+import type { Message } from "./ratelimit.js";
+
 // Marks the end of the answer text; the JSON metrics follow it in the same stream.
 export const METRICS_SENTINEL = "\u001e";
 
@@ -8,7 +10,8 @@ const PRICES: Record<string, { input: number; output: number }> = {
 
 export type Metrics = {
   model: string;
-  inputTokens: number;
+  inputTokens: number; // billed total, system prompt included
+  systemTokens: number; // estimated share of inputTokens that is the system prompt
   outputTokens: number;
   costUsd: number | null;
   ttftMs: number;
@@ -25,9 +28,17 @@ export function normalizeUsage(usage: Record<string, number> | undefined) {
   };
 }
 
+// Rough count for the visitor's own messages: ~3.5 chars per token plus a few
+// framing tokens per message. The system prompt is whatever the billed total
+// has beyond this.
+export function estimateTokens(messages: Message[]): number {
+  return messages.reduce((sum, m) => sum + Math.ceil(m.content.length / 3.5) + 4, 0);
+}
+
 export function buildMetrics(opts: {
   model: string;
   usage: Record<string, number> | undefined;
+  userTokens: number;
   ttftMs: number;
   serverMs: number;
 }): Metrics {
@@ -39,6 +50,7 @@ export function buildMetrics(opts: {
   return {
     model: opts.model,
     inputTokens,
+    systemTokens: Math.max(0, inputTokens - opts.userTokens),
     outputTokens,
     costUsd,
     ttftMs: opts.ttftMs,

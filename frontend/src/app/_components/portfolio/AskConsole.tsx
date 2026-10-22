@@ -57,11 +57,16 @@ function getOrCreateVisitorId(): string {
 // ---- metrics panel ---------------------------------------------------------
 
 function MetricsPanel({ metrics }: { metrics: AskMetrics }) {
-  const total = metrics.inputTokens + metrics.outputTokens;
-  const inputShare = total ? (metrics.inputTokens / total) * 100 : 0;
-  const stats: { label: string; value: string; accent?: boolean }[] = [
+  const userTokens = metrics.inputTokens - metrics.systemTokens;
+  const total = userTokens + metrics.outputTokens;
+  const inputShare = total ? (userTokens / total) * 100 : 0;
+  const stats: { label: string; value: string; title?: string; accent?: boolean }[] = [
     { label: "Model", value: shortModel(metrics.model) },
-    { label: "Input", value: `${metrics.inputTokens.toLocaleString()} tok` },
+    {
+      label: "Input",
+      value: `~${userTokens.toLocaleString()} tok`,
+      title: `Your messages, estimated. Excludes ~${metrics.systemTokens.toLocaleString()} tokens of system prompt, which are billed in the cost.`,
+    },
     { label: "Output", value: `${metrics.outputTokens.toLocaleString()} tok` },
     { label: "Cost", value: formatCost(metrics.costUsd), accent: true },
     { label: "First token", value: formatMs(metrics.ttftMs) },
@@ -78,13 +83,13 @@ function MetricsPanel({ metrics }: { metrics: AskMetrics }) {
       <div
         aria-hidden="true"
         className="flex h-0.5 bg-brand/25"
-        title={`${metrics.inputTokens} input / ${metrics.outputTokens} output tokens`}
+        title={`${userTokens} input / ${metrics.outputTokens} output tokens`}
       >
         <div className="bg-brand" style={{ width: `${inputShare}%` }} />
       </div>
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-px bg-border-subtle">
-        {stats.map(({ label, value, accent }) => (
-          <div key={label} className="bg-surface-container-low px-3 py-2.5">
+        {stats.map(({ label, value, title, accent }) => (
+          <div key={label} className="bg-surface-container-low px-3 py-2.5" title={title}>
             <dt className="text-[10px] uppercase tracking-wider text-on-surface-variant/60">
               {label}
             </dt>
@@ -92,7 +97,7 @@ function MetricsPanel({ metrics }: { metrics: AskMetrics }) {
               className={`font-mono text-xs sm:text-[13px] tabular-nums truncate ${
                 accent ? "text-brand" : "text-on-surface"
               }`}
-              title={value}
+              title={title ?? value}
             >
               {value}
             </dd>
