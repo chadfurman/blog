@@ -1,6 +1,7 @@
 import { streamText } from "ai";
 import { Redis } from "@upstash/redis";
 import { buildSystemPrompt } from "./lib/systemPrompt.js";
+import { buildMetrics, normalizeUsage, METRICS_SENTINEL } from "./lib/metrics.js";
 import {
   checkVisitorLimit,
   checkGlobalBudget,
@@ -62,6 +63,7 @@ function getClientIp(req: Request): string {
 // Exported as named method handlers (POST/OPTIONS) so Vercel invokes this with
 // a Web-standard `Request` (and we return a `Response`), not the Node req/res.
 async function handler(req: Request): Promise<Response> {
+  const startedAt = Date.now();
   // CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders(req) });
@@ -153,6 +155,7 @@ async function handler(req: Request): Promise<Response> {
   }
 
   // 8. Stream from the model via the AI Gateway, as plain text
+  const modelStartedAt = Date.now();
   const result = streamText({
     model: MODEL,
     system: buildSystemPrompt(),
@@ -165,6 +168,7 @@ async function handler(req: Request): Promise<Response> {
   // and once a 200 is committed the client can't be told it failed.
   const chunks = result.textStream[Symbol.asyncIterator]();
   const first = await chunks.next();
+  const ttftMs = Date.now() - modelStartedAt;
   if (first.done) {
     return reject(502, "model_error");
   }
@@ -182,10 +186,14 @@ async function handler(req: Request): Promise<Response> {
         // so the serverless function stays alive for the KV writes.
         try {
           const usage = (await result.usage) as Record<string, number> | undefined;
-          const tokensUsed =
-            usage?.totalTokens ??
-            (usage?.inputTokens ?? usage?.promptTokens ?? 0) +
-              (usage?.outputTokens ?? usage?.completionTokens ?? 0);
+          const tokensUsed = normalizeUsage(usage).totalTokens;
+          const metrics = buildMetrics({
+            model: MODEL,
+            usage,
+            ttftMs,
+            serverMs: Date.now() - startedAt,
+          });
+          controller.enqueue(encoder.encode(METRICS_SENTINEL + JSON.stringify(metrics)));
           if (!bypass) {
             await recordUsage({ redis, visitorId, ip, messages: trimmedMessages, tokensUsed });
           }

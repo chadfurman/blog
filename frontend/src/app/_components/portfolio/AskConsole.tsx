@@ -4,6 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ComponentPropsWithoutRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import {
+  METRICS_SENTINEL,
+  formatCost,
+  formatMs,
+  shortModel,
+  splitMetrics,
+  type AskMetrics,
+} from "./askMetrics";
 
 // ---- types ----------------------------------------------------------------
 
@@ -11,6 +19,7 @@ type Role = "user" | "assistant";
 interface Message {
   role: Role;
   content: string;
+  metrics?: AskMetrics;
 }
 type ErrorState =
   | "visitor_exhausted"
@@ -43,6 +52,55 @@ function getOrCreateVisitorId(): string {
   } catch {
     return crypto.randomUUID();
   }
+}
+
+// ---- metrics panel ---------------------------------------------------------
+
+function MetricsPanel({ metrics }: { metrics: AskMetrics }) {
+  const total = metrics.inputTokens + metrics.outputTokens;
+  const inputShare = total ? (metrics.inputTokens / total) * 100 : 0;
+  const stats: { label: string; value: string; accent?: boolean }[] = [
+    { label: "Model", value: shortModel(metrics.model) },
+    { label: "Input", value: `${metrics.inputTokens.toLocaleString()} tok` },
+    { label: "Output", value: `${metrics.outputTokens.toLocaleString()} tok` },
+    { label: "Cost", value: formatCost(metrics.costUsd), accent: true },
+    { label: "First token", value: formatMs(metrics.ttftMs) },
+    {
+      label: "End to end",
+      value: formatMs(metrics.endToEndMs ?? metrics.serverMs),
+    },
+  ];
+  return (
+    <dl
+      aria-label="Response metrics"
+      className="mt-4 rounded-lg border border-border-subtle bg-surface-container-low/60 overflow-hidden"
+    >
+      <div
+        aria-hidden="true"
+        className="flex h-0.5 bg-brand/25"
+        title={`${metrics.inputTokens} input / ${metrics.outputTokens} output tokens`}
+      >
+        <div className="bg-brand" style={{ width: `${inputShare}%` }} />
+      </div>
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-px bg-border-subtle">
+        {stats.map(({ label, value, accent }) => (
+          <div key={label} className="bg-surface-container-low px-3 py-2.5">
+            <dt className="text-[10px] uppercase tracking-wider text-on-surface-variant/60">
+              {label}
+            </dt>
+            <dd
+              className={`font-mono text-xs sm:text-[13px] tabular-nums truncate ${
+                accent ? "text-brand" : "text-on-surface"
+              }`}
+              title={value}
+            >
+              {value}
+            </dd>
+          </div>
+        ))}
+      </div>
+    </dl>
+  );
 }
 
 // ---- markdown rendering ----------------------------------------------------
@@ -122,7 +180,10 @@ export default function AskConsole() {
         const res = await fetch(CHAT_API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ visitorId, messages: next }),
+          body: JSON.stringify({
+            visitorId,
+            messages: next.map(({ role, content }) => ({ role, content })),
+          }),
           signal: abortRef.current.signal,
         });
 
@@ -146,16 +207,28 @@ export default function AskConsole() {
 
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
+        const startedAt = performance.now();
+        let raw = "";
+        let endToEndMs: number | undefined;
         for (;;) {
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = decoder.decode(value, { stream: true });
           if (!chunk) continue;
+          raw += chunk;
+          if (endToEndMs === undefined && raw.includes(METRICS_SENTINEL)) {
+            endToEndMs = performance.now() - startedAt;
+          }
+          const { text, metrics } = splitMetrics(raw);
           setMessages((prev) => {
             const copy = [...prev];
             const last = copy[copy.length - 1];
             if (last?.role === "assistant") {
-              copy[copy.length - 1] = { ...last, content: last.content + chunk };
+              copy[copy.length - 1] = {
+                ...last,
+                content: text,
+                metrics: metrics ? { ...metrics, endToEndMs } : undefined,
+              };
             }
             return copy;
           });
@@ -348,6 +421,7 @@ export default function AskConsole() {
                         className="inline-block w-1.5 h-4 ml-0.5 bg-brand align-middle motion-safe:animate-pulse"
                       />
                     )}
+                    {msg.metrics && <MetricsPanel metrics={msg.metrics} />}
                   </div>
                 ),
               )}

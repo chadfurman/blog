@@ -305,6 +305,27 @@ describe("handler — happy path", () => {
     expect(call![2]?.ex).toBeUndefined();
   });
 
+  it("ends the stream with a metrics trailer after the answer", async () => {
+    const res = await handler(
+      makeRequest({
+        visitorId: "v-metrics",
+        messages: [{ role: "user", content: "hi" }],
+      })
+    );
+    const body = await res.text();
+    const [text, trailer] = body.split("\u001e");
+    expect(text).toBe("hello world");
+    const metrics = JSON.parse(trailer);
+    expect(metrics).toMatchObject({
+      model: "anthropic/claude-haiku-5.5",
+      inputTokens: 100,
+      outputTokens: 50,
+    });
+    expect(metrics.costUsd).toBeCloseTo(0.000035, 9);
+    expect(typeof metrics.ttftMs).toBe("number");
+    expect(typeof metrics.serverMs).toBe("number");
+  });
+
   it("truncates history to MAX_HISTORY_MESSAGES", async () => {
     const manyMessages = Array.from({ length: 20 }, (_, i) => ({
       role: i % 2 === 0 ? "user" : "assistant",

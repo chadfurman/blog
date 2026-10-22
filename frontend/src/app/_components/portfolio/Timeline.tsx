@@ -148,7 +148,7 @@ export default function Timeline() {
       >
         <CompactList label="Earlier">
           {earlierRoles.map((r) => (
-            <CompactRow key={r.company} title={r.role} meta={r.company} period={r.period} detail={r.detail} />
+            <CompactRow key={`${r.company}-${r.role}`} title={r.role} meta={r.company} period={r.period} detail={r.detail} />
           ))}
         </CompactList>
         <CompactList label="Education">
