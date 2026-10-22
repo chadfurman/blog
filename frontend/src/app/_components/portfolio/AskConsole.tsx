@@ -183,6 +183,10 @@ export default function AskConsole() {
       setError(null);
       setStreaming(true);
       abortRef.current = new AbortController();
+      // Start the end-to-end clock at send. The API holds its response headers
+      // until the first token is ready, so starting after fetch() resolves
+      // would drop the whole first-token wait.
+      const startedAt = performance.now();
 
       try {
         const res = await fetch(CHAT_API_URL, {
@@ -220,7 +224,6 @@ export default function AskConsole() {
 
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
-        const startedAt = performance.now();
         let raw = "";
         let endToEndMs: number | undefined;
         for (;;) {
