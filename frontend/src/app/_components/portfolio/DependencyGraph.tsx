@@ -1,241 +1,233 @@
 "use client";
 
 import {useEffect, useRef} from "react";
+import {
+  assembleNetwork,
+  makeAgent,
+  makeLayerGraph,
+  routeAgent,
+  stepAgent,
+  type Agent,
+  type LayerGraph,
+  type Network,
+} from "./graphNetwork";
+import {LAYERS, PAD, STRENGTH, drawLayer, drawOverlay, type LayerDef} from "./graphDraw";
 
-// Animated "agentic dependency graph" hero backdrop:
-// nodes = packages, edges = the dependency tree, and a fossabot agent pulse
-// walks the graph healing vulnerable (amber) nodes back to healthy (periwinkle).
-// Performance: capped nodes, single rAF loop, DPR-scaled, paused when hidden.
-// Accessibility: respects prefers-reduced-motion (static frame, no loop).
+// Hero backdrop: one network of "packages" spread over soft-focus depth layers.
+// A single fossabot agent walks it, across layers, healing vulnerable (amber)
+// nodes. Layers shift a few pixels against the pointer; click or tap any node to
+// send the agent there. Reduced motion draws one still frame.
 
-type Node = {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  r: number;
-  vulnerable: boolean;
-  healing: boolean; // true while the cyan "just healed" flash plays
-  healT: number; // 0..1 progress of that flash
+const HIT = 26;
+const HIT_TOUCH = 38;
+const SELECTION_LINGER_MS = 1100;
+
+type Layer = {
+  def: LayerDef;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  graph: LayerGraph;
+  tx: number;
+  ty: number;
 };
 
-export type Sim = {
-  nodes: Node[];
-  edges: [number, number][];
-  neighbors: number[][];
-  agentAt: number;
-  agentTo: number;
-  agentT: number;
-  sinceInfect: number;
-  w: number;
-  h: number;
+type Scene = {
+  size: [number, number];
+  layers: Layer[];
+  net: Network;
+  agent: Agent;
+  overlay: CanvasRenderingContext2D;
+  sel: number | null;
 };
 
-const HEALTHY = "180, 197, 255"; // brand periwinkle
-const VULN = "245, 165, 90"; // amber
-const AGENT = "123, 208, 255"; // cyan
-const EDGE_DIM = "rgba(51, 65, 85, 0.22)";
-const EDGE_LIT = "rgba(123, 208, 255, 0.5)";
+type Pointer = {x: number; y: number; tx: number; ty: number; px: number; py: number; inside: boolean};
 
-function nearestNeighbors(nodes: Node[], i: number, k: number): number[] {
-  return nodes
-    .map((n, j) => ({j, d: (n.x - nodes[i].x) ** 2 + (n.y - nodes[i].y) ** 2}))
-    .filter((o) => o.j !== i)
-    .sort((a, b) => a.d - b.d)
-    .slice(0, k)
-    .map((o) => o.j);
+function layerCanvas(def: LayerDef): HTMLCanvasElement {
+  const canvas = document.createElement("canvas");
+  Object.assign(canvas.style, {
+    position: "absolute",
+    left: `-${PAD}px`,
+    top: `-${PAD}px`,
+    width: `calc(100% + ${PAD * 2}px)`,
+    height: `calc(100% + ${PAD * 2}px)`,
+    willChange: "transform",
+    filter: def.blur ? `blur(${def.blur}px)` : "",
+  });
+  return canvas;
 }
 
-export function buildSim(w: number, h: number): Sim {
-  const count = Math.max(18, Math.min(52, Math.round((w * h) / 26000)));
-  const nodes: Node[] = Array.from({length: count}, () => ({
-    x: Math.random() * w,
-    y: Math.random() * h,
-    vx: (Math.random() - 0.5) * 0.06,
-    vy: (Math.random() - 0.5) * 0.06,
-    r: 1.6 + Math.random() * 2.2,
-    vulnerable: Math.random() < 0.16,
-    healing: false,
-    healT: 0,
-  }));
-  const neighbors = nodes.map((_, i) => nearestNeighbors(nodes, i, 2 + (i % 2)));
-  const seen = new Set<string>();
-  const edges: [number, number][] = [];
-  neighbors.forEach((ns, i) =>
-    ns.forEach((j) => {
-      const key = i < j ? `${i}-${j}` : `${j}-${i}`;
-      if (!seen.has(key)) {
-        seen.add(key);
-        edges.push([i, j]);
+function overlayCanvas(): HTMLCanvasElement {
+  const canvas = document.createElement("canvas");
+  Object.assign(canvas.style, {position: "absolute", inset: "0", width: "100%", height: "100%"});
+  return canvas;
+}
+
+function fitCanvas(canvas: HTMLCanvasElement, w: number, h: number): CanvasRenderingContext2D {
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(w * ratio);
+  canvas.height = Math.round(h * ratio);
+  const ctx = canvas.getContext("2d")!;
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  return ctx;
+}
+
+function buildScene(w: number, h: number, canvases: HTMLCanvasElement[]): Scene {
+  const density = Math.min(2.5, Math.max(0.55, (w * h) / (960 * 540)));
+  const full: [number, number] = [w + PAD * 2, h + PAD * 2];
+  const layers = LAYERS.map((def, i) => {
+    const count = Math.max(4, Math.round(def.n * density));
+    const graph = makeLayerGraph(full[0], full[1], count, 101 + i * 17, def.rMin, def.rMax, i);
+    return {def, canvas: canvases[i], ctx: fitCanvas(canvases[i], full[0], full[1]), graph, tx: 0, ty: 0};
+  });
+  const net = assembleNetwork(layers.map((l) => l.graph));
+  const overlay = fitCanvas(canvases[LAYERS.length], w, h);
+  return {size: [w, h], layers, net, agent: makeAgent(net), overlay, sel: null};
+}
+
+function stagePos(scene: Scene, gid: number): [number, number] {
+  const node = scene.net.nodes[gid];
+  const layer = scene.layers[node.layer];
+  return [node.x - PAD + layer.tx, node.y - PAD + layer.ty];
+}
+
+function nodeAt(scene: Scene, x: number, y: number, reach: number): number {
+  let best = -1;
+  let bestD = reach * reach;
+  for (let li = scene.layers.length - 1; li >= 0; li--) {
+    const layer = scene.layers[li];
+    const offset = scene.net.offsets[li];
+    layer.graph.nodes.forEach((n, i) => {
+      const d = (n.x - (x + PAD - layer.tx)) ** 2 + (n.y - (y + PAD - layer.ty)) ** 2;
+      if (d < bestD - 9) {
+        bestD = d;
+        best = offset + i;
       }
-    }),
-  );
-  return {nodes, edges, neighbors, agentAt: 0, agentTo: neighbors[0][0], agentT: 0, sinceInfect: 0, w, h};
+    });
+  }
+  return best;
 }
 
-export function stepAgent(sim: Sim, dt: number) {
-  sim.agentT += dt * 0.0011;
-  if (sim.agentT < 1) return;
-  sim.agentT = 0;
-  sim.agentAt = sim.agentTo;
-  const here = sim.nodes[sim.agentAt];
-  if (here.vulnerable) {
-    here.vulnerable = false;
-    here.healing = true;
-    here.healT = 0;
-  }
-  const ns = sim.neighbors[sim.agentAt];
-  const sick = ns.find((j) => sim.nodes[j].vulnerable);
-  sim.agentTo = sick ?? ns[Math.floor(Math.random() * ns.length)];
+function placeLayers(scene: Scene, pointer: Pointer) {
+  scene.layers.forEach((layer) => {
+    layer.tx = -pointer.x * layer.def.amp * STRENGTH;
+    layer.ty = -pointer.y * layer.def.amp * 0.75 * STRENGTH;
+    layer.canvas.style.transform = `translate3d(${layer.tx.toFixed(2)}px, ${layer.ty.toFixed(2)}px, 0)`;
+  });
 }
 
-export function step(sim: Sim, dt: number, mx: number, my: number) {
-  for (const n of sim.nodes) {
-    n.x += n.vx * dt;
-    n.y += n.vy * dt;
-    if (n.x < 0 || n.x > sim.w) n.vx *= -1;
-    if (n.y < 0 || n.y > sim.h) n.vy *= -1;
-    if (mx >= 0) {
-      const dx = n.x - mx;
-      const dy = n.y - my;
-      const d2 = dx * dx + dy * dy;
-      if (d2 < 14000 && d2 > 1) {
-        const f = (1 - d2 / 14000) * 0.4;
-        n.x += (dx / Math.sqrt(d2)) * f;
-        n.y += (dy / Math.sqrt(d2)) * f;
-      }
-    }
-    if (n.healing) {
-      n.healT += dt * 0.0016;
-      if (n.healT >= 1) {
-        n.healing = false; // back to healthy; re-infectable later (infection is throttled)
-        n.healT = 0;
-      }
-    }
-  }
-  sim.sinceInfect += dt;
-  if (sim.sinceInfect > 2600) {
-    sim.sinceInfect = 0;
-    const idle = sim.nodes.filter((n) => !n.vulnerable && !n.healing);
-    if (idle.length) idle[Math.floor(Math.random() * idle.length)].vulnerable = true;
-  }
-  stepAgent(sim, dt);
+function renderFrame(scene: Scene, pointer: Pointer, dt: number, t: number): number {
+  const ease = 1 - Math.exp(-dt / 240);
+  pointer.x += (pointer.tx - pointer.x) * ease;
+  pointer.y += (pointer.ty - pointer.y) * ease;
+  placeLayers(scene, pointer);
+  stepAgent(scene.net, scene.agent, dt);
+  const full: [number, number] = [scene.size[0] + PAD * 2, scene.size[1] + PAD * 2];
+  scene.layers.forEach((layer, i) => {
+    drawLayer(layer.ctx, layer.graph, scene.net.offsets[i], scene.agent, layer.def, full, t);
+  });
+  const {agent} = scene;
+  const done = scene.sel !== null && !agent.routing && agent.doneAt !== null;
+  if (done && agent.clock - agent.doneAt! > SELECTION_LINGER_MS) scene.sel = null;
+  const hover = pointer.inside ? nodeAt(scene, pointer.px, pointer.py, HIT) : -1;
+  drawOverlay(scene.overlay, {
+    net: scene.net,
+    agent,
+    sel: scene.sel,
+    hover,
+    size: scene.size,
+    pos: (gid) => stagePos(scene, gid),
+  });
+  return hover;
 }
 
-function draw(ctx: CanvasRenderingContext2D, sim: Sim, t: number) {
-  ctx.clearRect(0, 0, sim.w, sim.h);
-  ctx.lineWidth = 1;
-  for (const [a, b] of sim.edges) {
-    const lit = a === sim.agentAt || b === sim.agentAt || a === sim.agentTo || b === sim.agentTo;
-    ctx.strokeStyle = lit ? EDGE_LIT : EDGE_DIM;
-    ctx.beginPath();
-    ctx.moveTo(sim.nodes[a].x, sim.nodes[a].y);
-    ctx.lineTo(sim.nodes[b].x, sim.nodes[b].y);
-    ctx.stroke();
-  }
-  for (const n of sim.nodes) {
-    const pulse = n.vulnerable ? 0.5 + 0.5 * Math.sin(t * 0.005) : 1;
-    let color = HEALTHY;
-    let alpha = 0.55;
-    if (n.vulnerable) {
-      color = VULN;
-      alpha = 0.5 + 0.4 * pulse;
-    } else if (n.healing) {
-      color = AGENT;
-      alpha = 0.85 - n.healT * 0.3;
-    }
-    ctx.fillStyle = `rgba(${color}, ${alpha})`;
-    ctx.beginPath();
-    ctx.arc(n.x, n.y, n.r + (n.vulnerable ? pulse : 0), 0, Math.PI * 2);
-    ctx.fill();
-  }
-  const from = sim.nodes[sim.agentAt];
-  const to = sim.nodes[sim.agentTo];
-  const ax = from.x + (to.x - from.x) * sim.agentT;
-  const ay = from.y + (to.y - from.y) * sim.agentT;
-  const glow = ctx.createRadialGradient(ax, ay, 0, ax, ay, 14);
-  glow.addColorStop(0, `rgba(${AGENT}, 0.9)`);
-  glow.addColorStop(1, `rgba(${AGENT}, 0)`);
-  ctx.fillStyle = glow;
-  ctx.beginPath();
-  ctx.arc(ax, ay, 14, 0, Math.PI * 2);
-  ctx.fill();
-}
-
-// Wire a canvas to the simulation. Returns a cleanup function.
-function mountGraph(canvas: HTMLCanvasElement): () => void {
-  const ctx = canvas.getContext("2d");
-  const parent = canvas.parentElement;
-  if (!ctx || !parent) return () => {};
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const mouse = {x: -1, y: -1};
-  let sim = buildSim(parent.clientWidth, parent.clientHeight);
-
-  const resize = () => {
-    const w = parent.clientWidth;
-    const h = parent.clientHeight;
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    canvas.style.width = `${w}px`;
-    canvas.style.height = `${h}px`;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    sim = buildSim(w, h);
-  };
-  resize();
-
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    draw(ctx, sim, 0);
-    return () => {};
-  }
-
-  const onMove = (e: MouseEvent) => {
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
-  };
-  const onLeave = () => {
-    mouse.x = -1;
-    mouse.y = -1;
-  };
-  const ro = new ResizeObserver(resize);
-  ro.observe(parent);
-  parent.addEventListener("mousemove", onMove);
-  parent.addEventListener("mouseleave", onLeave);
-
+function mountGraph(container: HTMLDivElement): () => void {
+  const parent = container.parentElement;
+  if (!parent) return () => {};
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const canvases = [...LAYERS.map(layerCanvas), overlayCanvas()];
+  canvases.forEach((c) => container.appendChild(c));
+  const pointer: Pointer = {x: 0, y: 0, tx: 0, ty: 0, px: 0, py: 0, inside: false};
+  let scene = buildScene(parent.clientWidth, parent.clientHeight, canvases);
   let raf = 0;
   let prev = 0;
+  let inView = true;
+
   const frame = (now: number) => {
     const dt = Math.min(48, prev ? now - prev : 16);
     prev = now;
-    step(sim, dt, mouse.x, mouse.y);
-    draw(ctx, sim, now);
+    const hover = renderFrame(scene, pointer, dt, now);
+    parent.style.cursor = hover >= 0 ? "pointer" : "";
     raf = requestAnimationFrame(frame);
   };
-  raf = requestAnimationFrame(frame);
-
-  const onVisibility = () => {
-    cancelAnimationFrame(raf); // guard against stacking rAF chains
-    if (!document.hidden) {
+  const sync = () => {
+    const shouldRun = inView && !document.hidden && !reduced;
+    if (shouldRun && !raf) {
       prev = 0;
       raf = requestAnimationFrame(frame);
+    } else if (!shouldRun && raf) {
+      cancelAnimationFrame(raf);
+      raf = 0;
     }
   };
-  document.addEventListener("visibilitychange", onVisibility);
+  const rebuild = () => {
+    scene = buildScene(parent.clientWidth, parent.clientHeight, canvases);
+    if (reduced) renderFrame(scene, pointer, 0, 0);
+  };
+
+  const onMove = (e: PointerEvent) => {
+    const rect = container.getBoundingClientRect();
+    pointer.px = e.clientX - rect.left;
+    pointer.py = e.clientY - rect.top;
+    pointer.tx = (pointer.px / rect.width - 0.5) * 2;
+    pointer.ty = (pointer.py / rect.height - 0.5) * 2;
+    pointer.inside = true;
+  };
+  const onLeave = () => {
+    pointer.inside = false;
+  };
+  const onClick = (e: MouseEvent) => {
+    if ((e.target as HTMLElement).closest("a, button, input")) return;
+    const rect = container.getBoundingClientRect();
+    const touch = e instanceof PointerEvent && e.pointerType === "touch";
+    const hit = nodeAt(scene, e.clientX - rect.left, e.clientY - rect.top, touch ? HIT_TOUCH : HIT);
+    scene.sel = hit >= 0 ? hit : null;
+    if (hit < 0) return;
+    if (!routeAgent(scene.net, scene.agent, hit)) scene.agent.doneAt = scene.agent.clock;
+  };
+
+  const ro = new ResizeObserver(rebuild);
+  ro.observe(parent);
+  const io = new IntersectionObserver(([entry]) => {
+    inView = entry.isIntersecting;
+    sync();
+  });
+  io.observe(parent);
+  document.addEventListener("visibilitychange", sync);
+  if (!reduced) {
+    parent.addEventListener("pointermove", onMove);
+    parent.addEventListener("pointerleave", onLeave);
+    parent.addEventListener("click", onClick);
+  }
+  sync();
 
   return () => {
     cancelAnimationFrame(raf);
     ro.disconnect();
-    parent.removeEventListener("mousemove", onMove);
-    parent.removeEventListener("mouseleave", onLeave);
-    document.removeEventListener("visibilitychange", onVisibility);
+    io.disconnect();
+    document.removeEventListener("visibilitychange", sync);
+    parent.removeEventListener("pointermove", onMove);
+    parent.removeEventListener("pointerleave", onLeave);
+    parent.removeEventListener("click", onClick);
+    parent.style.cursor = "";
+    container.replaceChildren();
   };
 }
 
 export default function DependencyGraph({className = ""}: {className?: string}) {
-  const ref = useRef<HTMLCanvasElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!ref.current) return;
     return mountGraph(ref.current);
   }, []);
-  return <canvas ref={ref} aria-hidden="true" className={`absolute inset-0 pointer-events-none ${className}`} />;
+  return <div ref={ref} aria-hidden="true" className={`absolute inset-0 pointer-events-none ${className}`} />;
 }

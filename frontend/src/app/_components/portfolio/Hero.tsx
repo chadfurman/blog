@@ -27,18 +27,6 @@ export default function Hero() {
       <DependencyGraph className="opacity-70" />
       <div className="absolute inset-0 neural-glow pointer-events-none" />
       <div className="hero-veil absolute inset-0 pointer-events-none" />
-      {/* Legend so the backdrop reads as "fossabot healing dependencies", not generic particles. */}
-      <div className="hidden lg:flex absolute bottom-24 left-8 z-10 flex-col gap-1.5 font-mono text-[10px] text-on-surface-variant/70 pointer-events-none">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full" style={{background: "rgb(245,165,90)"}} /> vulnerable dependency
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full" style={{background: "rgb(180,197,255)"}} /> healthy
-        </div>
-        <div className="flex items-center gap-2 text-brand/80">
-          <span className="w-2 h-2 rounded-full animate-ping" style={{background: "rgb(123,208,255)"}} /> fossabot · auto-healing
-        </div>
-      </div>
       <div className="max-w-4xl text-center z-10 relative">
         <a
           href={profile.badge.href}
