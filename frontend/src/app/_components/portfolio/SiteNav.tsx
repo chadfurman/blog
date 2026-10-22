@@ -40,9 +40,9 @@ export default function SiteNav() {
             <a
               key={link.href}
               href={link.href}
-              className={`font-mono text-sm tracking-wide transition-colors ${
+              className={`font-body text-[15px] font-medium tracking-normal transition-colors ${
                 isActive(link.href)
-                  ? "text-brand font-bold border-b-2 border-brand pb-1"
+                  ? "text-brand border-b-2 border-brand pb-1"
                   : "text-on-surface-variant hover:text-brand"
               }`}
             >
@@ -111,8 +111,8 @@ export default function SiteNav() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className={`font-mono text-sm py-3 border-b border-border-subtle/40 ${
-                  isActive(link.href) ? "text-brand font-bold" : "text-on-surface-variant"
+                className={`font-body text-base font-medium tracking-normal py-3 border-b border-border-subtle/40 ${
+                  isActive(link.href) ? "text-brand" : "text-on-surface-variant"
                 }`}
               >
                 {link.label}
