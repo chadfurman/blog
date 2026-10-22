@@ -13,7 +13,7 @@ import {
   type Network,
 } from "./graphNetwork";
 import {LAYERS, PAD, RING_MS, STRENGTH, drawLayer, drawOverlay, drawRings, type LayerDef} from "./graphDraw";
-import {advanceFx, makeFx, stormLevelAt, wipeAmountAt, type Fx} from "./graphFx";
+import {advanceFx, heroVisibility, makeFx, stormLevelAt, wipeAmountAt, type Fx} from "./graphFx";
 import {OVERCLOCK_DONE_EVENT, OVERCLOCK_EVENT, WIPE_EVENT} from "./constants";
 
 // Hero backdrop: one network of "packages" spread over soft-focus depth layers.
@@ -23,6 +23,7 @@ import {OVERCLOCK_DONE_EVENT, OVERCLOCK_EVENT, WIPE_EVENT} from "./constants";
 
 const HIT = 26;
 const HIT_TOUCH = 38;
+const VISIBLE_TRIES = 24;
 const SELECTION_LINGER_MS = 1100;
 
 type Layer = {
@@ -121,8 +122,18 @@ function placeLayers(scene: Scene, pointer: Pointer, wipe: number) {
   });
 }
 
+function pickVisibleNode(scene: Scene): number {
+  const count = scene.net.nodes.length;
+  for (let i = 0; i < VISIBLE_TRIES; i++) {
+    const gid = Math.floor(Math.random() * count);
+    const [x, y] = stagePos(scene, gid);
+    if (heroVisibility(x, y, scene.size[0], scene.size[1]) === 1) return gid;
+  }
+  return scene.agent.at;
+}
+
 function emitRing(scene: Scene, fx: Fx, t: number) {
-  const [x, y] = stagePos(scene, Math.floor(Math.random() * scene.net.nodes.length));
+  const [x, y] = stagePos(scene, pickVisibleNode(scene));
   fx.rings.push({x, y, t0: t});
 }
 
@@ -131,7 +142,7 @@ function stepStorm(scene: Scene, fx: Fx, level: number, t: number) {
   if (level === 0) return;
   if (Math.random() < 0.4 * level) emitRing(scene, fx, t);
   if (!scene.agent.routing && Math.random() < 0.06) {
-    routeAgent(scene.net, scene.agent, Math.floor(Math.random() * scene.net.nodes.length));
+    routeAgent(scene.net, scene.agent, pickVisibleNode(scene));
   }
 }
 
@@ -171,6 +182,7 @@ function renderFrame(scene: Scene, pointer: Pointer, fx: Fx, dt: number, t: numb
     waypoints: scene.waypoints,
     hover,
     size: scene.size,
+    boost: level,
     pos: (gid) => stagePos(scene, gid),
   });
   drawRings(scene.overlay, fx.rings, t);

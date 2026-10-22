@@ -42,3 +42,15 @@ export function advanceFx(fx: Fx, now: number): {stormDone: boolean} {
   if (fx.wipeAt !== null && now - fx.wipeAt > WIPE_MS) fx.wipeAt = null;
   return {stormDone};
 }
+
+const FADE_CENTER = [0.5, 0.38] as const;
+const FADE_RADII = [0.85, 0.75] as const;
+const FADE_SOLID = 0.58;
+const FADE_GONE = 0.82;
+
+export function heroVisibility(x: number, y: number, w: number, h: number): number {
+  const dx = (x - FADE_CENTER[0] * w) / (FADE_RADII[0] * w);
+  const dy = (y - FADE_CENTER[1] * h) / (FADE_RADII[1] * h);
+  const d = Math.hypot(dx, dy);
+  return Math.max(0, Math.min(1, (FADE_GONE - d) / (FADE_GONE - FADE_SOLID)));
+}

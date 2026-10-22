@@ -16,6 +16,7 @@ export type LayerDef = {
 export const PAD = 80;
 export const STRENGTH = 0.2;
 export const RING_MS = 1000;
+const AGENT_BOOST = 1.4;
 
 export const LAYERS: LayerDef[] = [
   {n: 86, rMin: 0.6, rMax: 1.2, amp: 3, nodeA: 0.38, edgeA: 0.12, blur: 1, glow: false, depth: 0},
@@ -79,6 +80,7 @@ export type OverlayView = {
   waypoints: number[];
   hover: number;
   size: [number, number];
+  boost: number;
   pos: (gid: number) => [number, number];
 };
 
@@ -138,13 +140,18 @@ function drawAgent(ctx: CanvasRenderingContext2D, v: OverlayView, dot: [number, 
   const depthAt = LAYERS[v.net.nodes[v.agent.at].layer].depth;
   const depthTo = LAYERS[v.net.nodes[v.agent.to].layer].depth;
   const depth = depthAt + (depthTo - depthAt) * v.agent.t;
-  const radius = 10 + 7 * depth;
+  const radius = (10 + 7 * depth) * (1 + AGENT_BOOST * v.boost);
   const glow = ctx.createRadialGradient(dot[0], dot[1], 0, dot[0], dot[1], radius);
   glow.addColorStop(0, `rgba(${AGENT}, ${0.55 + 0.4 * depth})`);
   glow.addColorStop(1, `rgba(${AGENT}, 0)`);
   ctx.fillStyle = glow;
   ctx.beginPath();
   ctx.arc(dot[0], dot[1], radius, 0, Math.PI * 2);
+  ctx.fill();
+  if (v.boost === 0) return;
+  ctx.fillStyle = `rgba(255,255,255,${0.9 * v.boost})`;
+  ctx.beginPath();
+  ctx.arc(dot[0], dot[1], 3, 0, Math.PI * 2);
   ctx.fill();
 }
 

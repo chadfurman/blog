@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import {test} from "node:test";
-import {STORM_MS, WIPE_MS, advanceFx, makeFx, stormLevelAt, wipeAmountAt} from "./graphFx.ts";
+import {STORM_MS, WIPE_MS, advanceFx, heroVisibility, makeFx, stormLevelAt, wipeAmountAt} from "./graphFx.ts";
 
 test("a storm queued before the hero is visible starts at the first frame", () => {
   const fx = makeFx();
@@ -32,4 +32,15 @@ test("the wipe collapses to full then restores to nothing", () => {
   assert.ok(Math.abs(wipeAmountAt(fx, WIPE_MS / 2) - 1) < 1e-9);
   advanceFx(fx, WIPE_MS + 1);
   assert.equal(wipeAmountAt(fx, WIPE_MS + 1), 0);
+});
+
+test("heroVisibility is full in the core and zero past the fade", () => {
+  assert.equal(heroVisibility(500, 380, 1000, 1000), 1);
+  assert.equal(heroVisibility(0, 1000, 1000, 1000), 0);
+  assert.equal(heroVisibility(1000, 1000, 1000, 1000), 0);
+});
+
+test("heroVisibility falls off smoothly between the core and the edge", () => {
+  const mid = heroVisibility(500 + 0.58 * 850 + 0.12 * 850, 380, 1000, 1000);
+  assert.ok(mid > 0.2 && mid < 0.8, String(mid));
 });
