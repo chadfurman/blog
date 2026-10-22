@@ -19,7 +19,7 @@ const MAX_HISTORY_MESSAGES = parseInt(
 
 // Vercel AI Gateway resolves this string model id; auth is automatic on Vercel
 // via the function's OIDC token (no ANTHROPIC_API_KEY needed).
-const MODEL = process.env.CHAT_MODEL ?? "anthropic/claude-haiku-4.5";
+const MODEL = process.env.CHAT_MODEL ?? "anthropic/claude-haiku-5.5";
 
 // The widget is served cross-origin (separate Vercel project), so every
 // response — including errors and the stream — needs CORS headers.
@@ -42,13 +42,8 @@ function corsHeaders(req: Request): Record<string, string> {
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────
-function jsonError(
-  req: Request,
-  status: number,
-  error: string,
-  detail?: string
-): Response {
-  return new Response(JSON.stringify({ error, detail }), {
+function jsonError(req: Request, status: number, error: string): Response {
+  return new Response(JSON.stringify({ error }), {
     status,
     headers: { "Content-Type": "application/json", ...corsHeaders(req) },
   });
@@ -151,16 +146,12 @@ async function handler(req: Request): Promise<Response> {
   const trimmedMessages = messages.slice(-MAX_HISTORY_MESSAGES);
 
   // 8. Stream from the model via the AI Gateway, as plain text
-  let modelError: unknown;
   const result = streamText({
     model: MODEL,
     system: buildSystemPrompt(),
     messages: trimmedMessages,
     maxOutputTokens: MAX_OUTPUT_TOKENS,
-    onError: ({ error }) => {
-      modelError = error;
-      console.error("chat stream error", error);
-    },
+    onError: ({ error }) => console.error("chat stream error", error),
   });
 
   // Pull the first chunk up front: a failed model call ends the stream empty,
@@ -168,8 +159,7 @@ async function handler(req: Request): Promise<Response> {
   const chunks = result.textStream[Symbol.asyncIterator]();
   const first = await chunks.next();
   if (first.done) {
-    const detail = modelError instanceof Error ? modelError.message : String(modelError);
-    return jsonError(req, 502, "model_error", detail);
+    return jsonError(req, 502, "model_error");
   }
 
   const encoder = new TextEncoder();

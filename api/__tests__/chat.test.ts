@@ -243,7 +243,7 @@ describe("handler — happy path", () => {
     expect(callArgs[0].system).toContain("Chad Furman");
   });
 
-  it("uses the gateway's haiku 4.5 model id by default", async () => {
+  it("uses the gateway's haiku 5.5 model id by default", async () => {
     await handler(
       makeRequest({
         visitorId: "v-happy",
@@ -251,7 +251,7 @@ describe("handler — happy path", () => {
       })
     );
     const [callArgs] = mockStreamText.mock.calls;
-    expect(callArgs[0].model).toBe("anthropic/claude-haiku-4.5");
+    expect(callArgs[0].model).toBe("anthropic/claude-haiku-5.5");
   });
 
   it("logs model stream errors instead of swallowing them", async () => {
@@ -265,7 +265,7 @@ describe("handler — happy path", () => {
     expect(callArgs[0]).toHaveProperty("onError");
   });
 
-  it("returns 502 model_error with detail when the model yields no text", async () => {
+  it("returns 502 model_error without leaking the raw error when the model yields no text", async () => {
     mockStreamText.mockImplementation((opts: { onError: (e: { error: unknown }) => void }) => {
       opts.onError({ error: new Error("gateway boom") });
       async function* empty() {}
@@ -280,7 +280,7 @@ describe("handler — happy path", () => {
     expect(res.status).toBe(502);
     const json = await res.json();
     expect(json.error).toBe("model_error");
-    expect(json.detail).toContain("gateway boom");
+    expect(JSON.stringify(json)).not.toContain("gateway boom");
   });
 
   it("truncates history to MAX_HISTORY_MESSAGES", async () => {
