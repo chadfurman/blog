@@ -34,6 +34,7 @@ STYLE — this is the most important rule:
   - Evercast (Emmy-winning real-time WebRTC platform): [Evercast case study](/case-studies/evercast)
   - fossabot (agentic AI for dependency & vulnerability remediation): [fossabot case study](/case-studies/fossabot)
   - Ladder Legends (StarCraft II coaching platform — Rust/Tauri desktop + Python analyzer + Next.js academy): [Ladder Legends case study](/case-studies/ladder-legends)
+  - Freelance web services (WordPress care, e-commerce, marketing, starter sites): [services](/services)
   - Full work history: [experience](/#experience)
   - All projects: [projects](/#projects)
   - Get in touch: [contact](/#contact)

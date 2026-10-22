@@ -366,6 +366,46 @@ export const softSkills: string[] = [
   "A welcoming community builder who onboards new hires, shares tools and training broadly, and credits others publicly.",
 ];
 
+// Work and writing that has no case-study page but that the AI assistant
+// should know about. Fed to the assistant's corpus only.
+export type OtherWork = { name: string; summary: string; url?: string };
+
+export const otherWork: OtherWork[] = [
+  {
+    name: "Build Aloud",
+    summary:
+      "A public build-in-the-open site where an AI persona named Scout ships products, runs experiments, and writes up what happened, including dead ends and real numbers. Dozens of posts on multi-agent workflows, automated evaluation, and MCP tooling.",
+    url: "https://buildaloud.ai",
+  },
+  {
+    name: "Skills Marketplace MCP",
+    summary:
+      "An MCP server that lets AI agents semantically search, inspect, and install security-audited skills from the Skills Marketplace catalog. Ships as a hosted broker plus a plugin for both Claude Code and Codex.",
+    url: "https://marketplace.buildaloud.ai",
+  },
+  {
+    name: "Rize MCP server",
+    summary:
+      "An MCP server for the Rize time-tracking GraphQL API, exposing explore_schema and execute_graphql tools with OAuth (authorization code with PKCE), deployed on Vercel.",
+  },
+  {
+    name: "TA-Lib for Rust",
+    summary:
+      "A pure-Rust port of the TA-Lib technical-analysis library: 161 indicators including moving averages, momentum oscillators, volatility, volume, Hilbert Transform cycle analysis, statistics, and 61 candlestick patterns. Generated from the same canonical definitions as the C library and verified against the C reference implementation.",
+  },
+];
+
+export const writing: { title: string; summary: string }[] = [
+  {
+    title: "The TA-Lib Conversion: Part 1 - A New Foundation in Rust",
+    summary: "Converting TA-Lib technical indicators from C to Rust.",
+  },
+  {
+    title: "Technical Analysis: RSI Stock Signals [Part 1]",
+    summary: "Whether you can turn a profit in the stock market using just RSI.",
+  },
+];
+
 export type SkillGroup = { icon: string; title: string; skills: string[] };
 
 export const skillGroups: SkillGroup[] = [

@@ -5,7 +5,11 @@ import {
   education,
   projects,
   softSkills,
+  skillGroups,
+  otherWork,
+  writing,
 } from "../../frontend/src/data/portfolio.js";
+import { services } from "../../frontend/src/data/services.js";
 
 function serializeSections(
   sections: { heading: string; body?: string; bullets?: string[] }[]
@@ -85,6 +89,26 @@ export function buildCorpus(): string {
       lines.push("");
     }
   }
+
+  lines.push("== SKILLS ==");
+  for (const group of skillGroups) lines.push(`${group.title}: ${group.skills.join(", ")}`);
+  lines.push("");
+
+  lines.push("== OTHER WORK (no case-study page) ==");
+  for (const work of otherWork) {
+    lines.push(`${work.name}${work.url ? ` (${work.url})` : ""}: ${work.summary}`);
+  }
+  lines.push("");
+
+  lines.push("== WRITING (Chad's blog) ==");
+  for (const post of writing) lines.push(`"${post.title}": ${post.summary}`);
+  lines.push("");
+
+  lines.push("== FREELANCE WEB SERVICES (Chad also offers these to small businesses; services page: /services) ==");
+  for (const service of services) {
+    lines.push(`${service.name} — ${service.tagline}. ${service.description} ${service.startingAt}.`);
+  }
+  lines.push("");
 
   // Strengths & leadership — generalized, no confidential specifics; observed
   // across roles, primarily in his engineering-management work.

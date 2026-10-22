@@ -40,4 +40,25 @@ describe("buildCorpus", () => {
     // fossabot case study body contains "agentic"
     expect(corpus).toMatch(/agentic/i);
   });
+  it("includes the skill groups", () => {
+    expect(buildCorpus()).toContain("Context Engineering");
+  });
+
+  it("includes the freelance services", () => {
+    const corpus = buildCorpus();
+    expect(corpus).toContain("WordPress Care");
+    expect(corpus).toContain("E-Commerce");
+  });
+
+  it("includes side work: Build Aloud, the MCP servers, and the TA-Lib Rust port", () => {
+    const corpus = buildCorpus();
+    expect(corpus).toContain("Build Aloud");
+    expect(corpus).toContain("Skills Marketplace");
+    expect(corpus).toContain("Rize");
+    expect(corpus).toContain("TA-Lib");
+  });
+
+  it("includes the blog posts", () => {
+    expect(buildCorpus()).toContain("RSI");
+  });
 });
