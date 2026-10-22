@@ -122,12 +122,16 @@ function placeLayers(scene: Scene, pointer: Pointer, wipe: number) {
   });
 }
 
+function visibilityOf(scene: Scene, gid: number): number {
+  const [x, y] = stagePos(scene, gid);
+  return heroVisibility(x, y, scene.size[0], scene.size[1]);
+}
+
 function pickVisibleNode(scene: Scene): number {
   const count = scene.net.nodes.length;
   for (let i = 0; i < VISIBLE_TRIES; i++) {
     const gid = Math.floor(Math.random() * count);
-    const [x, y] = stagePos(scene, gid);
-    if (heroVisibility(x, y, scene.size[0], scene.size[1]) === 1) return gid;
+    if (visibilityOf(scene, gid) === 1) return gid;
   }
   return scene.agent.at;
 }
@@ -169,7 +173,7 @@ function renderFrame(scene: Scene, pointer: Pointer, fx: Fx, dt: number, t: numb
   const wipe = wipeAmountAt(fx, t);
   placeLayers(scene, pointer, wipe);
   stepStorm(scene, fx, level, t);
-  stepAgent(scene.net, scene.agent, dt * (1 + 3 * level));
+  stepAgent(scene.net, scene.agent, dt * (1 + 3 * level), Math.random, (gid) => visibilityOf(scene, gid));
   const full: [number, number] = [scene.size[0] + PAD * 2, scene.size[1] + PAD * 2];
   scene.layers.forEach((layer, i) => {
     drawLayer(layer.ctx, layer.graph, scene.net.offsets[i], scene.agent, layer.def, full, t);

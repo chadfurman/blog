@@ -54,3 +54,10 @@ export function heroVisibility(x: number, y: number, w: number, h: number): numb
   const d = Math.hypot(dx, dy);
   return Math.max(0, Math.min(1, (FADE_GONE - d) / (FADE_GONE - FADE_SOLID)));
 }
+
+export function pickWeighted<T>(items: T[], weight: (item: T) => number, rand: () => number): T {
+  const total = items.reduce((sum, item) => sum + weight(item), 0);
+  if (total <= 0) return items[Math.floor(rand() * items.length)];
+  let r = rand() * total;
+  return items.find((item) => (r -= weight(item)) < 0) ?? items[items.length - 1];
+}

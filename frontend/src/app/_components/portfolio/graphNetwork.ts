@@ -1,3 +1,5 @@
+import {pickWeighted} from "./graphFx";
+
 export type NetNode = {
   x: number;
   y: number;
@@ -29,6 +31,9 @@ export type Agent = {
 };
 
 type Rand = () => number;
+type Weight = (gid: number) => number;
+
+const IDLE_FLOOR = 0.2;
 
 export function mulberry32(seed: number): Rand {
   let s = seed | 0;
@@ -175,16 +180,16 @@ export function makeAgent(net: Network): Agent {
   };
 }
 
-function nextWanderTarget(net: Network, agent: Agent, rand: Rand): number {
+function nextWanderTarget(net: Network, agent: Agent, rand: Rand, weight: Weight): number {
   const neighbours = net.adj[agent.at];
   const sick = neighbours.find((j) => net.nodes[j].vuln);
   if (sick !== undefined) return sick;
   const forward = neighbours.filter((j) => j !== agent.prev);
   const options = forward.length ? forward : neighbours;
-  return options[Math.floor(rand() * options.length)];
+  return pickWeighted(options, (j) => IDLE_FLOOR + weight(j), rand);
 }
 
-function arrive(net: Network, agent: Agent, rand: Rand) {
+function arrive(net: Network, agent: Agent, rand: Rand, weight: Weight) {
   agent.t = 0;
   agent.prev = agent.at;
   agent.at = agent.to;
@@ -201,14 +206,20 @@ function arrive(net: Network, agent: Agent, rand: Rand) {
     agent.routing = false;
     agent.doneAt = agent.clock;
   }
-  agent.to = nextWanderTarget(net, agent, rand);
+  agent.to = nextWanderTarget(net, agent, rand, weight);
 }
 
-export function stepAgent(net: Network, agent: Agent, dt: number, rand: Rand = Math.random) {
+export function stepAgent(
+  net: Network,
+  agent: Agent,
+  dt: number,
+  rand: Rand = Math.random,
+  weight: Weight = () => 1,
+) {
   agent.clock += dt;
   const speed = agent.routing ? 0.0026 * Math.min(3, 1 + agent.queue.length * 0.12) : 0.0011;
   agent.t += dt * speed;
-  if (agent.t >= 1) arrive(net, agent, rand);
+  if (agent.t >= 1) arrive(net, agent, rand, weight);
   net.nodes.forEach((n) => {
     if (n.heal > 0) n.heal = Math.max(0, n.heal - dt * 0.0016);
   });

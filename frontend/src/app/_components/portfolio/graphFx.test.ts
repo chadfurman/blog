@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import {test} from "node:test";
-import {STORM_MS, WIPE_MS, advanceFx, heroVisibility, makeFx, stormLevelAt, wipeAmountAt} from "./graphFx.ts";
+import {STORM_MS, WIPE_MS, advanceFx, heroVisibility, makeFx, pickWeighted, stormLevelAt, wipeAmountAt} from "./graphFx.ts";
 
 test("a storm queued before the hero is visible starts at the first frame", () => {
   const fx = makeFx();
@@ -43,4 +43,14 @@ test("heroVisibility is full in the core and zero past the fade", () => {
 test("heroVisibility falls off smoothly between the core and the edge", () => {
   const mid = heroVisibility(500 + 0.58 * 850 + 0.12 * 850, 380, 1000, 1000);
   assert.ok(mid > 0.2 && mid < 0.8, String(mid));
+});
+
+test("pickWeighted follows the weights", () => {
+  assert.equal(pickWeighted(["a", "b"], (x) => (x === "b" ? 1 : 0), () => 0), "b");
+  assert.equal(pickWeighted(["a", "b"], () => 1, () => 0.99), "b");
+  assert.equal(pickWeighted(["a", "b"], () => 1, () => 0), "a");
+});
+
+test("pickWeighted falls back to a uniform pick when every weight is zero", () => {
+  assert.equal(pickWeighted(["a", "b"], () => 0, () => 0.9), "b");
 });
