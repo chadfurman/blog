@@ -50,8 +50,12 @@ function jsonError(req: Request, status: number, error: string): Response {
   });
 }
 
+const VISITOR_ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
+const IP_RE = /^[0-9a-fA-F:.]{1,45}$/;
+
 function getClientIp(req: Request): string {
-  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "";
+  return IP_RE.test(ip) ? ip : "unknown";
 }
 
 // ── handler ───────────────────────────────────────────────────────────────
@@ -75,7 +79,7 @@ async function handler(req: Request): Promise<Response> {
 
   if (
     typeof visitorId !== "string" ||
-    !visitorId ||
+    !VISITOR_ID_RE.test(visitorId) ||
     !Array.isArray(rawMessages) ||
     rawMessages.length === 0
   ) {

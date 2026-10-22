@@ -418,3 +418,29 @@ describe("handler — transcript logging", () => {
     expect(savedTranscript("v-byp")).toBeUndefined();
   });
 });
+
+describe("handler — identifier validation", () => {
+  it("rejects a visitorId that is too long or has odd characters without writing to redis", async () => {
+    for (const visitorId of ["a".repeat(65), "bad id/with:chars"]) {
+      const res = await handler(
+        makeRequest({ visitorId, messages: [{ role: "user", content: "hi" }] })
+      );
+      expect(res.status).toBe(400);
+    }
+    expect(mockRedisInstance.set).not.toHaveBeenCalled();
+    expect(mockRedisInstance.incr).not.toHaveBeenCalled();
+  });
+
+  it("stores 'unknown' when the forwarded IP isn't a valid address", async () => {
+    await handler(
+      makeRequest(
+        { visitorId: "v-badip", messages: [{ role: "user", content: "a".repeat(100) }] },
+        { "x-forwarded-for": "x".repeat(500) }
+      )
+    );
+    const call = mockRedisInstance.set.mock.calls.find(([k]) =>
+      (k as string).startsWith("chat:transcript:v-badip:")
+    );
+    expect(JSON.parse(call![1] as string).ip).toBe("unknown");
+  });
+});
