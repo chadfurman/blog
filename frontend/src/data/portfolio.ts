@@ -67,7 +67,7 @@ export const experience: Experience[] = [
     role: "Engineering Manager",
     detail:
       "Applied AI & SRE. Spearheaded AI adoption across the company and led the Applied AI team from prototype to public beta. Product owner of fossabot (New Horizons), an agentic framework for automated dependency updates and vulnerability remediation. Founded and manage the SRE team; modernized our Kubernetes platform by migrating from kops to EKS.",
-    period: "Oct 2024 — Present",
+    period: "Mar 2024 — Present",
     current: true,
     tags: ["Agentic AI", "AWS", "Kafka", "TypeScript", "React", "Node.js", "GraphQL", "SOC2"],
     deepDive: {
@@ -89,7 +89,7 @@ export const experience: Experience[] = [
     role: "Senior Software Engineer",
     detail:
       "Core platform engineering for marketing-automation infrastructure handling billions of emails a day. Built and optimized high-throughput data pipelines and the reliability of distributed systems behind millions of customer interactions. A founding member of the API committee, where I championed JSON:API standards across the org.",
-    period: "Jan 2021 — Mar 2024",
+    period: "Jan 2021 — Feb 2024",
     tags: ["Python", "RabbitMQ", "JSON:API"],
   },
   {
