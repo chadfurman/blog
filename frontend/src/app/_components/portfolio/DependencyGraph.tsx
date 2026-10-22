@@ -7,7 +7,8 @@ import {useEffect, useRef} from "react";
 // walks the graph healing vulnerable (amber) nodes back to healthy (periwinkle).
 // Your cursor is a second healing agent: nodes drift toward it, heal on contact,
 // and tether to it with lines; a click sends out a shockwave that heals and
-// scatters whatever it crosses.
+// scatters whatever it crosses, and holding the button keeps the pulses coming
+// from wherever the cursor is.
 // Performance: capped nodes, single rAF loop, DPR-scaled, paused when hidden.
 // Accessibility: respects prefers-reduced-motion (static frame, no loop).
 
@@ -45,6 +46,7 @@ const REACH = 190; // cursor influence radius, px
 const HEAL_RADIUS = 60; // vulnerable nodes this close to the cursor get healed
 const RIPPLE_MS = 800;
 const RIPPLE_REACH = 280;
+const HOLD_PULSE_MS = 320; // while pressed, a new shockwave this often
 
 function nearestNeighbors(nodes: Node[], i: number, k: number): number[] {
   return nodes
@@ -254,14 +256,21 @@ function mountGraph(canvas: HTMLCanvasElement): () => void {
     return () => {};
   }
 
-  const onMove = (e: MouseEvent) => {
+  const onMove = (e: PointerEvent) => {
     const rect = canvas.getBoundingClientRect();
     mouse.x = e.clientX - rect.left;
     mouse.y = e.clientY - rect.top;
   };
+  let holdTimer: ReturnType<typeof setInterval> | undefined;
+  const stopHold = () => {
+    clearInterval(holdTimer);
+    holdTimer = undefined;
+    parent.style.userSelect = "";
+  };
   const onLeave = () => {
     mouse.x = -1;
     mouse.y = -1;
+    stopHold();
   };
   let touchTimer: ReturnType<typeof setTimeout> | undefined;
   const onDown = (e: PointerEvent) => {
@@ -274,12 +283,19 @@ function mountGraph(canvas: HTMLCanvasElement): () => void {
       touchTimer = setTimeout(onLeave, 1500);
     }
     sim.ripples.push({x: e.clientX - rect.left, y: e.clientY - rect.top, age: 0});
+    stopHold();
+    parent.style.userSelect = "none"; // a held press must not select the headline text
+    holdTimer = setInterval(() => {
+      if (mouse.x >= 0) sim.ripples.push({x: mouse.x, y: mouse.y, age: 0});
+    }, HOLD_PULSE_MS);
   };
   const ro = new ResizeObserver(resize);
   ro.observe(parent);
-  parent.addEventListener("mousemove", onMove);
+  parent.addEventListener("pointermove", onMove);
   parent.addEventListener("mouseleave", onLeave);
   parent.addEventListener("pointerdown", onDown);
+  window.addEventListener("pointerup", stopHold);
+  window.addEventListener("pointercancel", stopHold);
 
   let raf = 0;
   let prev = 0;
@@ -305,9 +321,12 @@ function mountGraph(canvas: HTMLCanvasElement): () => void {
     cancelAnimationFrame(raf);
     clearTimeout(touchTimer);
     ro.disconnect();
-    parent.removeEventListener("mousemove", onMove);
+    parent.removeEventListener("pointermove", onMove);
     parent.removeEventListener("mouseleave", onLeave);
     parent.removeEventListener("pointerdown", onDown);
+    window.removeEventListener("pointerup", stopHold);
+    window.removeEventListener("pointercancel", stopHold);
+    stopHold();
     document.removeEventListener("visibilitychange", onVisibility);
   };
 }
