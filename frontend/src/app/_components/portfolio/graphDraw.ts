@@ -74,7 +74,7 @@ export function drawLayer(
 export type OverlayView = {
   net: Network;
   agent: Agent;
-  sel: number | null;
+  waypoints: number[];
   hover: number;
   size: [number, number];
   pos: (gid: number) => [number, number];
@@ -150,10 +150,10 @@ export function drawOverlay(ctx: CanvasRenderingContext2D, v: OverlayView) {
   ctx.clearRect(0, 0, v.size[0], v.size[1]);
   drawCrossLinks(ctx, v);
   const dot = agentPoint(v);
-  if (v.hover >= 0 && v.hover !== v.sel) ring(ctx, v.pos(v.hover), v.net.nodes[v.hover].r + 5, 0.45, false);
-  if (v.sel !== null) {
-    if (v.agent.routing) drawRoute(ctx, v, dot);
-    ring(ctx, v.pos(v.sel), v.net.nodes[v.sel].r + 7, 0.95, true);
+  if (v.hover >= 0 && !v.waypoints.includes(v.hover)) {
+    ring(ctx, v.pos(v.hover), v.net.nodes[v.hover].r + 5, 0.45, false);
   }
+  if (v.waypoints.length && v.agent.routing) drawRoute(ctx, v, dot);
+  v.waypoints.forEach((g) => ring(ctx, v.pos(g), v.net.nodes[g].r + 7, 0.95, true));
   drawAgent(ctx, v, dot);
 }

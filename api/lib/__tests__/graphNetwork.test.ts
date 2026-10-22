@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   assembleNetwork,
   makeAgent,
+  appendRoute,
   makeLayerGraph,
   mulberry32,
   routeAgent,
@@ -86,6 +87,55 @@ describe("routeAgent", () => {
     expect(routeAgent(net, agent, origin)).toBe(true);
     expect(agent.to).toBe(origin);
     expect(agent.queue).toEqual([]);
+  });
+});
+
+describe("appendRoute", () => {
+  it("adds a stop after the current route instead of replacing it", () => {
+    const net = buildNetwork([40, 24, 18, 6]);
+    const agent = makeAgent(net);
+    expect(routeAgent(net, agent, 30)).toBe(true);
+    const firstLeg = [agent.to, ...agent.queue];
+    expect(appendRoute(net, agent, 70)).toBe(true);
+    const all = [agent.to, ...agent.queue];
+    expect(all.slice(0, firstLeg.length)).toEqual(firstLeg);
+    expect(all[all.length - 1]).toBe(70);
+    expect(all).toContain(30);
+  });
+
+  it("visits each stop in order when stepped", () => {
+    const net = buildNetwork([30, 18, 8]);
+    const agent = makeAgent(net);
+    routeAgent(net, agent, 25);
+    appendRoute(net, agent, 50);
+    const rand = mulberry32(5);
+    const order: number[] = [];
+    for (let i = 0; i < 8000 && (agent.routing || i === 0); i++) {
+      stepAgent(net, agent, 16, rand);
+      if (agent.t === 0 && order[order.length - 1] !== agent.at) order.push(agent.at);
+    }
+    expect(order.indexOf(25)).toBeGreaterThanOrEqual(0);
+    expect(order.indexOf(50)).toBeGreaterThan(order.indexOf(25));
+    expect(agent.at).toBe(50);
+  });
+
+  it("starts a route when the agent is only wandering", () => {
+    const net = buildNetwork([20, 10]);
+    const agent = makeAgent(net);
+    expect(agent.routing).toBe(false);
+    expect(appendRoute(net, agent, 15)).toBe(true);
+    expect(agent.routing).toBe(true);
+    const last = agent.queue.length ? agent.queue[agent.queue.length - 1] : agent.to;
+    expect(last).toBe(15);
+  });
+
+  it("accepts the node the route already ends on", () => {
+    const net = buildNetwork([20, 10]);
+    const agent = makeAgent(net);
+    routeAgent(net, agent, 12);
+    const before = [...agent.queue];
+    expect(appendRoute(net, agent, 12)).toBe(true);
+    expect(agent.queue).toEqual(before);
   });
 });
 

@@ -238,6 +238,18 @@ function pathTo(net: Network, from: number, target: number): number[] | null {
   return path;
 }
 
+export function appendRoute(net: Network, agent: Agent, target: number): boolean {
+  const from = agent.queue.length ? agent.queue[agent.queue.length - 1] : agent.to;
+  if (target !== from) {
+    const path = pathTo(net, from, target);
+    if (!path) return false;
+    agent.queue.push(...path);
+  }
+  agent.routing = true;
+  agent.doneAt = null;
+  return true;
+}
+
 export function routeAgent(net: Network, agent: Agent, target: number): boolean {
   if (target === agent.to) {
     agent.queue = [];

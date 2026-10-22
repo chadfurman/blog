@@ -2,6 +2,7 @@
 
 import {useEffect, useRef} from "react";
 import {
+  appendRoute,
   assembleNetwork,
   makeAgent,
   makeLayerGraph,
@@ -37,7 +38,7 @@ type Scene = {
   net: Network;
   agent: Agent;
   overlay: CanvasRenderingContext2D;
-  sel: number | null;
+  waypoints: number[];
 };
 
 type Pointer = {x: number; y: number; tx: number; ty: number; px: number; py: number; inside: boolean};
@@ -81,7 +82,7 @@ function buildScene(w: number, h: number, canvases: HTMLCanvasElement[]): Scene 
   });
   const net = assembleNetwork(layers.map((l) => l.graph));
   const overlay = fitCanvas(canvases[LAYERS.length], w, h);
-  return {size: [w, h], layers, net, agent: makeAgent(net), overlay, sel: null};
+  return {size: [w, h], layers, net, agent: makeAgent(net), overlay, waypoints: []};
 }
 
 function stagePos(scene: Scene, gid: number): [number, number] {
@@ -115,6 +116,21 @@ function placeLayers(scene: Scene, pointer: Pointer) {
   });
 }
 
+function updateWaypoints(scene: Scene) {
+  const {agent, waypoints} = scene;
+  const last = waypoints[waypoints.length - 1];
+  scene.waypoints = waypoints.filter((w) => w !== agent.at || w === last);
+  const finished = !agent.routing && agent.doneAt !== null;
+  if (finished && agent.clock - agent.doneAt! > SELECTION_LINGER_MS) scene.waypoints = [];
+}
+
+function selectNode(scene: Scene, node: number, add: boolean) {
+  const ok = add ? appendRoute(scene.net, scene.agent, node) : routeAgent(scene.net, scene.agent, node);
+  if (!ok) scene.agent.doneAt = scene.agent.clock;
+  const kept = add ? scene.waypoints.filter((w) => w !== node) : [];
+  scene.waypoints = [...kept, node];
+}
+
 function renderFrame(scene: Scene, pointer: Pointer, dt: number, t: number): number {
   const ease = 1 - Math.exp(-dt / 240);
   pointer.x += (pointer.tx - pointer.x) * ease;
@@ -125,14 +141,12 @@ function renderFrame(scene: Scene, pointer: Pointer, dt: number, t: number): num
   scene.layers.forEach((layer, i) => {
     drawLayer(layer.ctx, layer.graph, scene.net.offsets[i], scene.agent, layer.def, full, t);
   });
-  const {agent} = scene;
-  const done = scene.sel !== null && !agent.routing && agent.doneAt !== null;
-  if (done && agent.clock - agent.doneAt! > SELECTION_LINGER_MS) scene.sel = null;
+  updateWaypoints(scene);
   const hover = pointer.inside ? nodeAt(scene, pointer.px, pointer.py, HIT) : -1;
   drawOverlay(scene.overlay, {
     net: scene.net,
-    agent,
-    sel: scene.sel,
+    agent: scene.agent,
+    waypoints: scene.waypoints,
     hover,
     size: scene.size,
     pos: (gid) => stagePos(scene, gid),
@@ -190,9 +204,13 @@ function mountGraph(container: HTMLDivElement): () => void {
     const rect = container.getBoundingClientRect();
     const touch = e instanceof PointerEvent && e.pointerType === "touch";
     const hit = nodeAt(scene, e.clientX - rect.left, e.clientY - rect.top, touch ? HIT_TOUCH : HIT);
-    scene.sel = hit >= 0 ? hit : null;
-    if (hit < 0) return;
-    if (!routeAgent(scene.net, scene.agent, hit)) scene.agent.doneAt = scene.agent.clock;
+    if (hit >= 0) selectNode(scene, hit, e.shiftKey);
+    else if (!e.shiftKey) scene.waypoints = [];
+  };
+  const onDown = (e: MouseEvent) => {
+    if (!e.shiftKey || (e.target as HTMLElement).closest("a, button, input")) return;
+    const rect = container.getBoundingClientRect();
+    if (nodeAt(scene, e.clientX - rect.left, e.clientY - rect.top, HIT) >= 0) e.preventDefault();
   };
 
   const ro = new ResizeObserver(rebuild);
@@ -207,6 +225,7 @@ function mountGraph(container: HTMLDivElement): () => void {
     parent.addEventListener("pointermove", onMove);
     parent.addEventListener("pointerleave", onLeave);
     parent.addEventListener("click", onClick);
+    parent.addEventListener("mousedown", onDown);
   }
   sync();
 
@@ -218,6 +237,7 @@ function mountGraph(container: HTMLDivElement): () => void {
     parent.removeEventListener("pointermove", onMove);
     parent.removeEventListener("pointerleave", onLeave);
     parent.removeEventListener("click", onClick);
+    parent.removeEventListener("mousedown", onDown);
     parent.style.cursor = "";
     container.replaceChildren();
   };
