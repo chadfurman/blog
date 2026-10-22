@@ -1,3 +1,4 @@
+import type {Ring} from "./graphFx";
 import type {Agent, LayerGraph, Network} from "./graphNetwork";
 
 export type LayerDef = {
@@ -14,6 +15,7 @@ export type LayerDef = {
 
 export const PAD = 80;
 export const STRENGTH = 0.2;
+export const RING_MS = 1000;
 
 export const LAYERS: LayerDef[] = [
   {n: 86, rMin: 0.6, rMax: 1.2, amp: 3, nodeA: 0.38, edgeA: 0.12, blur: 1, glow: false, depth: 0},
@@ -156,4 +158,15 @@ export function drawOverlay(ctx: CanvasRenderingContext2D, v: OverlayView) {
   if (v.waypoints.length && v.agent.routing) drawRoute(ctx, v, dot);
   v.waypoints.forEach((g) => ring(ctx, v.pos(g), v.net.nodes[g].r + 7, 0.95, true));
   drawAgent(ctx, v, dot);
+}
+
+export function drawRings(ctx: CanvasRenderingContext2D, rings: Ring[], t: number) {
+  rings.forEach((g) => {
+    const k = (t - g.t0) / RING_MS;
+    ctx.strokeStyle = `rgba(${AGENT}, ${0.55 * (1 - k)})`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(g.x, g.y, 6 + k * 190, 0, Math.PI * 2);
+    ctx.stroke();
+  });
 }

@@ -8,6 +8,8 @@ import ContactCTA from "@/app/_components/portfolio/ContactCTA";
 import SiteFooter from "@/app/_components/portfolio/SiteFooter";
 import ScrollReveal from "@/app/_components/portfolio/ScrollReveal";
 import CommandPalette from "@/app/_components/portfolio/CommandPalette";
+import RootShell from "@/app/_components/portfolio/RootShell";
+import Sprite from "@/app/_components/portfolio/Sprite";
 import AskConsole from "@/app/_components/portfolio/AskConsole";
 
 export default function Home() {
@@ -30,6 +32,8 @@ export default function Home() {
       <SiteFooter />
       <ScrollReveal />
       <CommandPalette />
+      <RootShell />
+      <Sprite />
     </div>
   );
 }

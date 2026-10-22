@@ -12,7 +12,9 @@ import {
   type LayerGraph,
   type Network,
 } from "./graphNetwork";
-import {LAYERS, PAD, STRENGTH, drawLayer, drawOverlay, type LayerDef} from "./graphDraw";
+import {LAYERS, PAD, RING_MS, STRENGTH, drawLayer, drawOverlay, drawRings, type LayerDef} from "./graphDraw";
+import {advanceFx, makeFx, stormLevelAt, wipeAmountAt, type Fx} from "./graphFx";
+import {OVERCLOCK_DONE_EVENT, OVERCLOCK_EVENT, WIPE_EVENT} from "./constants";
 
 // Hero backdrop: one network of "packages" spread over soft-focus depth layers.
 // A single fossabot agent walks it, across layers, healing vulnerable (amber)
@@ -108,12 +110,29 @@ function nodeAt(scene: Scene, x: number, y: number, reach: number): number {
   return best;
 }
 
-function placeLayers(scene: Scene, pointer: Pointer) {
+function placeLayers(scene: Scene, pointer: Pointer, wipe: number) {
+  const scale = wipe ? ` scale(${(1 - 0.92 * wipe).toFixed(3)})` : "";
+  const opacity = wipe ? String(1 - 0.9 * wipe) : "";
   scene.layers.forEach((layer) => {
     layer.tx = -pointer.x * layer.def.amp * STRENGTH;
     layer.ty = -pointer.y * layer.def.amp * 0.75 * STRENGTH;
-    layer.canvas.style.transform = `translate3d(${layer.tx.toFixed(2)}px, ${layer.ty.toFixed(2)}px, 0)`;
+    layer.canvas.style.transform = `translate3d(${layer.tx.toFixed(2)}px, ${layer.ty.toFixed(2)}px, 0)${scale}`;
+    layer.canvas.style.opacity = opacity;
   });
+}
+
+function emitRing(scene: Scene, fx: Fx, t: number) {
+  const [x, y] = stagePos(scene, Math.floor(Math.random() * scene.net.nodes.length));
+  fx.rings.push({x, y, t0: t});
+}
+
+function stepStorm(scene: Scene, fx: Fx, level: number, t: number) {
+  fx.rings = fx.rings.filter((r) => t - r.t0 < RING_MS);
+  if (level === 0) return;
+  if (Math.random() < 0.4 * level) emitRing(scene, fx, t);
+  if (!scene.agent.routing && Math.random() < 0.06) {
+    routeAgent(scene.net, scene.agent, Math.floor(Math.random() * scene.net.nodes.length));
+  }
 }
 
 function updateWaypoints(scene: Scene) {
@@ -131,12 +150,15 @@ function selectNode(scene: Scene, node: number, add: boolean) {
   scene.waypoints = [...kept, node];
 }
 
-function renderFrame(scene: Scene, pointer: Pointer, dt: number, t: number): number {
+function renderFrame(scene: Scene, pointer: Pointer, fx: Fx, dt: number, t: number): number {
   const ease = 1 - Math.exp(-dt / 240);
   pointer.x += (pointer.tx - pointer.x) * ease;
   pointer.y += (pointer.ty - pointer.y) * ease;
-  placeLayers(scene, pointer);
-  stepAgent(scene.net, scene.agent, dt);
+  const level = stormLevelAt(fx, t);
+  const wipe = wipeAmountAt(fx, t);
+  placeLayers(scene, pointer, wipe);
+  stepStorm(scene, fx, level, t);
+  stepAgent(scene.net, scene.agent, dt * (1 + 3 * level));
   const full: [number, number] = [scene.size[0] + PAD * 2, scene.size[1] + PAD * 2];
   scene.layers.forEach((layer, i) => {
     drawLayer(layer.ctx, layer.graph, scene.net.offsets[i], scene.agent, layer.def, full, t);
@@ -151,6 +173,8 @@ function renderFrame(scene: Scene, pointer: Pointer, dt: number, t: number): num
     size: scene.size,
     pos: (gid) => stagePos(scene, gid),
   });
+  drawRings(scene.overlay, fx.rings, t);
+  scene.overlay.canvas.style.opacity = wipe ? String(1 - 0.9 * wipe) : "";
   return hover;
 }
 
@@ -165,11 +189,13 @@ function mountGraph(container: HTMLDivElement): () => void {
   let raf = 0;
   let prev = 0;
   let inView = true;
+  const fx = makeFx();
 
   const frame = (now: number) => {
     const dt = Math.min(48, prev ? now - prev : 16);
     prev = now;
-    const hover = renderFrame(scene, pointer, dt, now);
+    if (advanceFx(fx, now).stormDone) window.dispatchEvent(new Event(OVERCLOCK_DONE_EVENT));
+    const hover = renderFrame(scene, pointer, fx, dt, now);
     parent.style.cursor = hover >= 0 ? "pointer" : "";
     raf = requestAnimationFrame(frame);
   };
@@ -185,7 +211,7 @@ function mountGraph(container: HTMLDivElement): () => void {
   };
   const rebuild = () => {
     scene = buildScene(parent.clientWidth, parent.clientHeight, canvases);
-    if (reduced) renderFrame(scene, pointer, 0, 0);
+    if (reduced) renderFrame(scene, pointer, fx, 0, 0);
   };
 
   const onMove = (e: PointerEvent) => {
@@ -213,6 +239,13 @@ function mountGraph(container: HTMLDivElement): () => void {
     if (nodeAt(scene, e.clientX - rect.left, e.clientY - rect.top, HIT) >= 0) e.preventDefault();
   };
 
+  const queue = (key: "pendingStorm" | "pendingWipe") => (e: Event) => {
+    fx[key] = true;
+    (e as CustomEvent<{handled: boolean}>).detail.handled = true;
+  };
+  const onOverclock = queue("pendingStorm");
+  const onWipe = queue("pendingWipe");
+
   const ro = new ResizeObserver(rebuild);
   ro.observe(parent);
   const io = new IntersectionObserver(([entry]) => {
@@ -226,6 +259,8 @@ function mountGraph(container: HTMLDivElement): () => void {
     parent.addEventListener("pointerleave", onLeave);
     parent.addEventListener("click", onClick);
     parent.addEventListener("mousedown", onDown);
+    window.addEventListener(OVERCLOCK_EVENT, onOverclock);
+    window.addEventListener(WIPE_EVENT, onWipe);
   }
   sync();
 
@@ -238,6 +273,8 @@ function mountGraph(container: HTMLDivElement): () => void {
     parent.removeEventListener("pointerleave", onLeave);
     parent.removeEventListener("click", onClick);
     parent.removeEventListener("mousedown", onDown);
+    window.removeEventListener(OVERCLOCK_EVENT, onOverclock);
+    window.removeEventListener(WIPE_EVENT, onWipe);
     parent.style.cursor = "";
     container.replaceChildren();
   };

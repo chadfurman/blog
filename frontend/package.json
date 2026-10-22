@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build && next-image-export-optimizer",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "node --test \"src/**/*.test.ts\""
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",

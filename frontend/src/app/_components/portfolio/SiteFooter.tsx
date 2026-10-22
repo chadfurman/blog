@@ -1,4 +1,5 @@
 import {profile} from "@/data/portfolio";
+import SecretsBadge from "./SecretsBadge";
 
 const links = [
   {label: "LinkedIn", href: profile.linkedin},
@@ -15,7 +16,7 @@ export default function SiteFooter() {
             © 2026 {profile.name}. Engineering Manager | Applied AI &amp; SRE
           </p>
         </div>
-        <div className="flex gap-8">
+        <div className="flex items-center gap-8">
           {links.map((link) => (
             <a
               key={link.label}
@@ -27,6 +28,7 @@ export default function SiteFooter() {
               {link.label}
             </a>
           ))}
+          <SecretsBadge />
         </div>
       </div>
     </footer>

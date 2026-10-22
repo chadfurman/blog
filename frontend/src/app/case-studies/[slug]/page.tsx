@@ -7,6 +7,8 @@ import SiteFooter from "@/app/_components/portfolio/SiteFooter";
 import ScrollReveal from "@/app/_components/portfolio/ScrollReveal";
 import Icon from "@/app/_components/portfolio/Icon";
 import CommandPalette from "@/app/_components/portfolio/CommandPalette";
+import RootShell from "@/app/_components/portfolio/RootShell";
+import Sprite from "@/app/_components/portfolio/Sprite";
 
 type PageProps = {params: Promise<{slug: string}>};
 
@@ -138,6 +140,8 @@ export default async function CaseStudyPage({params}: PageProps) {
       <SiteFooter />
       <ScrollReveal />
       <CommandPalette />
+      <RootShell />
+      <Sprite />
     </div>
   );
 }
