@@ -14,7 +14,6 @@ const DAILY_TOKEN_CEILING = parseInt(
 const TTL_1H = 60 * 60; // seconds
 const TTL_24H = 24 * 60 * 60;
 const TTL_48H = 48 * 60 * 60;
-const TTL_30D = 30 * 24 * 60 * 60;
 
 // UTC time buckets — each bucketed key self-expires, so a window resets cleanly
 // at the top of the hour / day rather than sliding forever.
@@ -90,11 +89,21 @@ export async function recordUsage(opts: {
   const existing = ((await redis.get<number>(tokenKey)) ?? 0) as number;
   await redis.set(tokenKey, existing + tokensUsed, { ex: TTL_48H });
 
-  // Append transcript (30-day TTL).
+  await recordTranscript({ redis, visitorId, ip, messages });
+}
+
+// Transcripts never expire, and failed requests are kept too (error set).
+export async function recordTranscript(opts: {
+  redis: Redis;
+  visitorId: string;
+  ip: string;
+  messages: Message[];
+  error?: string;
+}): Promise<void> {
+  const { redis, visitorId, ip, messages, error } = opts;
   const ts = Date.now();
   await redis.set(
     `chat:transcript:${visitorId}:${ts}`,
-    JSON.stringify({ messages, ip, ts }),
-    { ex: TTL_30D }
+    JSON.stringify({ messages, ip, ts, error })
   );
 }

@@ -283,6 +283,27 @@ describe("handler — happy path", () => {
     expect(JSON.stringify(json)).not.toContain("gateway boom");
   });
 
+  it("saves the transcript of a failed request without an expiry", async () => {
+    mockStreamText.mockImplementation(() => {
+      async function* empty() {}
+      return { textStream: empty(), usage: Promise.resolve({}) };
+    });
+    await handler(
+      makeRequest({
+        visitorId: "v-fail-saved",
+        messages: [{ role: "user", content: "will this be kept?" }],
+      })
+    );
+    const call = mockRedisInstance.set.mock.calls.find(([k]) =>
+      (k as string).startsWith("chat:transcript:v-fail-saved:")
+    );
+    expect(call).toBeDefined();
+    const payload = JSON.parse(call![1] as string);
+    expect(payload.error).toBe("model_error");
+    expect(payload.messages[0].content).toBe("will this be kept?");
+    expect(call![2]?.ex).toBeUndefined();
+  });
+
   it("truncates history to MAX_HISTORY_MESSAGES", async () => {
     const manyMessages = Array.from({ length: 20 }, (_, i) => ({
       role: i % 2 === 0 ? "user" : "assistant",

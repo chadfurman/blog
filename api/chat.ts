@@ -6,6 +6,7 @@ import {
   checkGlobalBudget,
   checkIpLimit,
   recordUsage,
+  recordTranscript,
   type Message,
 } from "./lib/ratelimit.js";
 
@@ -159,6 +160,9 @@ async function handler(req: Request): Promise<Response> {
   const chunks = result.textStream[Symbol.asyncIterator]();
   const first = await chunks.next();
   if (first.done) {
+    if (!bypass) {
+      await recordTranscript({ redis, visitorId, ip, messages, error: "model_error" });
+    }
     return jsonError(req, 502, "model_error");
   }
 

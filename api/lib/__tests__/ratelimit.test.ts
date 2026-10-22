@@ -172,7 +172,7 @@ describe("recordUsage", () => {
     expect(tokenKeyTouched).toBe(true);
   });
 
-  it("writes transcript with 30-day TTL", async () => {
+  it("writes transcript with no expiry", async () => {
     const redis = makeRedis();
     const setSpy = vi.spyOn(redis, "set");
 
@@ -190,9 +190,8 @@ describe("recordUsage", () => {
     );
     expect(transcriptCall).toBeDefined();
 
-    // Check TTL option: ex: 2592000 (30 days in seconds)
-    const opts = transcriptCall![2] as { ex?: number };
-    expect(opts?.ex).toBe(2592000);
+    const opts = transcriptCall![2] as { ex?: number } | undefined;
+    expect(opts?.ex).toBeUndefined();
   });
 
   it("transcript JSON includes ip and messages", async () => {
