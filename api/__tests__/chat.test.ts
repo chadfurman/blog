@@ -265,6 +265,24 @@ describe("handler — happy path", () => {
     expect(callArgs[0]).toHaveProperty("onError");
   });
 
+  it("returns 502 model_error with detail when the model yields no text", async () => {
+    mockStreamText.mockImplementation((opts: { onError: (e: { error: unknown }) => void }) => {
+      opts.onError({ error: new Error("gateway boom") });
+      async function* empty() {}
+      return { textStream: empty(), usage: Promise.resolve({}) };
+    });
+    const res = await handler(
+      makeRequest({
+        visitorId: "v-fail",
+        messages: [{ role: "user", content: "hi" }],
+      })
+    );
+    expect(res.status).toBe(502);
+    const json = await res.json();
+    expect(json.error).toBe("model_error");
+    expect(json.detail).toContain("gateway boom");
+  });
+
   it("truncates history to MAX_HISTORY_MESSAGES", async () => {
     const manyMessages = Array.from({ length: 20 }, (_, i) => ({
       role: i % 2 === 0 ? "user" : "assistant",

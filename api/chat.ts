@@ -42,8 +42,13 @@ function corsHeaders(req: Request): Record<string, string> {
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────
-function jsonError(req: Request, status: number, error: string): Response {
-  return new Response(JSON.stringify({ error }), {
+function jsonError(
+  req: Request,
+  status: number,
+  error: string,
+  detail?: string
+): Response {
+  return new Response(JSON.stringify({ error, detail }), {
     status,
     headers: { "Content-Type": "application/json", ...corsHeaders(req) },
   });
@@ -146,20 +151,34 @@ async function handler(req: Request): Promise<Response> {
   const trimmedMessages = messages.slice(-MAX_HISTORY_MESSAGES);
 
   // 8. Stream from the model via the AI Gateway, as plain text
+  let modelError: unknown;
   const result = streamText({
     model: MODEL,
     system: buildSystemPrompt(),
     messages: trimmedMessages,
     maxOutputTokens: MAX_OUTPUT_TOKENS,
-    onError: ({ error }) => console.error("chat stream error", error),
+    onError: ({ error }) => {
+      modelError = error;
+      console.error("chat stream error", error);
+    },
   });
+
+  // Pull the first chunk up front: a failed model call ends the stream empty,
+  // and once a 200 is committed the client can't be told it failed.
+  const chunks = result.textStream[Symbol.asyncIterator]();
+  const first = await chunks.next();
+  if (first.done) {
+    const detail = modelError instanceof Error ? modelError.message : String(modelError);
+    return jsonError(req, 502, "model_error", detail);
+  }
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       try {
-        for await (const chunk of result.textStream) {
-          controller.enqueue(encoder.encode(chunk));
+        controller.enqueue(encoder.encode(first.value));
+        for (let next = await chunks.next(); !next.done; next = await chunks.next()) {
+          controller.enqueue(encoder.encode(next.value));
         }
       } finally {
         // Record usage once generation completes, before the stream closes,
