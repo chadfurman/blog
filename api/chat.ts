@@ -182,25 +182,42 @@ async function handler(req: Request): Promise<Response> {
           controller.enqueue(encoder.encode(next.value));
         }
       } finally {
-        // Record usage once generation completes, before the stream closes,
-        // so the serverless function stays alive for the KV writes.
+        // Each step is isolated: a client that disconnects mid-stream makes
+        // enqueue/close throw, and that must never skip usage accounting.
+        const usage = (await Promise.resolve(result.usage).catch(() => undefined)) as
+          | Record<string, number>
+          | undefined;
+        const metrics = buildMetrics({
+          model: MODEL,
+          usage,
+          ttftMs,
+          serverMs: Date.now() - startedAt,
+        });
         try {
-          const usage = (await result.usage) as Record<string, number> | undefined;
-          const tokensUsed = normalizeUsage(usage).totalTokens;
-          const metrics = buildMetrics({
-            model: MODEL,
-            usage,
-            ttftMs,
-            serverMs: Date.now() - startedAt,
-          });
           controller.enqueue(encoder.encode(METRICS_SENTINEL + JSON.stringify(metrics)));
+        } catch {
+          // Client already gone.
+        }
+        // Record usage before the stream closes so the serverless function
+        // stays alive for the KV writes.
+        try {
           if (!bypass) {
-            await recordUsage({ redis, visitorId, ip, messages: trimmedMessages, tokensUsed });
+            await recordUsage({
+              redis,
+              visitorId,
+              ip,
+              messages: trimmedMessages,
+              tokensUsed: normalizeUsage(usage).totalTokens,
+            });
           }
         } catch {
           // Never fail the response on a bookkeeping error.
         }
-        controller.close();
+        try {
+          controller.close();
+        } catch {
+          // Already closed by a cancel.
+        }
       }
     },
   });

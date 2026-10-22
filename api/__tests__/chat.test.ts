@@ -326,6 +326,21 @@ describe("handler — happy path", () => {
     expect(typeof metrics.serverMs).toBe("number");
   });
 
+  it("still records usage when the client disconnects before the stream ends", async () => {
+    const res = await handler(
+      makeRequest({
+        visitorId: "v-disconnect",
+        messages: [{ role: "user", content: "hi" }],
+      })
+    );
+    await res.body!.cancel();
+    await new Promise((r) => setTimeout(r, 50));
+    const bumped = mockRedisInstance.incr.mock.calls.some(([k]) =>
+      (k as string).startsWith("chat:visitor:v-disconnect:")
+    );
+    expect(bumped).toBe(true);
+  });
+
   it("truncates history to MAX_HISTORY_MESSAGES", async () => {
     const manyMessages = Array.from({ length: 20 }, (_, i) => ({
       role: i % 2 === 0 ? "user" : "assistant",
